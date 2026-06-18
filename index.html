@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920">
+  <title>Dzień na Lotnisku — AI w Akcji</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --c-papkin: #7c3aed;
+      --c-papkin-light: #a78bfa;
+      --c-protazy: #ea580c;
+      --c-protazy-light: #fb923c;
+      --c-gerwazy: #1d4ed8;
+      --c-gerwazy-light: #60a5fa;
+      --c-bg: #0f0f1a;
+      --c-sky: #1e3a5f;
+      --c-ground: #2d4a22;
+      --c-amber: #f59e0b;
+      --c-text: #f0e6d3;
+      --c-panel-bg: #1a1a2e;
+      --c-panel-border: #f59e0b;
+      --font: 'Press Start 2P', monospace;
+      --scene-w: 1920px;
+      --scene-h: 860px;
+      --header-h: 80px;
+      --nav-h: 60px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--c-bg);
+      font-family: var(--font);
+      color: var(--c-text);
+      overflow: hidden;
+      width: 1920px;
+      height: 1080px;
+      user-select: none;
+    }
+
+    #app {
+      width: 1920px;
+      height: 1080px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+    #header {
+      height: var(--header-h);
+      background: linear-gradient(180deg, #0a0a14 0%, #111128 100%);
+      border-bottom: 3px solid var(--c-amber);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      flex-shrink: 0;
+    }
+
+    #title-bar {
+      font-size: 14px;
+      color: var(--c-amber);
+      letter-spacing: 2px;
+    }
+
+    #clock-display {
+      font-size: 28px;
+      color: #ffffff;
+      text-shadow: 0 0 12px var(--c-amber);
+    }
+
+    #header-controls {
+      display: flex;
+      gap: 16px;
+    }
+
+    .ctrl-btn {
+      background: none;
+      border: 2px solid var(--c-amber);
+      color: var(--c-amber);
+      font-family: var(--font);
+      font-size: 12px;
+      padding: 8px 12px;
+      cursor: pointer;
+      image-rendering: pixelated;
+    }
+    .ctrl-btn:hover { background: var(--c-amber); color: #000; }
+
+    /* SCENE VIEWPORT */
+    #scene-viewport {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #scenes-track {
+      display: flex;
+      width: calc(1920px * 6);
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .scene {
+      width: 1920px;
+      height: 100%;
+      position: relative;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    /* NAV BAR */
+    #nav-bar {
+      height: var(--nav-h);
+      background: linear-gradient(180deg, #111128 0%, #0a0a14 100%);
+      border-top: 3px solid var(--c-amber);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      flex-shrink: 0;
+    }
+
+    .nav-btn {
+      background: none;
+      border: 3px solid var(--c-amber);
+      color: var(--c-amber);
+      font-family: var(--font);
+      font-size: 16px;
+      padding: 8px 24px;
+      cursor: pointer;
+      min-width: 160px;
+    }
+    .nav-btn:hover { background: var(--c-amber); color: #000; }
+    .nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+    #scene-dots {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .scene-dot {
+      width: 24px;
+      height: 24px;
+      border: 3px solid var(--c-amber);
+      background: transparent;
+      cursor: pointer;
+      image-rendering: pixelated;
+      transition: background 0.2s;
+    }
+    .scene-dot.active { background: var(--c-amber); }
+    .scene-dot:hover { background: rgba(245,158,11,0.5); }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="header">
+      <div id="title-bar">DZIEŃ NA LOTNISKU</div>
+      <div id="clock-display">06:30</div>
+      <div id="header-controls">
+        <button class="ctrl-btn" id="btn-sound">🔇 DŹWIĘK</button>
+        <button class="ctrl-btn" id="btn-fullscreen">⛶ PEŁNY EKRAN</button>
+        <button class="ctrl-btn" id="btn-restart">↺ OD POCZĄTKU</button>
+      </div>
+    </div>
+    <div id="scene-viewport">
+      <div id="scenes-track">
+        <div class="scene scene-1" id="scene-1"></div>
+        <div class="scene scene-2" id="scene-2"></div>
+        <div class="scene scene-3" id="scene-3"></div>
+        <div class="scene scene-4" id="scene-4"></div>
+        <div class="scene scene-5" id="scene-5"></div>
+        <div class="scene scene-6" id="scene-6"></div>
+      </div>
+    </div>
+    <div id="nav-bar">
+      <button class="nav-btn" id="btn-prev">← WSTECZ</button>
+      <div id="scene-dots">
+        <div class="scene-dot active" data-scene="0" title="Intro"></div>
+        <div class="scene-dot" data-scene="1" title="Papkin"></div>
+        <div class="scene-dot" data-scene="2" title="Protazy"></div>
+        <div class="scene-dot" data-scene="3" title="Gerwazy"></div>
+        <div class="scene-dot" data-scene="4" title="Dyrektor"></div>
+        <div class="scene-dot" data-scene="5" title="Outro"></div>
+      </div>
+      <button class="nav-btn" id="btn-next">DALEJ →</button>
+    </div>
+  </div>
+  <script>
+    // JS goes here in later tasks
+  </script>
+</body>
+</html>
