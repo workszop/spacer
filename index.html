@@ -188,7 +188,341 @@
     </div>
   </div>
   <script>
-    // JS goes here in later tasks
+    // ============================================================
+    // SPRITE RENDERER
+    // ============================================================
+
+    const PIXEL_SCALE = 8;
+
+    const PALETTES = {
+      papkin: {
+        '1': '#7c3aed', // fioletowe ubranie
+        'H': '#a78bfa', // słuchawki (jasny fiolet)
+        'S': '#fde68a', // skóra
+        'E': '#312e81', // oczy (ciemny fiolet)
+        'L': '#6ee7b7', // ekran laptopa (zielony blask)
+        'G': '#4b5563', // obudowa laptopa (szary)
+        'W': '#ffffff', // biały (guziki koszuli)
+        '.': null,
+      },
+      protazy: {
+        '2': '#ea580c', // pomarańczowy garnitur
+        'D': '#c2410c', // ciemny pomarańcz (cień)
+        'S': '#fde68a', // skóra
+        'E': '#7c2d12', // oczy
+        'T': '#fbbf24', // krawat/żółty
+        'V': '#ffffff', // biała koszula
+        'B': '#f97316', // jasny pomarańcz
+        '.': null,
+      },
+      gerwazy: {
+        '3': '#1d4ed8', // niebieski garnitur
+        'D': '#1e3a8a', // ciemny niebieski
+        'S': '#fde68a', // skóra
+        'E': '#374151', // okulary (ciemny)
+        'K': '#93c5fd', // szkła okularów
+        'B': '#fbbf24', // odznaka (złota)
+        'T': '#f0f9ff', // tablet
+        '.': null,
+      },
+    };
+
+    // Każda klatka to tablica stringów 8-znakowich (8 cols × 14 rows)
+    // Skala: PIXEL_SCALE px per pixel = 64×112 px per sprite
+    const CHAR_FRAMES = {
+      papkin: {
+        idle_a: [
+          '_HH__HH_',
+          '_H1111H_',
+          '__1SS1__',
+          '__1EE1__',
+          '__1SS1__',
+          '_111111_',
+          '_1WLLW1_',
+          '_1WLLW1_',
+          '_1WGGG1_',
+          '_111111_',
+          '___11___',
+          '___11___',
+          '__11_1__',
+          '__1__1__',
+        ],
+        idle_b: [
+          '_HH__HH_',
+          '_H1111H_',
+          '__1SS1__',
+          '__1EE1__',
+          '__1SS1__',
+          '_111111_',
+          '_1WLLW1_',
+          '_1WLLW1_',
+          '_1WGGG1_',
+          '_111111_',
+          '___11___',
+          '___11___',
+          '__1__11_',
+          '__1__1__',
+        ],
+        action: [
+          '_HH__HH_',
+          '_H1111H_',
+          '__1SS1__',
+          '__1EE1__',
+          '__1SS1__',
+          '11111111',
+          '1LWLLWL1',  // arms wide open, laptop glowing
+          '1LWLLWL1',
+          '1LGGGGL1',
+          '_111111_',
+          '___11___',
+          '___11___',
+          '__11_1__',
+          '__1__1__',
+        ],
+        win: [
+          '_HH__HH_',
+          '1H1111H1',  // arms raised
+          '__1SS1__',
+          '__1OO1__',  // O = big eyes (excited)
+          '__1vv1__',  // v = smile
+          '_111111_',
+          '_1WLLW1_',
+          '_1WLLW1_',
+          '_1WGGG1_',
+          '_111111_',
+          '__11_1__',
+          '__1__1__',
+          '__1__1__',
+          '________',
+        ],
+      },
+      protazy: {
+        idle_a: [
+          '__2222__',
+          '_222222_',
+          '_2SSSS2_',
+          '_2SEES2_',  // S=skin, E=eye
+          '_2SSSS2_',
+          '_222222_',
+          '_2VTTV2_',  // V=white shirt, T=tie
+          '_2VTTV2_',
+          '_222222_',
+          '_222222_',
+          '___22___',
+          '___22___',
+          '__22_2__',
+          '__2__2__',
+        ],
+        idle_b: [
+          '__2222__',
+          '_222222_',
+          '_2SSSS2_',
+          '_2SEES2_',
+          '_2SSSS2_',
+          '_222222_',
+          '_2VTTV2_',
+          '_2VTTV2_',
+          '_222222_',
+          '_222222_',
+          '___22___',
+          '___22___',
+          '__2__22_',
+          '__2__2__',
+        ],
+        action: [
+          '__2222__',
+          '_222222_',
+          '_2SSSS2_',
+          '_2SEES2_',
+          '_2SSSS2_',
+          '22222222',  // arms wide - sorting mail!
+          '2BVTTV B2', // B = buttons
+          '_2VTTV2_',
+          '_222222_',
+          '_222222_',
+          '___22___',
+          '___22___',
+          '__22_2__',
+          '__2__2__',
+        ],
+        win: [
+          '__2222__',
+          '2_2222_2',  // hands up
+          '_2SSSS2_',
+          '_2SeEs2_',  // e = happy squint
+          '_2S^^S2_',  // ^ = smile
+          '_222222_',
+          '_2VTTV2_',
+          '_2VTTV2_',
+          '_222222_',
+          '_222222_',
+          '___22___',
+          '__22_2__',
+          '__2__2__',
+          '________',
+        ],
+      },
+      gerwazy: {
+        idle_a: [
+          '__3333__',
+          '_333333_',
+          '_3SSSS3_',
+          '_3EKKE3_',  // E=glasses frame, K=lens
+          '_3SSSS3_',
+          '_333333_',
+          '_3BTBT3_',  // B=badge, T=tablet
+          '_3BTBT3_',
+          '_333333_',
+          '_333333_',
+          '___33___',
+          '___33___',
+          '__33_3__',
+          '__3__3__',
+        ],
+        idle_b: [
+          '__3333__',
+          '_333333_',
+          '_3SSSS3_',
+          '_3EKKE3_',
+          '_3SSSS3_',
+          '_333333_',
+          '_3BTBT3_',
+          '_3BTBT3_',
+          '_333333_',
+          '_333333_',
+          '___33___',
+          '___33___',
+          '__3__33_',
+          '__3__3__',
+        ],
+        action: [
+          '__3333__',
+          '_333333_',
+          '_3SSSS3_',
+          '_3EKKE3_',
+          '_3SSSS3_',
+          '33333333',  // arms wide - scanning documents
+          '3BTTTBT3',
+          '3BTTTBT3',
+          '_333333_',
+          '_333333_',
+          '___33___',
+          '___33___',
+          '__33_3__',
+          '__3__3__',
+        ],
+        win: [
+          '__3333__',
+          '3_3333_3',  // arms raised
+          '_3SSSS3_',
+          '_3EKKE3_',
+          '_3S^^S3_',  // smile
+          '_333333_',
+          '_3BTBT3_',
+          '_3BTBT3_',
+          '_333333_',
+          '_333333_',
+          '___33___',
+          '__33_3__',
+          '__3__3__',
+          '________',
+        ],
+      },
+    };
+
+    // Extra color overrides per frame
+    const EXTRA_COLORS = {
+      papkin: { 'O': '#f59e0b', 'v': '#f87171', 'W': '#ffffff' },
+      protazy: { 'e': '#7c2d12', '^': '#dc2626', 'B': '#c2410c' },
+      gerwazy: { '^': '#dc2626' },
+    };
+
+    /**
+     * Draws a sprite frame onto a canvas context.
+     * @param {CanvasRenderingContext2D} ctx
+     * @param {string} charKey - 'papkin' | 'protazy' | 'gerwazy'
+     * @param {string} frameKey - e.g. 'idle_a', 'action', 'win'
+     * @param {number} x - top-left x in canvas pixels
+     * @param {number} y - top-left y in canvas pixels
+     * @param {number} scale - pixels per pixel (default PIXEL_SCALE)
+     */
+    function drawSprite(ctx, charKey, frameKey, x, y, scale = PIXEL_SCALE) {
+      const frame = CHAR_FRAMES[charKey][frameKey];
+      const palette = { ...PALETTES[charKey], ...(EXTRA_COLORS[charKey] || {}) };
+      frame.forEach((row, rowIdx) => {
+        for (let colIdx = 0; colIdx < row.length; colIdx++) {
+          const ch = row[colIdx];
+          const color = palette[ch];
+          if (!color) continue;
+          ctx.fillStyle = color;
+          ctx.fillRect(x + colIdx * scale, y + rowIdx * scale, scale, scale);
+        }
+      });
+    }
+
+    /**
+     * Creates a canvas element with a sprite drawn on it.
+     * @param {string} charKey
+     * @param {string} frameKey
+     * @param {number} scale
+     * @returns {HTMLCanvasElement}
+     */
+    function makeSprite(charKey, frameKey, scale = PIXEL_SCALE) {
+      const cols = 8;
+      const rows = CHAR_FRAMES[charKey][frameKey].length;
+      const canvas = document.createElement('canvas');
+      canvas.width = cols * scale;
+      canvas.height = rows * scale;
+      canvas.style.imageRendering = 'pixelated';
+      const ctx = canvas.getContext('2d');
+      drawSprite(ctx, charKey, frameKey, 0, 0, scale);
+      return canvas;
+    }
+
+    /**
+     * Animated sprite component.
+     * @param {string} charKey
+     * @param {string[]} frameKeys - cycles through these frames
+     * @param {number} fps
+     * @param {number} scale
+     * @returns {{ el: HTMLCanvasElement, stop: Function, setFrames: Function }}
+     */
+    function createAnimatedSprite(charKey, frameKeys, fps = 4, scale = PIXEL_SCALE) {
+      const cols = 8;
+      const rows = CHAR_FRAMES[charKey][frameKeys[0]].length;
+      const canvas = document.createElement('canvas');
+      canvas.width = cols * scale;
+      canvas.height = rows * scale;
+      canvas.style.imageRendering = 'pixelated';
+      canvas.style.position = 'absolute';
+      const ctx = canvas.getContext('2d');
+
+      let currentFrames = frameKeys;
+      let frameIdx = 0;
+      let lastTime = 0;
+      let rafId = null;
+      let running = true;
+
+      function tick(timestamp) {
+        if (!running) return;
+        if (timestamp - lastTime > 1000 / fps) {
+          lastTime = timestamp;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          drawSprite(ctx, charKey, currentFrames[frameIdx % currentFrames.length], 0, 0, scale);
+          frameIdx++;
+        }
+        rafId = requestAnimationFrame(tick);
+      }
+
+      rafId = requestAnimationFrame(tick);
+
+      return {
+        el: canvas,
+        stop() { running = false; cancelAnimationFrame(rafId); },
+        setFrames(newFrames) { currentFrames = newFrames; frameIdx = 0; },
+        resume() { running = true; rafId = requestAnimationFrame(tick); },
+      };
+    }
   </script>
 </body>
 </html>
