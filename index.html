@@ -360,6 +360,69 @@
       line-height: 1.8;
       color: #94a3b8;
     }
+
+    /* Meble — sala konferencyjna (scena 2) */
+    .scene-2 .table {
+      position: absolute;
+      bottom: 80px; left: 300px;
+      width: 900px; height: 32px;
+      background: linear-gradient(180deg, #8b6a3a 0%, #5c3d1a 100%);
+      border-radius: 4px;
+      border-top: 6px solid #a0825a;
+    }
+    .scene-2 .chair {
+      position: absolute;
+      bottom: 60px;
+      width: 48px; height: 24px;
+      background: #374151;
+      border-radius: 4px 4px 0 0;
+    }
+
+    /* Komputery — biuro open space (scena 3) */
+    .scene-3 .monitor {
+      position: absolute;
+      bottom: 120px;
+      width: 80px; height: 64px;
+      background: #1e293b;
+      border: 3px solid #334155;
+      border-radius: 4px;
+    }
+    .scene-3 .monitor::after {
+      content: '';
+      position: absolute;
+      top: 8px; left: 8px; right: 8px; bottom: 8px;
+      background: #0ea5e9;
+      opacity: 0.7;
+    }
+
+    /* Regały na dokumenty — dział compliance (scena 4) */
+    .scene-4 .shelf {
+      position: absolute;
+      background: #374151;
+      border: 2px solid #4b5563;
+    }
+
+    /* Okno panoramiczne — gabinet (scena 5) */
+    .scene-5 .window-view {
+      position: absolute;
+      top: 100px; right: 80px;
+      width: 300px; height: 200px;
+      background: linear-gradient(180deg, #1e3a5f 0%, #2d5f8f 50%, #4a7c59 50%, #2d4a22 100%);
+      border: 8px solid #5c3d1a;
+    }
+    .scene-5 .window-view::before {
+      content: '✈';
+      position: absolute;
+      top: 40px; left: 60px;
+      font-size: 24px;
+      animation: fly-plane 4s linear infinite;
+    }
+    @keyframes fly-plane {
+      0%   { transform: translateX(-20px); opacity: 0; }
+      20%  { opacity: 1; }
+      80%  { opacity: 1; }
+      100% { transform: translateX(200px); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -1079,12 +1142,70 @@
       }, 5500);
     }
 
-    function buildScene2(container) { buildProductScene(container, SCENES_DATA[1]); }
-    function buildScene3(container) { buildProductScene(container, SCENES_DATA[2]); }
-    function buildScene4(container) { buildProductScene(container, SCENES_DATA[3]); }
+    function buildScene2(container) {
+      buildProductScene(container, SCENES_DATA[1]);
+      // Stół konferencyjny
+      const table = document.createElement('div');
+      table.className = 'table';
+      container.appendChild(table);
+      // Krzesła
+      [380, 500, 620, 740, 860, 980].forEach(x => {
+        const chair = document.createElement('div');
+        chair.className = 'chair';
+        chair.style.left = x + 'px';
+        container.appendChild(chair);
+      });
+    }
+
+    function buildScene3(container) {
+      buildProductScene(container, SCENES_DATA[2]);
+      // Monitory
+      [200, 400, 600, 900, 1100, 1300, 1500].forEach(x => {
+        const mon = document.createElement('div');
+        mon.className = 'monitor';
+        mon.style.left = x + 'px';
+        container.appendChild(mon);
+      });
+      // Licznik maili (chaos)
+      const mailCounter = document.createElement('div');
+      mailCounter.style.cssText = `
+        position: absolute; top: 240px; left: 400px;
+        background: #dc2626; color: #fff; font-size: 32px;
+        padding: 12px 20px; border: 4px solid #fca5a5;
+        animation: shake 0.2s infinite alternate;
+      `;
+      mailCounter.textContent = '📧 247';
+      mailCounter.id = 'mail-counter-visual-3';
+      container.appendChild(mailCounter);
+    }
+
+    function buildScene4(container) {
+      buildProductScene(container, SCENES_DATA[3]);
+      // Regały
+      [100, 250, 400, 1300, 1450, 1600].forEach(x => {
+        const shelf = document.createElement('div');
+        shelf.className = 'shelf';
+        shelf.style.cssText = `left:${x}px; bottom:80px; width:120px; height:300px;`;
+        container.appendChild(shelf);
+        // Segregatory
+        ['#dc2626','#2563eb','#16a34a','#d97706'].forEach((c, i) => {
+          const binder = document.createElement('div');
+          binder.style.cssText = `
+            position:absolute; bottom:${i*60+10}px; left:8px;
+            width:24px; height:52px; background:${c};
+          `;
+          shelf.appendChild(binder);
+        });
+      });
+    }
 
     function buildScene5(container) {
       container.innerHTML = '';
+
+      // Okno z widokiem
+      const win = document.createElement('div');
+      win.className = 'window-view';
+      container.appendChild(win);
 
       const title = document.createElement('div');
       title.className = 'scene-title';
