@@ -873,8 +873,157 @@
       });
     }
 
+    // ============================================================
+    // SCENE HELPERS
+    // ============================================================
+
+    /**
+     * Rzuca latające emoji (efekt chaosu).
+     */
+    function spawnParticles(container, emojis, count = 12) {
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        p.style.left = (100 + Math.random() * 1400) + 'px';
+        p.style.top = (200 + Math.random() * 400) + 'px';
+        p.style.animationDelay = (Math.random() * 1.5) + 's';
+        p.style.fontSize = (16 + Math.random() * 16) + 'px';
+        container.appendChild(p);
+        setTimeout(() => p.remove(), 3500);
+      }
+    }
+
+    /**
+     * Efekt gwiazdek po wygranej.
+     */
+    function spawnStars(container, x, y, count = 8) {
+      const starEmojis = ['⭐', '✨', '💫', '🌟'];
+      for (let i = 0; i < count; i++) {
+        const s = document.createElement('div');
+        s.className = 'star-burst';
+        s.textContent = starEmojis[Math.floor(Math.random() * starEmojis.length)];
+        s.style.left = (x - 30 + Math.random() * 120) + 'px';
+        s.style.top = (y - 30 + Math.random() * 80) + 'px';
+        s.style.animationDelay = (Math.random() * 0.4) + 's';
+        container.appendChild(s);
+        setTimeout(() => s.remove(), 1200);
+      }
+    }
+
+    /**
+     * Buduje scenę produktową (sceny 2–4).
+     * @param {HTMLElement} container - div sceny
+     * @param {object} data - SCENES_DATA entry
+     */
+    function buildProductScene(container, data) {
+      container.innerHTML = '';
+
+      // Tytuł sceny
+      const title = document.createElement('div');
+      title.className = 'scene-title';
+      title.textContent = `${data.time} — ${data.title}`;
+      container.appendChild(title);
+
+      // Label chaosu
+      const chaosEl = document.createElement('div');
+      chaosEl.className = 'chaos-label';
+      chaosEl.id = `chaos-${data.id}`;
+      chaosEl.textContent = data.chaosLabel;
+      chaosEl.style.top = '200px';
+      chaosEl.style.left = '200px';
+      container.appendChild(chaosEl);
+
+      // Sprite bohatera (początkowo poza ekranem po lewej)
+      const sprite = createAnimatedSprite(data.productKey, ['idle_a', 'idle_b'], 3, 20);
+      sprite.el.style.left = '-200px';
+      sprite.el.style.bottom = '100px';
+      sprite.el.style.transition = 'left 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      sprite.el.id = `sprite-${data.id}`;
+      container.appendChild(sprite.el);
+
+      // Info panel
+      const panel = document.createElement('div');
+      panel.className = 'info-panel';
+      panel.id = `panel-${data.id}`;
+      panel.innerHTML = `
+        <div class="panel-product" style="color:${data.productColor}">${data.productName}</div>
+        <div class="panel-tagline">${data.tagline}</div>
+        <ul class="panel-bullets">
+          ${data.bullets.map(b => `<li>${b}</li>`).join('')}
+        </ul>
+      `;
+      container.appendChild(panel);
+
+      // Etykieta imienia pod sprite'em
+      const nameLabel = document.createElement('div');
+      nameLabel.id = `name-${data.id}`;
+      nameLabel.style.cssText = `
+        position: absolute; bottom: 55px; left: -200px;
+        font-size: 11px; color: ${data.productColor};
+        text-shadow: 0 0 12px ${data.productColor};
+        transition: left 0.8s cubic-bezier(0.34,1.56,0.64,1);
+        white-space: nowrap;
+      `;
+      nameLabel.textContent = data.productName;
+      container.appendChild(nameLabel);
+
+      // Przechowaj referencje do animacji dla tej sceny
+      container._sprite = sprite;
+    }
+
+    /**
+     * Animacja sekwencji dla sceny produktowej.
+     * Faza 1 (0s):   chaos widoczny, cząsteczki lecą
+     * Faza 2 (2.5s): bohater wchodzi, chaos znika
+     * Faza 3 (3.5s): bohater w akcji + panel wjeżdża
+     * Faza 4 (5s):   bohater win + gwiazdy
+     */
+    function playProductScene(sceneIdx, container, data) {
+      const chaosEl = document.getElementById(`chaos-${data.id}`);
+      const spriteEl = document.getElementById(`sprite-${data.id}`);
+      const nameLabel = document.getElementById(`name-${data.id}`);
+      const panel = document.getElementById(`panel-${data.id}`);
+      const spriteAnim = container._sprite;
+
+      // Faza 1: chaos
+      spawnParticles(container, data.chaosEmojis, 14);
+      if (typeof playChiptune === 'function') playChiptune('chaos');
+
+      // Faza 2: bohater wchodzi (2.5s)
+      setTimeout(() => {
+        if (chaosEl) { chaosEl.style.animation = 'none'; chaosEl.style.opacity = '0'; }
+        if (spriteEl) { spriteEl.style.left = '380px'; }
+        if (nameLabel) { nameLabel.style.left = '370px'; }
+        spriteAnim.setFrames(['idle_a', 'idle_b']);
+        if (typeof playChiptune === 'function') playChiptune('enter');
+      }, 2500);
+
+      // Faza 3: akcja + panel (3.5s)
+      setTimeout(() => {
+        spriteAnim.setFrames(['action']);
+        if (panel) panel.classList.add('visible');
+        spawnParticles(container, ['📊', '✅', '⚡', '🎯'], 8);
+        if (typeof playChiptune === 'function') playChiptune('action');
+      }, 3500);
+
+      // Faza 4: win (5.5s)
+      setTimeout(() => {
+        spriteAnim.setFrames(['win']);
+        spawnStars(container, 380, 300, 12);
+        if (typeof playChiptune === 'function') playChiptune('win');
+      }, 5500);
+    }
+
+    function buildScene2(container) { buildProductScene(container, SCENES_DATA[1]); }
+    function buildScene3(container) { buildProductScene(container, SCENES_DATA[2]); }
+    function buildScene4(container) { buildProductScene(container, SCENES_DATA[3]); }
+
     // TEMP: test
     buildScene1(document.getElementById('scene-1'));
+    buildScene2(document.getElementById('scene-2'));
+    buildScene3(document.getElementById('scene-3'));
+    buildScene4(document.getElementById('scene-4'));
   </script>
 </body>
 </html>
