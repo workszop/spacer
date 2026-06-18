@@ -672,7 +672,7 @@
           '_2SEES2_',
           '_2SSSS2_',
           '22222222',  // arms wide - sorting mail!
-          '2BVTTV B2', // B = buttons
+          '2BVTTV2B', // B = buttons
           '_2VTTV2_',
           '_222222_',
           '_222222_',
@@ -1113,6 +1113,13 @@
       const panel = document.getElementById(`panel-${data.id}`);
       const spriteAnim = container._sprite;
 
+      // Reset state before replay
+      if (chaosEl) { chaosEl.style.opacity = '1'; chaosEl.style.animation = ''; }
+      if (spriteEl) { spriteEl.style.left = '-200px'; }
+      if (nameLabel) { nameLabel.style.left = '-200px'; }
+      if (panel) { panel.classList.remove('visible'); }
+      spriteAnim.setFrames(['idle_a', 'idle_b']);
+
       // Faza 1: chaos
       spawnParticles(container, data.chaosEmojis, 14);
       if (typeof playChiptune === 'function') playChiptune('chaos');
@@ -1517,7 +1524,7 @@
 
       // Klawiatura
       document.addEventListener('keydown', e => {
-        if (e.key === 'ArrowRight' || e.key === ' ')  goToScene(currentScene + 1);
+        if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goToScene(currentScene + 1); }
         if (e.key === 'ArrowLeft')                     goToScene(currentScene - 1);
         if (e.key === 'Home')                          goToScene(0);
         if (e.key === 'End')                           goToScene(5);
