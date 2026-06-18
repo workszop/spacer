@@ -1290,23 +1290,147 @@
       });
     }
 
-    // TEMP: test
-    buildScene1(document.getElementById('scene-1'));
-    buildScene2(document.getElementById('scene-2'));
-    buildScene3(document.getElementById('scene-3'));
-    buildScene4(document.getElementById('scene-4'));
-    buildScene5(document.getElementById('scene-5'));
-    buildScene6(document.getElementById('scene-6'));
-
     // ============================================================
-    // EVENT LISTENERS
+    // STATE MACHINE + NAVIGATION
     // ============================================================
 
-    document.getElementById('btn-sound').addEventListener('click', () => {
-      soundEnabled = !soundEnabled;
-      document.getElementById('btn-sound').textContent = soundEnabled ? '🔊 DŹWIĘK' : '🔇 DŹWIĘK';
-      if (soundEnabled) playChiptune('enter'); // test sound
-    });
+    const TIMES = ['06:30', '08:00', '10:30', '13:00', '17:00', '22:00'];
+
+    let currentScene = 0;
+    let autoplayTimer = null;
+    const AUTOPLAY_DELAY = 12000; // 12 sekund
+
+    function goToScene(idx, playAnim = true) {
+      if (idx < 0 || idx > 5) return;
+
+      clearAutoplay();
+      currentScene = idx;
+
+      // Przesuń track
+      const track = document.getElementById('scenes-track');
+      track.style.transform = `translateX(${-idx * 1920}px)`;
+
+      // Zaktualizuj zegar
+      document.getElementById('clock-display').textContent = TIMES[idx];
+
+      // Zaktualizuj dots
+      document.querySelectorAll('.scene-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === idx);
+      });
+
+      // Zaktualizuj przyciski
+      document.getElementById('btn-prev').disabled = idx === 0;
+      document.getElementById('btn-next').disabled = idx === 5;
+      document.getElementById('btn-next').textContent = idx === 5 ? '— KONIEC —' : 'DALEJ →';
+
+      // Odpal chiptune przejścia
+      playChiptune('slide');
+
+      // Odpal animację sceny (po zakończeniu slajdu)
+      if (playAnim) {
+        setTimeout(() => {
+          playSceneAnimation(idx);
+        }, 700);
+      }
+
+      // Autoplay (nie na ostatniej scenie)
+      if (idx < 5) {
+        autoplayTimer = setTimeout(() => goToScene(idx + 1), AUTOPLAY_DELAY);
+      }
+    }
+
+    function clearAutoplay() {
+      if (autoplayTimer) { clearTimeout(autoplayTimer); autoplayTimer = null; }
+    }
+
+    /**
+     * Uruchamia animację charakterystyczną dla danej sceny.
+     */
+    function playSceneAnimation(idx) {
+      const sceneEl = document.getElementById(`scene-${idx + 1}`);
+
+      if (idx === 0) {
+        // Scena 1: nic do animacji, postacie już chodzą
+      } else if (idx >= 1 && idx <= 3) {
+        // Sceny 2-4: chaos → hero → panel
+        playProductScene(idx, sceneEl, SCENES_DATA[idx]);
+      } else if (idx === 4) {
+        // Scena 5: bohaterowie win
+        spawnStars(sceneEl, 640, 300, 15);
+        playChiptune('win');
+      } else if (idx === 5) {
+        // Scena 6: animowane liczniki
+        animateCounters(sceneEl);
+      }
+    }
+
+    // ============================================================
+    // INIT — buduje wszystkie sceny
+    // ============================================================
+
+    function init() {
+      buildScene1(document.getElementById('scene-1'));
+      buildScene2(document.getElementById('scene-2'));
+      buildScene3(document.getElementById('scene-3'));
+      buildScene4(document.getElementById('scene-4'));
+      buildScene5(document.getElementById('scene-5'));
+      buildScene6(document.getElementById('scene-6'));
+
+      // Zdarzenia nawigacji
+      document.getElementById('btn-next').addEventListener('click', () => {
+        goToScene(currentScene + 1);
+      });
+      document.getElementById('btn-prev').addEventListener('click', () => {
+        goToScene(currentScene - 1);
+      });
+      document.getElementById('btn-restart').addEventListener('click', () => {
+        goToScene(0);
+      });
+
+      // Dots
+      document.querySelectorAll('.scene-dot').forEach(dot => {
+        dot.addEventListener('click', () => {
+          goToScene(parseInt(dot.dataset.scene));
+        });
+      });
+
+      // Klawiatura
+      document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight' || e.key === ' ')  goToScene(currentScene + 1);
+        if (e.key === 'ArrowLeft')                     goToScene(currentScene - 1);
+        if (e.key === 'Home')                          goToScene(0);
+        if (e.key === 'End')                           goToScene(5);
+        if (e.key === 'f' || e.key === 'F')            toggleFullscreen();
+      });
+
+      // Fullscreen
+      document.getElementById('btn-fullscreen').addEventListener('click', toggleFullscreen);
+
+      // Sound button
+      document.getElementById('btn-sound').addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        document.getElementById('btn-sound').textContent = soundEnabled ? '🔊 DŹWIĘK' : '🔇 DŹWIĘK';
+        if (soundEnabled) playChiptune('enter'); // test sound
+      });
+
+      // Ustaw stan początkowy (bez autoplay na starcie)
+      document.getElementById('btn-prev').disabled = true;
+      document.getElementById('clock-display').textContent = TIMES[0];
+
+      // Autoplay startuje po 5s na scenie 1
+      autoplayTimer = setTimeout(() => goToScene(1), 5000);
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // Start
+    init();
   </script>
 </body>
 </html>
