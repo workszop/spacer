@@ -1019,11 +1019,220 @@
     function buildScene3(container) { buildProductScene(container, SCENES_DATA[2]); }
     function buildScene4(container) { buildProductScene(container, SCENES_DATA[3]); }
 
+    function buildScene5(container) {
+      container.innerHTML = '';
+
+      const title = document.createElement('div');
+      title.className = 'scene-title';
+      title.textContent = '17:00 — GABINET DYREKTORA';
+      container.appendChild(title);
+
+      const subtitle = document.createElement('div');
+      subtitle.style.cssText = `
+        position: absolute; top: 80px; left: 50%; transform: translateX(-50%);
+        font-size: 9px; color: #94a3b8; white-space: nowrap; letter-spacing: 2px;
+      `;
+      subtitle.textContent = 'ZARZĄDZANIE BEZ CHAOSU';
+      container.appendChild(subtitle);
+
+      // Biurko dyrektora (CSS)
+      const desk = document.createElement('div');
+      desk.style.cssText = `
+        position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
+        width: 500px; height: 40px; background: #5c3d1a;
+        border-top: 6px solid #8b6a3a; border-radius: 4px;
+      `;
+      container.appendChild(desk);
+
+      // Dyrektor (emoji + tekst, bo to postać poboczna)
+      const director = document.createElement('div');
+      director.style.cssText = `
+        position: absolute; bottom: 115px; left: 50%; transform: translateX(-50%);
+        font-size: 48px; text-align: center;
+      `;
+      director.textContent = '😌';
+      container.appendChild(director);
+
+      const dirLabel = document.createElement('div');
+      dirLabel.style.cssText = `
+        position: absolute; bottom: 78px; left: 50%; transform: translateX(-50%);
+        font-size: 8px; color: #f59e0b; white-space: nowrap;
+      `;
+      dirLabel.textContent = 'DYREKTOR';
+      container.appendChild(dirLabel);
+
+      // Kawa na biurku
+      const coffee = document.createElement('div');
+      coffee.style.cssText = `
+        position: absolute; bottom: 118px; left: calc(50% + 100px);
+        font-size: 28px;
+      `;
+      coffee.textContent = '☕';
+      container.appendChild(coffee);
+
+      // Trzy postacie z raportami wchodzą z lewej
+      const chars = [
+        { key: 'papkin', name: 'PAPKIN', color: '#7c3aed', x: 280 },
+        { key: 'protazy', name: 'PROTAZY', color: '#ea580c', x: 520 },
+        { key: 'gerwazy', name: 'GERWAZY', color: '#1d4ed8', x: 760 },
+      ];
+
+      chars.forEach(({ key, name, color, x }) => {
+        const sprite = createAnimatedSprite(key, ['idle_a', 'idle_b'], 3, 18);
+        sprite.el.style.left = x + 'px';
+        sprite.el.style.bottom = '120px';
+        container.appendChild(sprite.el);
+
+        const nameEl = document.createElement('div');
+        nameEl.style.cssText = `
+          position: absolute; bottom: 78px; left: ${x - 10}px;
+          font-size: 8px; color: ${color}; width: 160px; text-align: center;
+          text-shadow: 0 0 8px ${color};
+        `;
+        nameEl.textContent = name;
+        container.appendChild(nameEl);
+
+        const report = document.createElement('div');
+        report.style.cssText = `
+          position: absolute; bottom: 260px; left: ${x + 10}px;
+          font-size: 18px;
+        `;
+        report.textContent = '📊';
+        container.appendChild(report);
+      });
+
+      // Tekst centralny
+      const msg = document.createElement('div');
+      msg.style.cssText = `
+        position: absolute; top: 50%; left: 50%;
+        transform: translate(160px, -200px);
+        font-size: 9px; color: #f0e6d3; line-height: 2.5;
+        text-align: left;
+      `;
+      msg.innerHTML = `
+        <div style="color:#22c55e; margin-bottom:8px">✅ RAPORT GOTOWY</div>
+        <div style="color:#7c3aed">📋 Protokoły: 100%</div>
+        <div style="color:#ea580c">📧 Maile: obsłużone</div>
+        <div style="color:#1d4ed8">🔍 Compliance: ✓</div>
+      `;
+      container.appendChild(msg);
+    }
+
+    function buildScene6(container) {
+      container.innerHTML = '';
+
+      // Tytuł
+      const title = document.createElement('div');
+      title.className = 'scene-title';
+      title.textContent = '22:00 — PODSUMOWANIE DNIA';
+      container.appendChild(title);
+
+      // Kontenery liczników (3 kolumny)
+      const stats = [
+        { label: 'mniej czasu\nna protokoły', value: '-70%', color: '#7c3aed', char: 'papkin', name: 'PAPKIN' },
+        { label: 'szybsza obsługa\nkorespondencji', value: '-80%', color: '#ea580c', char: 'protazy', name: 'PROTAZY' },
+        { label: 'kontrola\nnad compliance', value: '100%', color: '#1d4ed8', char: 'gerwazy', name: 'GERWAZY' },
+      ];
+
+      const countersRow = document.createElement('div');
+      countersRow.style.cssText = `
+        position: absolute; top: 150px; left: 50%; transform: translateX(-50%);
+        display: flex; gap: 120px; align-items: flex-start;
+      `;
+
+      stats.forEach(({ label, value, color, char, name }) => {
+        const col = document.createElement('div');
+        col.style.cssText = `display: flex; flex-direction: column; align-items: center; gap: 24px; width: 280px;`;
+
+        // Sprite (mały)
+        const sprite = createAnimatedSprite(char, ['win'], 3, 14);
+        sprite.el.style.position = 'relative';
+        col.appendChild(sprite.el);
+
+        // Wartość (animowana)
+        const valEl = document.createElement('div');
+        valEl.style.cssText = `
+          font-size: 42px; color: ${color};
+          text-shadow: 0 0 24px ${color}; font-family: var(--font);
+          opacity: 0; transition: opacity 0.5s;
+        `;
+        valEl.textContent = '0%';
+        valEl.dataset.target = value;
+        valEl.classList.add('counter-animated');
+        col.appendChild(valEl);
+
+        // Label
+        const lblEl = document.createElement('div');
+        lblEl.style.cssText = `
+          font-size: 9px; color: #94a3b8; text-align: center;
+          line-height: 2; white-space: pre-line;
+        `;
+        lblEl.textContent = label;
+        col.appendChild(lblEl);
+
+        // Imię produktu
+        const nameEl = document.createElement('div');
+        nameEl.style.cssText = `font-size: 10px; color: ${color}; letter-spacing: 2px;`;
+        nameEl.textContent = name;
+        col.appendChild(nameEl);
+
+        countersRow.appendChild(col);
+      });
+      container.appendChild(countersRow);
+
+      // Tagline na dole
+      const tagline = document.createElement('div');
+      tagline.style.cssText = `
+        position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%);
+        font-size: 10px; color: #f59e0b; letter-spacing: 3px; white-space: nowrap;
+        text-shadow: 0 0 12px #f59e0b;
+      `;
+      tagline.textContent = '✈ LOTNISKO PRZYSZŁOŚCI DZIAŁA LEPIEJ Z AI ✈';
+      container.appendChild(tagline);
+
+      // Dane kontaktowe
+      const contact = document.createElement('div');
+      contact.style.cssText = `
+        position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
+        font-size: 8px; color: #475569; letter-spacing: 2px; text-align: center;
+        white-space: nowrap;
+      `;
+      contact.textContent = 'kontakt@firma.pl  |  www.firma.pl  |  +48 000 000 000';
+      container.appendChild(contact);
+    }
+
+    /**
+     * Animuje liczniki w scenie 6.
+     */
+    function animateCounters(container) {
+      const counters = container.querySelectorAll('.counter-animated');
+      counters.forEach((el, i) => {
+        setTimeout(() => {
+          el.style.opacity = '1';
+          const target = el.dataset.target; // np. '-70%' lub '100%'
+          const prefix = target.startsWith('-') ? '-' : '';
+          const numPart = parseInt(target.replace(/[^0-9]/g, ''));
+          let current = 0;
+          const interval = setInterval(() => {
+            current = Math.min(current + 2, numPart);
+            el.textContent = prefix + current + '%';
+            if (current >= numPart) clearInterval(interval);
+          }, 30);
+
+          // Fajerwerki
+          spawnStars(container, 400 + i * 400, 400, 10);
+          if (typeof playChiptune === 'function') playChiptune('win');
+        }, i * 800);
+      });
+    }
+
     // TEMP: test
     buildScene1(document.getElementById('scene-1'));
     buildScene2(document.getElementById('scene-2'));
     buildScene3(document.getElementById('scene-3'));
     buildScene4(document.getElementById('scene-4'));
+    buildScene5(document.getElementById('scene-5'));
+    buildScene6(document.getElementById('scene-6'));
   </script>
 </body>
 </html>
