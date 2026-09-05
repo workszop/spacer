@@ -1,0 +1,30 @@
+name: Verify demo
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - name: Deterministic checks
+        run: node "$GITHUB_WORKSPACE/tests/run.cjs"
+      - name: Install browser test tooling outside the app
+        run: |
+          npm install --prefix "$RUNNER_TEMP/oferta-tests" --no-save playwright@1.61.0 three@0.180.0
+          "$RUNNER_TEMP/oferta-tests/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Browser regression checks
+        env:
+          PLAYWRIGHT_MODULE: ${{ runner.temp }}/oferta-tests/node_modules/playwright
+        run: node "$GITHUB_WORKSPACE/tests/browser.cjs"
+      - name: WebGL and context-loss checks
+        env:
+          PLAYWRIGHT_MODULE: ${{ runner.temp }}/oferta-tests/node_modules/playwright
+          THREE_MODULE_PATH: ${{ runner.temp }}/oferta-tests/node_modules/three/build
+        run: node "$GITHUB_WORKSPACE/tests/browser.cjs" --webgl
