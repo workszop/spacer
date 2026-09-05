@@ -12,7 +12,7 @@ window.LocationLayouts=(()=>{
       doors:[{x:690,y:488,dir:'y',w:120}],
       blocks:[{kind:'seats',x:880,y:210,w:145,h:34},{kind:'plant',x:710,y:65,w:30,h:30},{kind:'gatepost',x:525,y:76,w:20,h:13},{kind:'gatepost',x:575,y:76,w:20,h:13}],
       props:[{kind:'board',x:880,y:66,w:190,t:'ODLOTY'},{kind:'barrier',x:255,y:305,w:145}],
-      zones:[{x:255,y:100,t:'ODPRAWA'},{x:540,y:90,t:'BRAMKA A1'}],
+      zones:[{x:255,y:100,t:'ODPRAWA'},{x:430,y:60,t:'BRAMKA A1'}],
       stations:{kmicic:{x:250,y:195,w:195,h:64},papkin:{x:300,y:490,w:230,h:110},gerwazy:{x:885,y:480,w:180,h:86},zagloba:{x:550,y:200,w:85,h:65}},
       cameraBounds:{x0:-.25,x1:11.05,z0:-4.15,z1:6.85,height:1.9}
     },
@@ -36,7 +36,7 @@ window.LocationLayouts=(()=>{
       doors:[{x:413,y:308,dir:'y',w:120},{x:759,y:331,dir:'x',w:120}],
       blocks:[{kind:'noticeboard',x:160,y:80,w:190,h:28},{kind:'plant',x:990,y:590,w:30,h:30}],
       props:[{kind:'flag',x:1000,y:75},{kind:'bench',x:95,y:480,w:80,h:32}],
-      zones:[{x:220,y:220,t:'BIURO OBSŁUGI MIESZKAŃCA'},{x:740,y:90,t:'SALA RADY'}],
+      zones:[{x:220,y:220,t:'BIURO OBSŁUGI MIESZKAŃCA'},{x:600,y:70,t:'SALA RADY'}],
       stations:{kmicic:{x:220,y:325,w:185,h:64},papkin:{x:720,y:200,w:245,h:110},gerwazy:{x:845,y:500,w:180,h:86},zagloba:{x:535,y:475,w:85,h:65}},
       cameraBounds:{x0:-.25,x1:11.05,z0:-.45,z1:6.85,height:2.1}
     }

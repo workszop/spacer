@@ -608,7 +608,7 @@ const SCENES={
   /* ---------------- LOTNISKO ---------------- */
   airport:{name:'Lotnisko – Centrum Operacyjne',
     objects:[
-      {id:'a-kmicic',product:'kmicic',type:'mail',x:240,y:150,w:160,h:58,label:'Stanowisko obsługi pasażera',
+      {id:'a-kmicic',product:'kmicic',type:'mail',label:'Stanowisko obsługi pasażera',
         context:'Wpływają skargi i zapytania pasażerów po porannych opóźnieniach.',
         data:{from:'ops@przewoznik.com',subject:'Zgłoszenie usterki rękawa pasażerskiego G7',
           body:'Rękaw przy bramce G7 nie dokuje. Prosimy o pilną interwencję, kolejny rejs za 40 min.',
@@ -616,7 +616,7 @@ const SCENES={
           source:'Instrukcja Operacyjna Lotniska INS-OPS-03 · SLA handling §5',
           draft:'Zgłoszenie przyjęte jako priorytetowe. Ekipa techniczna skierowana do bramki G7, ETA 8 min. W razie braku naprawy – bramka zastępcza G9. Sprawa OPS/2026/3340.',
           ticket:'OPS/2026/3340',team:'Dział Operacji Lotniskowych'}},
-      {id:'a-papkin',product:'papkin',type:'table',x:400,y:440,w:240,h:110,label:'Sala odpraw operacyjnych',
+      {id:'a-papkin',product:'papkin',type:'table',label:'Sala odpraw operacyjnych',
         context:'Trwa odprawa zmiany – narada o porannych utrudnieniach.',
         data:{meeting:'Odprawa operacyjna zmiany',
           transcript:[['Dyżurny Operacyjny','Otwieram odprawę. Prognoza: mgła do 09:00, ograniczona widzialność.'],
@@ -625,7 +625,7 @@ const SCENES={
             ['Dyżurny Operacyjny','Ustalam procedurę LVP od 06:30. Informujemy handling.']],
           decisions:['Wprowadzenie procedury LVP od 06:30.','Przesunięcie ćwiczeń SRG na popołudnie.'],
           tasks:[['Koordynator','Renegocjować slot LO281','do 06:00'],['Handling','Potwierdzić gotowość pod LVP','30 min']]}},
-      {id:'a-gerwazy',product:'gerwazy',type:'shield',x:905,y:475,w:190,h:92,label:'Dział ochrony i zgodności',
+      {id:'a-gerwazy',product:'gerwazy',type:'shield',label:'Dział ochrony i zgodności',
         context:'Audyt zgodności programu ochrony portu lotniczego.',
         data:{reg:'NIS2 / wymogi ULC (infrastruktura krytyczna)',doc:'Program Ochrony Lotniska',score:81,
           ok:[['Wyznaczony pełnomocnik ds. ochrony','KPOLC'],['Plan reagowania na incydenty','NIS2 art. 21 ust. 2 lit. b']],
@@ -633,7 +633,7 @@ const SCENES={
             ['Brak udokumentowanych szkoleń personelu ochrony','Krajowy Program Ochrony Lotnictwa Cywilnego'],
             ['Niespójna procedura kontroli dostępu do strefy airside','ULC – wymóg operacyjny']],
           recs:['Zlecić aktualizację oceny ryzyka i wyznaczyć właściciela','Uzupełnić rejestr szkoleń personelu ochrony','Ujednolicić procedurę kontroli dostępu airside']}},
-      {id:'a-zagloba',product:'zagloba',type:'knowledge',x:520,y:280,w:100,h:64,label:'Stanowisko wiedzy operacyjnej',
+      {id:'a-zagloba',product:'zagloba',type:'knowledge',label:'Stanowisko wiedzy operacyjnej',
         context:'Dyżurny szuka procedury obsługi nieplanowanej zmiany bramki.',
         data:{scenario:'Procedury operacyjne lotniska',notice:'Treści źródeł są przykładowe i służą wyłącznie demonstracji wyszukiwania wiedzy. To nie jest wiążąca instrukcja operacyjna ani porada prawna.',
           modes:[
@@ -648,7 +648,7 @@ const SCENES={
   /* ---------------- BANK ---------------- */
   bank:{name:'Oddział Banku',
     objects:[
-      {id:'b-kmicic',product:'kmicic',type:'mail',x:170,y:470,w:160,h:64,label:'Stanowisko kasowo-doradcze',
+      {id:'b-kmicic',product:'kmicic',type:'mail',label:'Stanowisko kasowo-doradcze',
         context:'Spływa korespondencja i reklamacje klientów oddziału.',
         data:{from:'klient@firma.pl',subject:'Reklamacja – opłata za prowadzenie rachunku',
           body:'Naliczono opłatę mimo spełnienia warunku zwolnienia (wpływy >5 tys. zł). Proszę o korektę.',
@@ -656,7 +656,7 @@ const SCENES={
           source:'Tabela Opłat i Prowizji v.2026/03 · Procedura reklamacyjna RK-04',
           draft:'Po weryfikacji potwierdzamy spełnienie warunku zwolnienia. Opłata zostanie zwrócona w ciągu 3 dni roboczych. Sprawa nr REK/2026/1207. Zgodnie z procedurą wymaga zatwierdzenia przez pracownika.',
           ticket:'REK/2026/1207',team:'Zespół Obsługi Reklamacji'}},
-      {id:'b-papkin',product:'papkin',type:'table',x:400,y:175,w:240,h:110,label:'Sala narad',
+      {id:'b-papkin',product:'papkin',type:'table',label:'Sala narad',
         context:'Trwa posiedzenie komitetu kredytowego.',
         data:{meeting:'Posiedzenie Komitetu Kredytowego',
           transcript:[['Dyrektor','Rozpatrujemy wniosek kredytowy klienta korporacyjnego na 4 mln zł.'],
@@ -665,7 +665,7 @@ const SCENES={
             ['Dyrektor','Decyzja warunkowa – po uzupełnieniu dokumentacji AML.']],
           decisions:['Wniosek 4 mln zł – decyzja warunkowa.','Wymagane uzupełnienie dokumentacji AML.'],
           tasks:[['Analityk','Przeliczyć DSCR po nowych zabezpieczeniach','do 09.05'],['Compliance','Zweryfikować źródło finansowania','do 11.05']]}},
-      {id:'b-gerwazy',product:'gerwazy',type:'shield',x:880,y:320,w:190,h:92,label:'Dział compliance',
+      {id:'b-gerwazy',product:'gerwazy',type:'shield',label:'Dział compliance',
         context:'Przegląd zgodności z regulacjami sektora bankowego.',
         data:{reg:'DORA / Rekomendacje KNF / AML',doc:'Plan Ciągłości Działania (BCP)',score:84,
           ok:[['Analiza wpływu na działalność (BIA)','DORA art. 11 ust. 1'],['Procedura eskalacji incydentów ICT','DORA art. 17 ust. 3']],
@@ -673,7 +673,7 @@ const SCENES={
             ['Niekompletny rejestr dostawców ICT','DORA art. 28'],
             ['Brak progów raportowania incydentów','DORA art. 17']],
           recs:['Zaplanować coroczny test DRP z udziałem dostawców','Uzupełnić rejestr umów ICT third-party','Zdefiniować progi i ścieżkę raportowania do KNF']}},
-      {id:'b-zagloba',product:'zagloba',type:'knowledge',x:520,y:280,w:100,h:64,label:'Stanowisko wiedzy oddziału',
+      {id:'b-zagloba',product:'zagloba',type:'knowledge',label:'Stanowisko wiedzy oddziału',
         context:'Doradca szuka wewnętrznej polityki obsługi reklamacji klienta.',
         data:{scenario:'Wewnętrzna polityka obsługi klienta banku',notice:'Treści źródeł są przykładowe i służą wyłącznie demonstracji wyszukiwania wiedzy. To nie jest wiążąca interpretacja regulacji ani porada prawna.',
           modes:[
@@ -688,7 +688,7 @@ const SCENES={
   /* ---------------- URZĄD ---------------- */
   office:{name:'Urząd Gminy',
     objects:[
-      {id:'o-kmicic',product:'kmicic',type:'mail',x:210,y:320,w:170,h:62,label:'Biuro podawcze / kancelaria',
+      {id:'o-kmicic',product:'kmicic',type:'mail',label:'Biuro podawcze / kancelaria',
         context:'Mieszkańcy składają wnioski i pisma w biurze podawczym.',
         data:{from:'mieszkaniec@poczta.pl',subject:'Awaria oświetlenia – ul. Lipowa',
           body:'Dzień dobry, od trzech dni nie działa latarnia przy nr 14. Proszę o interwencję.',
@@ -696,7 +696,7 @@ const SCENES={
           source:'Procedura PR-12 „Zgłoszenia awarii” · Regulamin organizacyjny §8',
           draft:'Dziękujemy za zgłoszenie. Awaria została przyjęta i przekazana do Wydziału Gospodarki Komunalnej. Przewidywany czas usunięcia: do 5 dni roboczych. Numer sprawy: GK/2026/0481.',
           ticket:'GK/2026/0481',team:'Wydział Gospodarki Komunalnej'}},
-      {id:'o-papkin',product:'papkin',type:'table',x:730,y:165,w:240,h:110,label:'Sala sesji rady',
+      {id:'o-papkin',product:'papkin',type:'table',label:'Sala sesji rady',
         context:'Trwa sesja Rady Gminy – protokół z obrad.',
         data:{meeting:'Sesja Rady Gminy',
           transcript:[['Przewodniczący','Otwieram sesję. Pierwszy punkt – uchwała budżetowa na 2026 r.'],
@@ -705,7 +705,7 @@ const SCENES={
             ['Przewodniczący','Przyjmuję wniosek pod głosowanie na kolejnej sesji.']],
           decisions:['Przyjęto projekt uchwały budżetowej na 2026 r.','Wniosek o remont ul. Polnej skierowany do komisji.'],
           tasks:[['Skarbnik','Przygotować zał. finansowy do uchwały','do 12.05'],['Sekretarz','Opublikować protokół w BIP','48 h']]}},
-      {id:'o-gerwazy',product:'gerwazy',type:'shield',x:740,y:520,w:200,h:92,label:'Pokój ds. zgodności',
+      {id:'o-gerwazy',product:'gerwazy',type:'shield',label:'Pokój ds. zgodności',
         context:'Kontrola zgodności dokumentacji i procedur wewnętrznych.',
         data:{reg:'RODO / KRI / NIS2 (podmiot publiczny)',doc:'Polityka Bezpieczeństwa Informacji',score:78,
           ok:[['Wyznaczony Inspektor Ochrony Danych','RODO art. 37'],['Kopie zapasowe i test odtworzenia','KRI §20 ust. 2 pkt 12']],
@@ -713,7 +713,7 @@ const SCENES={
             ['Nieaktualna analiza ryzyka (>12 mies.)','NIS2 art. 21'],
             ['Brak rejestru uprawnień dostępu','KRI §20 ust. 2 pkt 4']],
           recs:['Wdrożyć procedurę obsługi incydentów wg KRI','Zaktualizować analizę ryzyka i wyznaczyć właściciela','Uruchomić okresowy przegląd uprawnień']}},
-      {id:'o-zagloba',product:'zagloba',type:'knowledge',x:520,y:280,w:100,h:64,label:'Stanowisko wiedzy urzędu',
+      {id:'o-zagloba',product:'zagloba',type:'knowledge',label:'Stanowisko wiedzy urzędu',
         context:'Urzędnik szuka procedury obiegu wniosku o informację publiczną.',
         data:{scenario:'Proces obsługi informacji publicznej',notice:'Treści źródeł są przykładowe i służą wyłącznie demonstracji wyszukiwania wiedzy. To nie jest wiążąca interpretacja przepisów ani porada prawna.',
           modes:[
@@ -728,6 +728,15 @@ const SCENES={
 
 // Shared layouts are the single source of geometry for both renderers.
 if(typeof window!=='undefined'&&window.LocationLayouts&&typeof window.LocationLayouts.apply==='function')window.LocationLayouts.apply(SCENES);
+// If the layout file did not load, fall back to an empty floor with the stations in a row (demos stay usable).
+let LAYOUT_FALLBACK=false;
+for(const sc of Object.values(SCENES)){
+  if(!Array.isArray(sc.walls)||!sc.spawn||sc.objects.some(o=>![o.x,o.y,o.w,o.h].every(Number.isFinite))){
+    LAYOUT_FALLBACK=true;
+    Object.assign(sc,{identity:sc.identity||'fallback',landmarks:sc.landmarks||[],spawn:{x:540,y:600},floors:[],walls:[],doors:[],blocks:[],props:[],zones:[]});
+    sc.objects.forEach((o,i)=>Object.assign(o,{x:200+i*230,y:300,w:160,h:64}));
+  }
+}
 
 /* ============================================================
    STATE
@@ -996,6 +1005,7 @@ function drawBlock(b){
 // footprint of a block / prop for its shadow
 function footprint(b){
   if(b.kind==='plant')return [20,20];
+  if(b.kind==='bench'||b.kind==='seats')return [b.w||100,b.h||34];
   if(b.kind==='scanner')return [44,14];
   if(b.kind==='barrier')return [b.w||120,10];
   if(b.kind==='cart')return [26,22];
@@ -1041,6 +1051,8 @@ function drawProp(p){
   else if(p.kind==='lamp'){vbox(p.x,p.y,14,14,2,C.lampPost);vbox(p.x,p.y,4,4,54,C.lampPost,2);vbox(p.x,p.y,8,8,3,C.lampPost,56);
     vbox(p.x,p.y,20,20,5,C.lamp,59);vbox(p.x,p.y,14,14,5,C.lamp,64);vbox(p.x,p.y,6,6,2,C.lampPost,69);}
   else if(p.kind==='bin'){vbox(p.x,p.y,14,14,22,C.bin);vbox(p.x,p.y,16,16,2,C.dark,22);vbox(p.x,p.y,8,8,1,C.printerDark,24);}
+  else if(p.kind==='bench'||p.kind==='seats'||p.kind==='plant'||p.kind==='cabinet'||p.kind==='deskPC'||p.kind==='checkin')drawBlock(p);   // furniture kinds may also appear as decoration
+  else vbox(p.x,p.y,p.w||16,p.h||16,10,C.metal);                                                                 // unknown kind: visible placeholder instead of nothing
 }
 // flat rug: drawn in the floor pass (before standing things)
 function drawRug(p){
@@ -1078,7 +1090,7 @@ function drawObjectBody(o){
   ctx.fillStyle='rgba(255,255,255,.55)';poly([P(sp[0]-SIGN_W/2+4,sp[1]+1.6,SIGN_H+4),P(sp[0]+SIGN_W/2-4,sp[1]+1.6,SIGN_H+4),P(sp[0]+SIGN_W/2-4,sp[1]+1.6,SIGN_H+6),P(sp[0]-SIGN_W/2+4,sp[1]+1.6,SIGN_H+6)]);
 }
 const SIGN_W=60,SIGN_D=18,SIGN_H=70;
-function signPos(o){return [o.type==='shield'?o.x-23:o.type==='table'?o.x:o.x+o.w/4,o.y-o.h/2-(o.type==='table'?54:8)];}
+function signPos(o){return o.type==='table'?[o.x+o.w/2+14,o.y]:[o.type==='shield'?o.x-23:o.x+o.w/4,o.y-o.h/2-8];}
 // flat product icon inside the dashed outline: envelope (Kmicic), list (Papkin), shield (Gerwazy)
 function floorDecal(o,cx,cy,col){
   ctx.save();ctx.strokeStyle=col;ctx.fillStyle=col;ctx.globalAlpha=.32;ctx.lineWidth=2;ctx.lineJoin='round';ctx.lineCap='round';

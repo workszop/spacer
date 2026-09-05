@@ -1,0 +1,11 @@
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const root=path.join(__dirname,'..');
+const layouts=fs.readFileSync(path.join(root,'location-layouts.js'),'utf8'),html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+const used=new Set([...layouts.matchAll(/kind:'([a-z]+)'/g)].map(m=>m[1]));
+const drawBlock=html.slice(html.indexOf('function drawBlock('),html.indexOf('// footprint of a block'));
+const drawProp=html.slice(html.indexOf('function drawProp('),html.indexOf('// flat rug'));
+const handled=new Set([...(drawBlock+drawProp).matchAll(/kind==='([a-z]+)'/g)].map(m=>m[1]));
+const missing=[...used].filter(kind=>!handled.has(kind));
+assert.deepEqual(missing,[],'every layout kind needs a canvas-fallback renderer branch: '+missing.join(', '));
+assert.match(drawProp,/else vbox\(p\.x,p\.y/,'unknown prop kinds must render a visible placeholder');
+console.log(`PASS: canvas fallback renders all ${used.size} layout kinds`);

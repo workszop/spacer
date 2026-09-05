@@ -1,7 +1,7 @@
 const {spawnSync}=require('node:child_process');
 const path=require('node:path');
 
-const tests=['navigation','navigation-cache','interaction','location-layouts','product-links','zagloba'];
+const tests=['navigation','navigation-cache','interaction','location-layouts','product-links','zagloba','fallback-kinds'];
 for(const test of tests){
   const result=spawnSync(process.execPath,[path.join(__dirname,test+'.cjs')],{stdio:'inherit',timeout:30000});
   if(result.error){console.error(result.error.message);process.exit(1);}
