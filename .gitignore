@@ -12,3 +12,5 @@ scratch/
 sprites.png
 assets-src/
 prompt-demo-explore-the-floor.md
+# local full documentation (public README stays minimal)
+.readme
