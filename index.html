@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Explore the Floor — interaktywne demo (Papkin · Protazy · Gerwazy)</title>
+<title>Explore the Floor – interaktywne demo (Papkin · Protazy · Gerwazy)</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -192,6 +192,8 @@ ul.clean li .mk{color:var(--ink);flex-shrink:0;margin-top:2px;font-weight:700}
   .cards{grid-template-columns:1fr}
   .card .thumb{height:80px}
 }
+.modal:focus,.picker:focus,.help:focus{outline:none}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px}
 </style>
@@ -209,8 +211,8 @@ ul.clean li .mk{color:var(--ink);flex-shrink:0;margin-top:2px;font-weight:700}
       </div>
     </div>
     <div class="hud-right">
-      <div class="loc"><span class="dot"></span><span id="locName">—</span></div>
-      <div class="count">Poznano <span id="countTxt">0/3</span><div class="pips" id="pips"></div></div>
+      <div class="loc"><span class="dot"></span><span id="locName">–</span></div>
+      <div class="count" aria-live="polite" aria-atomic="true">Poznano <span id="countTxt">0/3</span><div class="pips" id="pips"></div></div>
       <button class="hbtn" id="btnSwitch">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v6h-6"/></svg>
         Zmień lokalizację</button>
@@ -221,9 +223,9 @@ ul.clean li .mk{color:var(--ink);flex-shrink:0;margin-top:2px;font-weight:700}
   </header>
 
   <div class="stage" id="stage">
-    <canvas id="cv"></canvas>
-    <div class="hint" id="hint"><span>Idź klawiszami <kbd>WASD</kbd> / strzałkami lub kliknij. Podejdź do podświetlonych obiektów.</span></div>
-    <button class="interact" id="interact"><span class="tag">Uruchom</span><span id="interactName"></span><kbd>E</kbd></button>
+    <canvas id="cv" role="img" aria-label="Plan piętra. Sterowanie: WASD lub strzałki, E uruchamia obiekt w pobliżu."></canvas>
+    <div class="hint" id="hint" role="status"><span>Idź klawiszami <kbd>WASD</kbd> / strzałkami lub kliknij. Podejdź do podświetlonych obiektów.</span></div>
+    <button class="interact" id="interact" aria-live="polite"><span class="tag">Uruchom</span><span id="interactName"></span><kbd>E</kbd></button>
   </div>
 
   <div class="foot">
@@ -236,11 +238,11 @@ ul.clean li .mk{color:var(--ink);flex-shrink:0;margin-top:2px;font-weight:700}
 
 <!-- Product modal -->
 <div class="overlay" id="overlay">
-  <div class="modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mName" tabindex="-1">
     <div class="m-head">
       <div class="m-avatar" id="mAvatar"></div>
       <div class="m-title"><h3 id="mName"></h3><p id="mRole"></p></div>
-      <button class="m-close" id="mClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <button class="m-close" id="mClose" aria-label="Zamknij panel"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
     </div>
     <div class="m-body" id="mBody"></div>
     <div class="m-foot" id="mFoot"></div>
@@ -249,42 +251,42 @@ ul.clean li .mk{color:var(--ink);flex-shrink:0;margin-top:2px;font-weight:700}
 
 <!-- Scene picker -->
 <div class="overlay" id="pickerOv">
-  <div class="picker">
-    <h2>Wybierz lokalizację</h2>
-    <p class="lead">Zwiedzaj plan budynku, podejdź do obiektów i uruchom mini-demo trzech produktów AI. Bez timera, bez punktów — czysta eksploracja.</p>
+  <div class="picker" role="dialog" aria-modal="true" aria-labelledby="pickerTitle" tabindex="-1">
+    <h2 id="pickerTitle">Wybierz lokalizację</h2>
+    <p class="lead">Zwiedzaj plan budynku, podejdź do obiektów i uruchom mini-demo trzech produktów AI. Bez timera, bez punktów – czysta eksploracja.</p>
     <div class="cards" id="cards"></div>
   </div>
 </div>
 
 <!-- Help / legend -->
 <div class="overlay" id="helpOv">
-  <div class="help">
-    <h2>Jak to działa
-      <button id="helpClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+  <div class="help" role="dialog" aria-modal="true" aria-labelledby="helpTitle" tabindex="-1">
+    <h2 id="helpTitle">Jak to działa
+      <button id="helpClose" aria-label="Zamknij pomoc"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
     </h2>
     <div class="help-sec">
       <div class="t">Sterowanie</div>
-      <div class="help-row"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> lub <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> — chodzenie</div>
-      <div class="help-row"><kbd>klik</kbd> — idź we wskazane miejsce</div>
-      <div class="help-row"><kbd>E</kbd> / klik w obiekt — uruchom mini-demo</div>
-      <div class="help-row"><kbd>Esc</kbd> — zamknij panel</div>
+      <div class="help-row"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> lub <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> – chodzenie</div>
+      <div class="help-row"><kbd>klik</kbd> – idź we wskazane miejsce</div>
+      <div class="help-row"><kbd>E</kbd> / klik w obiekt – uruchom mini-demo</div>
+      <div class="help-row"><kbd>Esc</kbd> – zamknij panel</div>
     </div>
     <div class="help-sec">
       <div class="t">Produkty</div>
-      <div class="help-row"><span class="sw" style="background:var(--papkin)"></span><b style="color:var(--ink)">Papkin</b>&nbsp;— protokolant AI (stół narad)</div>
-      <div class="help-row"><span class="sw" style="background:var(--protazy)"></span><b style="color:var(--ink)">Protazy</b>&nbsp;— zarządca korespondencji (lada / komputer)</div>
-      <div class="help-row"><span class="sw" style="background:var(--gerwazy)"></span><b style="color:var(--ink)">Gerwazy</b>&nbsp;— strażnik zgodności (biuro z segregatorami)</div>
+      <div class="help-row"><span class="sw" style="background:var(--papkin)"></span><b style="color:var(--ink)">Papkin</b>&nbsp;– protokolant AI (stół narad)</div>
+      <div class="help-row"><span class="sw" style="background:var(--protazy)"></span><b style="color:var(--ink)">Protazy</b>&nbsp;– zarządca korespondencji (lada / komputer)</div>
+      <div class="help-row"><span class="sw" style="background:var(--gerwazy)"></span><b style="color:var(--ink)">Gerwazy</b>&nbsp;– strażnik zgodności (biuro z segregatorami)</div>
     </div>
     <div class="help-sec">
       <div class="t">Wskazówka</div>
-      <div class="help-row" style="color:var(--ink-soft)">Obiekty z pulsującym obrysem są interaktywne. Ten sam produkt zobaczysz w trzech różnych realiach — to pokazuje, że działa wszędzie.</div>
+      <div class="help-row" style="color:var(--ink-soft)">Obiekty z pulsującym obrysem są interaktywne. Ten sam produkt zobaczysz w trzech różnych realiach – to pokazuje, że działa wszędzie.</div>
     </div>
   </div>
 </div>
 
 <script>
 /* ============================================================
-   PRODUCTS — jeden config, łatwa edycja treści (spec §8/§9)
+   PRODUCTS – jeden config, łatwa edycja treści (spec §8/§9)
    ============================================================ */
 const PRODUCTS={
   papkin:{name:'Papkin',tagline:'Inteligentny protokolant AI',color:'#7C3AED',demo:'transcript',
@@ -292,14 +294,14 @@ const PRODUCTS={
     features:['Rozpoznaje mówców i język polski','Tworzy protokół: ustalenia + lista zadań z przypisaniem','Eksport do BIP / e-mail jednym kliknięciem']},
   protazy:{name:'Protazy',tagline:'Inteligentny zarządca korespondencji AI',color:'#EA7317',demo:'mailflow',
     icon:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/>',
-    features:['Klasyfikuje treść i nadaje priorytet','Projekt odpowiedzi z cytowaniem źródeł (RAG)','Human-in-the-loop — zawsze do zatwierdzenia']},
+    features:['Klasyfikuje treść i nadaje priorytet','Projekt odpowiedzi z cytowaniem źródeł (RAG)','Human-in-the-loop – zawsze do zatwierdzenia']},
   gerwazy:{name:'Gerwazy',tagline:'Inteligentny strażnik zgodności AI',color:'#2E9E5B',demo:'compliance',
     icon:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
     features:['Mapuje dokumenty na konkretne wymagania','Wskazuje luki z odniesieniem do przepisu','Proponuje działania naprawcze + wskaźnik zgodności']}
 };
 
 /* ============================================================
-   SCENES — trzy osobne floory; każdy ma 3 obiekty-triggery,
+   SCENES – trzy osobne floory; każdy ma 3 obiekty-triggery,
    ściany działowe, dekoracje i dane kontekstowe (spec §4/§5/§9)
    Świat logiczny: 1080 × 660
    ============================================================ */
@@ -307,7 +309,7 @@ const W=1080,H=660;
 
 const SCENES={
   /* ---------------- LOTNISKO ---------------- */
-  airport:{name:'Lotnisko — Centrum Operacyjne',spawn:{x:170,y:560},
+  airport:{name:'Lotnisko – Centrum Operacyjne',spawn:{x:170,y:560},
     zones:[{x:250,y:48,t:'HALA ODPRAW'},{x:400,y:300,t:'CENTRUM OPERACYJNE'},{x:905,y:285,t:'OCHRONA / ZGODNOŚĆ'}],
     walls:[{x:20,y:245,w:340,h:10},{x:460,y:245,w:600,h:10},{x:755,y:255,w:10,h:170},{x:755,y:500,w:10,h:140}],
     blocks:[{kind:'checkin',x:560,y:140,w:300,h:54},{kind:'bench',x:560,y:560,w:200,h:46},
@@ -320,10 +322,10 @@ const SCENES={
           body:'Rękaw przy bramce G7 nie dokuje. Prosimy o pilną interwencję, kolejny rejs za 40 min.',
           category:'Operacje lotniskowe',priority:'Wysoki',
           source:'Instrukcja Operacyjna Lotniska INS-OPS-03 · SLA handling §5',
-          draft:'Zgłoszenie przyjęte jako priorytetowe. Ekipa techniczna skierowana do bramki G7, ETA 8 min. W razie braku naprawy — bramka zastępcza G9. Sprawa OPS/2026/3340.',
+          draft:'Zgłoszenie przyjęte jako priorytetowe. Ekipa techniczna skierowana do bramki G7, ETA 8 min. W razie braku naprawy – bramka zastępcza G9. Sprawa OPS/2026/3340.',
           ticket:'OPS/2026/3340',team:'Dział Operacji Lotniskowych'}},
       {id:'a-papkin',product:'papkin',type:'table',x:400,y:440,w:240,h:110,label:'Sala odpraw operacyjnych',
-        context:'Trwa odprawa zmiany — narada o porannych utrudnieniach.',
+        context:'Trwa odprawa zmiany – narada o porannych utrudnieniach.',
         data:{meeting:'Odprawa operacyjna zmiany',
           transcript:[['Dyżurny Operacyjny','Otwieram odprawę. Prognoza: mgła do 09:00, ograniczona widzialność.'],
             ['Koordynator Ruchu','Trzy odloty do przesunięcia, slot dla LO281 zagrożony.'],
@@ -336,7 +338,7 @@ const SCENES={
         data:{reg:'NIS2 / wymogi ULC (infrastruktura krytyczna)',doc:'Program Ochrony Lotniska',score:81,
           gaps:[['Nieaktualna ocena ryzyka bezpieczeństwa','NIS2 art. 21 ust. 2'],
             ['Brak udokumentowanych szkoleń personelu ochrony','Krajowy Program Ochrony Lotnictwa Cywilnego'],
-            ['Niespójna procedura kontroli dostępu do strefy airside','ULC — wymóg operacyjny']],
+            ['Niespójna procedura kontroli dostępu do strefy airside','ULC – wymóg operacyjny']],
           recs:['Zlecić aktualizację oceny ryzyka i wyznaczyć właściciela','Uzupełnić rejestr szkoleń personelu ochrony','Ujednolicić procedurę kontroli dostępu airside']}}
     ]},
 
@@ -350,7 +352,7 @@ const SCENES={
     objects:[
       {id:'b-protazy',product:'protazy',type:'mail',x:170,y:470,w:160,h:64,label:'Stanowisko kasowo-doradcze',
         context:'Spływa korespondencja i reklamacje klientów oddziału.',
-        data:{from:'klient@firma.pl',subject:'Reklamacja — opłata za prowadzenie rachunku',
+        data:{from:'klient@firma.pl',subject:'Reklamacja – opłata za prowadzenie rachunku',
           body:'Naliczono opłatę mimo spełnienia warunku zwolnienia (wpływy >5 tys. zł). Proszę o korektę.',
           category:'Reklamacje',priority:'Wysoki',
           source:'Tabela Opłat i Prowizji v.2026/03 · Procedura reklamacyjna RK-04',
@@ -362,8 +364,8 @@ const SCENES={
           transcript:[['Dyrektor','Rozpatrujemy wniosek kredytowy klienta korporacyjnego na 4 mln zł.'],
             ['Analityk Ryzyka','Scoring w normie, ale wskaźnik DSCR poniżej progu polityki.'],
             ['Compliance','Wymagana dodatkowa weryfikacja źródła finansowania (AML).'],
-            ['Dyrektor','Decyzja warunkowa — po uzupełnieniu dokumentacji AML.']],
-          decisions:['Wniosek 4 mln zł — decyzja warunkowa.','Wymagane uzupełnienie dokumentacji AML.'],
+            ['Dyrektor','Decyzja warunkowa – po uzupełnieniu dokumentacji AML.']],
+          decisions:['Wniosek 4 mln zł – decyzja warunkowa.','Wymagane uzupełnienie dokumentacji AML.'],
           tasks:[['Analityk','Przeliczyć DSCR po nowych zabezpieczeniach','do 09.05'],['Compliance','Zweryfikować źródło finansowania','do 11.05']]}},
       {id:'b-gerwazy',product:'gerwazy',type:'shield',x:880,y:320,w:190,h:92,label:'Dział compliance',
         context:'Przegląd zgodności z regulacjami sektora bankowego.',
@@ -384,16 +386,16 @@ const SCENES={
     objects:[
       {id:'o-protazy',product:'protazy',type:'mail',x:210,y:320,w:170,h:62,label:'Biuro podawcze / kancelaria',
         context:'Mieszkańcy składają wnioski i pisma w biurze podawczym.',
-        data:{from:'mieszkaniec@poczta.pl',subject:'Awaria oświetlenia — ul. Lipowa',
+        data:{from:'mieszkaniec@poczta.pl',subject:'Awaria oświetlenia – ul. Lipowa',
           body:'Dzień dobry, od trzech dni nie działa latarnia przy nr 14. Proszę o interwencję.',
           category:'Infrastruktura komunalna',priority:'Średni',
           source:'Procedura PR-12 „Zgłoszenia awarii” · Regulamin organizacyjny §8',
           draft:'Dziękujemy za zgłoszenie. Awaria została przyjęta i przekazana do Wydziału Gospodarki Komunalnej. Przewidywany czas usunięcia: do 5 dni roboczych. Numer sprawy: GK/2026/0481.',
           ticket:'GK/2026/0481',team:'Wydział Gospodarki Komunalnej'}},
       {id:'o-papkin',product:'papkin',type:'table',x:730,y:165,w:240,h:110,label:'Sala sesji rady',
-        context:'Trwa sesja Rady Gminy — protokół z obrad.',
+        context:'Trwa sesja Rady Gminy – protokół z obrad.',
         data:{meeting:'Sesja Rady Gminy',
-          transcript:[['Przewodniczący','Otwieram sesję. Pierwszy punkt — uchwała budżetowa na 2026 r.'],
+          transcript:[['Przewodniczący','Otwieram sesję. Pierwszy punkt – uchwała budżetowa na 2026 r.'],
             ['Skarbnik','Deficyt zamyka się w limicie. Rekomenduję przyjęcie bez poprawek.'],
             ['Radny Kowalski','Wnoszę o przesunięcie środków na remont ul. Polnej.'],
             ['Przewodniczący','Przyjmuję wniosek pod głosowanie na kolejnej sesji.']],
@@ -754,22 +756,22 @@ function buildPicker(){
     const s=SCENES[id];
     const c=document.createElement('button');c.className='card';
     c.innerHTML=`<div class="thumb">${sceneThumb(id)}</div>
-      <h3>${s.name.split('—')[0].trim()}</h3>
+      <h3>${s.name.split('–')[0].trim()}</h3>
       <p>${SCENE_DESC[id]}</p>
       <span class="go">Wejdź <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>`;
     c.onclick=()=>{pickerOv.classList.remove('show');loadScene(id);};
     cards.appendChild(c);
   }
 }
-document.getElementById('btnSwitch').onclick=()=>{buildPicker();pickerOv.classList.add('show');};
+document.getElementById('btnSwitch').onclick=()=>{buildPicker();openDialog(pickerOv);};
 
 /* ============================================================
    HELP
    ============================================================ */
 const helpOv=document.getElementById('helpOv');
-document.getElementById('btnHelp').onclick=()=>helpOv.classList.add('show');
-document.getElementById('helpClose').onclick=()=>helpOv.classList.remove('show');
-helpOv.addEventListener('click',e=>{if(e.target===helpOv)helpOv.classList.remove('show');});
+document.getElementById('btnHelp').onclick=()=>openDialog(helpOv);
+document.getElementById('helpClose').onclick=closeAll;
+helpOv.addEventListener('click',e=>{if(e.target===helpOv)closeAll();});
 
 /* ============================================================
    PRODUCT MODAL
@@ -777,11 +779,29 @@ helpOv.addEventListener('click',e=>{if(e.target===helpOv)helpOv.classList.remove
 const overlay=document.getElementById('overlay'),mBody=document.getElementById('mBody'),mFoot=document.getElementById('mFoot');
 document.getElementById('mClose').addEventListener('click',closeAll);
 overlay.addEventListener('click',e=>{if(e.target===overlay)closeAll();});
+let lastFocus=null;
+function openDialog(ov){
+  if(!uiOpen())lastFocus=document.activeElement;
+  ov.classList.add('show');
+  ov.firstElementChild.focus();
+}
 function closeAll(){
   clearDemoTimers();
+  const was=uiOpen();
   overlay.classList.remove('show');helpOv.classList.remove('show');
   if(SC)pickerOv.classList.remove('show');               // the initial picker must stay until a floor is chosen
+  if(was&&!uiOpen()){const back=(lastFocus&&lastFocus!==document.body)?lastFocus:(interact.classList.contains('show')?interact:null);if(back)back.focus();}
 }
+// keep Tab inside the open dialog
+addEventListener('keydown',e=>{
+  if(e.key!=='Tab'||!uiOpen())return;
+  const ov=[overlay,pickerOv,helpOv].filter(o=>o.classList.contains('show')).pop();
+  const f=[...ov.querySelectorAll('button,[href],input,[tabindex]:not([tabindex="-1"])')].filter(el=>!el.disabled&&el.offsetParent!==null);
+  if(!f.length)return;
+  const first=f[0],last=f[f.length-1];
+  if(e.shiftKey&&(document.activeElement===first||document.activeElement===ov.firstElementChild)){last.focus();e.preventDefault();}
+  else if(!e.shiftKey&&document.activeElement===last){first.focus();e.preventDefault();}
+});
 
 function openModal(obj){
   clearDemoTimers();
@@ -795,7 +815,7 @@ function openModal(obj){
   if(p.demo==='mailflow')renderProtazy(d,p,obj);
   if(p.demo==='compliance')renderGerwazy(d,p,obj);
   visited[obj.id]=true;renderCount();
-  overlay.classList.add('show');
+  openDialog(overlay);
 }
 
 const localPill='<span class="local-pill"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Przetwarzanie lokalne</span>';
@@ -808,9 +828,9 @@ function featuresBlock(p){
 }
 
 /* ---- PAPKIN ---- */
-function renderPapkin(d,p){
-  mBody.innerHTML=contextLine(d.meeting+' — '+arguments[2].context)+
-    `<div class="panel" id="pk-trans"><div class="kicker">Mini-demo · transkrypcja na żywo</div>
+function renderPapkin(d,p,obj){
+  mBody.innerHTML=contextLine(obj.context)+
+    `<div class="panel" id="pk-trans"><div class="kicker">Mini-demo · transkrypcja na żywo · ${d.meeting}</div>
       <div id="pk-lines" style="color:#94A3B8;font-size:13px;padding:6px 0">Gotowy do nagrywania…</div></div>
     <div id="pk-out"></div>`+featuresBlock(p);
   const go=mkBtn('btn-primary','▶ Uruchom transkrypcję',null);go.style.background=p.color;
@@ -832,7 +852,7 @@ function showPapkinOut(d,p){
     out.innerHTML=`<div class="panel"><div class="kicker">Protokół → ustalenia i decyzje</div>
         <ul class="clean">${d.decisions.map(x=>`<li><span class="mk">✓</span><span>${x}</span></li>`).join('')}</ul></div>
       <div class="panel"><div class="kicker">Lista zadań z przypisaniem</div>
-        <ul class="clean task">${d.tasks.map(t=>`<li><span class="chk"></span><span><b style="color:var(--ink)">${t[0]}</b> — ${t[1]} <span class="badge badge-neutral" style="margin-left:4px">${t[2]}</span></span></li>`).join('')}</ul></div>`;
+        <ul class="clean task">${d.tasks.map(t=>`<li><span class="chk"></span><span><b style="color:var(--ink)">${t[0]}</b> – ${t[1]} <span class="badge badge-neutral" style="margin-left:4px">${t[2]}</span></span></li>`).join('')}</ul></div>`;
     mFoot.innerHTML='';mFoot.appendChild(spanLocal());
     const dist=mkBtn('btn-primary','Wyślij do uczestników',null);dist.style.background=p.color;
     dist.onclick=()=>{dist.textContent='Wysłano ✓';dist.disabled=true;};
@@ -841,8 +861,8 @@ function showPapkinOut(d,p){
 }
 
 /* ---- PROTAZY ---- */
-function renderProtazy(d,p){
-  mBody.innerHTML=contextLine(arguments[2].context)+
+function renderProtazy(d,p,obj){
+  mBody.innerHTML=contextLine(obj.context)+
     `<div class="panel email-card">
       <div class="kicker">Mini-demo · nowa wiadomość</div>
       <div class="email-row"><span class="k">Od</span><span class="v">${d.from}</span></div>
@@ -872,8 +892,8 @@ function renderProtazy(d,p){
 }
 
 /* ---- GERWAZY ---- */
-function renderGerwazy(d,p){
-  mBody.innerHTML=contextLine(arguments[2].context)+
+function renderGerwazy(d,p,obj){
+  mBody.innerHTML=contextLine(obj.context)+
     `<div class="panel" style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
       <div><div class="kicker">Dokument</div><div style="font-weight:600;color:var(--ink)">${d.doc}</div></div>
       <div style="text-align:right"><div class="kicker">Wymagania</div><div style="font-weight:600;color:var(--ink);font-size:13px">${d.reg}</div></div></div>
@@ -926,7 +946,7 @@ function spanLocal(){const s=document.createElement('span');s.innerHTML=localPil
    ============================================================ */
 resize();
 buildPicker();
-pickerOv.classList.add('show');
+openDialog(pickerOv);
 requestAnimationFrame(step);
 </script>
 </body>
