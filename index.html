@@ -392,6 +392,39 @@ header{padding:8px 10px;}
 }
 .overlay#overlay .m-body{flex:1;min-height:0;}
 .demo-notice{font-size:11px;line-height:1.5;color:var(--ink-soft);margin-bottom:14px;}
+/* product description (from quanticalab.ai) opens the panel; the demo below gets strong product-coloured outlines */
+.modal{--p:var(--brand);--p-soft:color-mix(in srgb,var(--p) 55%,#fff);--p-tint:color-mix(in srgb,var(--p) 9%,#fff);--p-ring:color-mix(in srgb,var(--p) 16%,transparent);}
+.about{border:1.5px solid var(--line-2);background:var(--surface-raised);}
+.about .kicker{color:var(--p);}
+.about p{font-size:13px;line-height:1.55;color:var(--ink);margin:0 0 8px;}
+.about-src{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-mute);text-decoration:none;}
+.about-src:hover{color:var(--p);}
+.kicker .step{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:18px;padding:0 6px;margin-right:8px;border-radius:5px;background:var(--p);color:#fff;font-weight:700;letter-spacing:.04em;}
+.panel.demo,.panel.result{border:2px solid var(--p-soft);box-shadow:0 0 0 3px var(--p-ring);background:var(--surface-raised);}
+.panel.demo .kicker,.panel.result .kicker{color:var(--p);font-weight:700;}
+.panel.result{background:var(--p-tint);}
+.panel.result .reply-box,.panel.demo .reply-box{border:1.5px solid var(--p-soft);background:var(--surface-raised);color:var(--ink);}
+.tspk{color:var(--p);}
+.ttxt{color:var(--ink);}
+.badge{border:1px solid currentColor;}
+ul.clean.key li{color:var(--ink);font-weight:500;border-bottom:1px dashed var(--p-soft);}
+ul.clean.key li .mk{color:var(--p);}
+.task li .chk{border-color:var(--p-soft);}
+.task li b{color:var(--p)!important;}
+.route b{color:var(--p)!important;}
+.scan-bar{border-color:var(--p-soft);}
+.check.ok .dot{background:var(--ok);border-color:var(--ok);}
+.check.gap{font-weight:600;}
+.check.gap .dot{background:var(--brand);border-color:var(--brand);}
+.check.ok,.check.gap{border-bottom-color:var(--p-soft);}
+.gap-item{border-bottom-color:var(--p-soft);}
+.gap-item>span>div:first-child{color:var(--ink);font-weight:600;}
+.gap-item .ref{color:var(--p);}
+.scorewrap{padding-bottom:12px;border-bottom:1.5px dashed var(--p-soft);}
+.email-row .v{color:var(--ink);font-weight:600;}
+.email-body{color:var(--ink);}
+.local-pill{border:1px solid var(--brand-deep);}
+.panel.result .panel.result{box-shadow:none;border-width:1.5px;background:var(--surface-raised);}
 .diagnostics{margin-top:14px;font-size:12px;color:var(--ink-soft);}
 .diagnostics summary{cursor:pointer;color:var(--ink);font-weight:600;}
 .diagnostics pre{white-space:pre-wrap;font:inherit;margin-top:8px;}
@@ -575,16 +608,16 @@ header{flex-wrap:nowrap;min-height:54px;}
    PRODUCTS – jeden config, łatwa edycja treści (spec §8/§9)
    ============================================================ */
 const PRODUCTS={
-  papkin:{name:'Papkin',tagline:'Inteligentny protokolant AI',color:'#7030A0',demo:'transcript',
+  papkin:{name:'Papkin',tagline:'Inteligentny protokolant AI',color:'#7030A0',about:'Papkin przetwarza dźwięk ze spotkań – na żywo lub z nagrań – i przekształca ich przebieg w uporządkowaną dokumentację: transkrypcję, podsumowanie, protokół i listę zadań. Rozpoznaje mówców, jest zoptymalizowany pod kątem języka polskiego i działa lokalnie w infrastrukturze organizacji, a gotowe materiały mogą automatycznie trafiać do uczestników i kierownictwa.',demo:'transcript',
     icon:'<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4"/>',
     features:['Rozpoznaje mówców i język polski','Tworzy protokół: ustalenia + lista zadań z przypisaniem','Eksport do BIP / e-mail jednym kliknięciem']},
-  kmicic:{name:'Kmicic',tagline:'Inteligentny zarządca korespondencji AI',color:'#d20757',demo:'mailflow',
+  kmicic:{name:'Kmicic',tagline:'Inteligentny zarządca korespondencji AI',color:'#d20757',about:'Kmicic to system agentowy zintegrowany ze skrzynką pocztową organizacji: analizuje napływającą korespondencję wraz z załącznikami, określa temat, kategorię i priorytet sprawy, proponuje odpowiedź na podstawie wiedzy organizacji (RAG) i kieruje sprawę do właściwych osób lub tworzy zgłoszenie. Działa zgodnie z zasadą Human-in-the-Loop – organizacja decyduje, które etapy są automatyczne, a które wymagają zatwierdzenia przez pracownika.',demo:'mailflow',
     icon:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/>',
     features:['Klasyfikuje treść i nadaje priorytet','Projekt odpowiedzi z cytowaniem źródeł (RAG)','Human-in-the-loop – zawsze do zatwierdzenia']},
-  gerwazy:{name:'Gerwazy',tagline:'Inteligentny strażnik zgodności AI',color:'#4F46E5',demo:'compliance',
+  gerwazy:{name:'Gerwazy',tagline:'Inteligentny strażnik zgodności AI',color:'#4F46E5',about:'Gerwazy analizuje procedury, polityki, regulaminy i inne dokumenty pod kątem zgodności z regulacjami (np. NIS2, AI Act), normami branżowymi i własnymi listami kontrolnymi. Współpracujący agenci AI interpretują wymagania, wskazują luki i niespójności, oceniają poziom zgodności i przygotowują raport z rekomendacjami działań naprawczych; każda ocena jest uzasadniona fragmentami analizowanych dokumentów.',demo:'compliance',
     icon:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
     features:['Mapuje dokumenty na konkretne wymagania','Wskazuje luki z odniesieniem do przepisu','Proponuje działania naprawcze + wskaźnik zgodności']},
-  zagloba:{name:'Zagłoba',tagline:'Inteligentny asystent wiedzy',color:'#197d78',demo:'knowledge',sourceUrl:'https://quanticalab.ai/zagloba_website.html',
+  zagloba:{name:'Zagłoba',tagline:'Inteligentny asystent wiedzy',color:'#197d78',about:'Zagłoba to system RAG zapewniający szybki i bezpieczny dostęp do wiedzy organizacji: przeszukuje zdefiniowane źródła, odpowiada ze wskazaniem dokumentów źródłowych i zachowuje istniejące uprawnienia dostępu. Integruje się z repozytoriami organizacji (m.in. SharePoint, OneDrive, Amazon S3), może działać w pełni lokalnie, a gdy brakuje informacji w bazie, nie tworzy odpowiedzi spekulatywnych.',demo:'knowledge',sourceUrl:'https://quanticalab.ai/zagloba_website.html',
     icon:'<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 5.5v15A2.5 2.5 0 0 1 6.5 18H20"/><path d="M8 7h8M8 10h8M8 13h5"/>',
     features:['Odpowiada na pytania na podstawie źródeł organizacji','Respektuje istniejące uprawnienia dostępu','Integruje istniejące repozytoria; może działać lokalnie']}
 };
@@ -1545,6 +1578,7 @@ function openModal(obj){
   activeObject=obj;
   const p=PRODUCTS[obj.product],d=obj.data;
   document.getElementById('mAvatar').style.background=p.color;
+  overlay.querySelector('.modal').style.setProperty('--p',p.color);
   document.getElementById('mAvatar').innerHTML='<svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+p.icon+'</svg>';
   document.getElementById('mName').textContent=p.name;
   document.getElementById('mRole').textContent=p.tagline;
@@ -1558,7 +1592,14 @@ function openModal(obj){
   if(p.demo==='compliance')renderGerwazy(d,p,obj);
   if(p.demo==='knowledge')renderZagloba(d,p,obj);
   demoState[obj.id]='idle';
-  const notice=document.createElement('p');notice.className='demo-notice';notice.textContent='Symulacja na danych przykładowych. Wysyłanie i eksport są symulowane.'+(obj.product==='gerwazy'?' Wynik ilustracyjny, nie ocena prawna.':'');mBody.prepend(notice);
+  const notice=document.createElement('p');notice.className='demo-notice';notice.textContent='Symulacja na danych przykładowych. Wysyłanie i eksport są symulowane.'+(obj.product==='gerwazy'?' Wynik ilustracyjny, nie ocena prawna.':'');
+  // product description first (source: product page on quanticalab.ai), then the disclaimer, then the scene context and the demo
+  const about=document.createElement('div');about.className='panel about';
+  const aboutKicker=document.createElement('div');aboutKicker.className='kicker';aboutKicker.textContent='O produkcie';
+  const aboutText=document.createElement('p');aboutText.textContent=p.about||p.tagline;
+  const aboutSrc=document.createElement('a');aboutSrc.href=PRODUCT_PAGES[obj.product];aboutSrc.target='_blank';aboutSrc.rel='noopener noreferrer';aboutSrc.className='about-src';aboutSrc.textContent='Źródło: quanticalab.ai';
+  about.append(aboutKicker,aboutText,aboutSrc);
+  mBody.prepend(about,notice);
   visited[obj.id]=true;renderCount();
   return true;
 }
@@ -1575,7 +1616,7 @@ function featuresBlock(p){
 /* ---- PAPKIN ---- */
 function renderPapkin(d,p,obj){
   mBody.innerHTML=contextLine(obj.context)+
-    `<div class="panel" id="pk-trans"><div class="kicker">Mini-demo · transkrypcja na żywo · ${d.meeting}</div>
+    `<div class="panel demo" id="pk-trans"><div class="kicker"><span class="step">01</span>Transkrypcja na żywo · ${d.meeting}</div>
       <div id="pk-lines" style="color:var(--ink-mute);font-size:13px;padding:6px 0">Gotowy do nagrywania…</div></div>
     <div id="pk-out"></div>`+featuresBlock(p);
   const go=mkBtn('btn-primary','Uruchom transkrypcję',ICON_PLAY);go.style.background=p.color;
@@ -1594,9 +1635,9 @@ function showPapkinOut(d,p,obj){
   const out=document.getElementById('pk-out');
   out.innerHTML=`<div class="spinner"><svg class="spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.2-8.5"/></svg>Generowanie protokołu…</div>`;
   later(()=>{
-    out.innerHTML=`<div class="panel"><div class="kicker">Protokół: ustalenia i decyzje</div>
-        <ul class="clean">${d.decisions.map(x=>`<li><span class="mk"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>${x}</span></li>`).join('')}</ul></div>
-      <div class="panel"><div class="kicker">Lista zadań z przypisaniem</div>
+    out.innerHTML=`<div class="panel result"><div class="kicker"><span class="step">02</span>Protokół: ustalenia i decyzje</div>
+        <ul class="clean key">${d.decisions.map(x=>`<li><span class="mk"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>${x}</span></li>`).join('')}</ul></div>
+      <div class="panel result"><div class="kicker"><span class="step">03</span>Lista zadań z przypisaniem</div>
         <ul class="clean task">${d.tasks.map(t=>`<li><span class="chk"></span><span><b style="color:var(--ink)">${t[0]}</b> – ${t[1]} <span class="badge badge-neutral" style="margin-left:4px">${t[2]}</span></span></li>`).join('')}</ul></div>`;
     markCompleted(obj);
     mFoot.innerHTML='';mFoot.appendChild(spanLocal());
@@ -1610,8 +1651,8 @@ function showPapkinOut(d,p,obj){
 function renderKmicic(d,p,obj){
   let draftValue=d.draft;
   mBody.innerHTML=contextLine(obj.context)+
-    `<div class="panel email-card">
-      <div class="kicker">Mini-demo · nowa wiadomość</div>
+    `<div class="panel demo email-card">
+      <div class="kicker"><span class="step">01</span>Nowa wiadomość</div>
       <div class="email-row"><span class="k">Od</span><span class="v">${d.from}</span></div>
       <div class="email-row"><span class="k">Temat</span><span class="v">${d.subject}</span></div>
       <div class="email-body">${d.body}</div></div>
@@ -1622,13 +1663,13 @@ function renderKmicic(d,p,obj){
     out.innerHTML=`<div class="spinner"><svg class="spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-6.2-8.5"/></svg>Analiza treści i wyszukiwanie w wiedzy organizacji…</div>`;
     later(()=>{
       // stage 1: classification stamps land one after another
-      out.innerHTML=`<div class="panel">
+      out.innerHTML=`<div class="panel result"><div class="kicker"><span class="step">02</span>Analiza: kategoria, priorytet, źródła</div>
           <div class="kv"><span class="badge badge-info stamp">${d.category}</span><span class="badge ${d.priority==='Wysoki'?'badge-warn':'badge-neutral'} stamp" style="animation-delay:.45s">Priorytet: ${d.priority}</span></div>
           <div class="stamp" style="animation-delay:.9s;font-size:12px;color:var(--ink-mute)">Źródło wiedzy (RAG): <span style="color:var(--ink);font-weight:500">${d.source}</span></div></div>
         <div id="pz-more"></div>`;
       // stage 2: draft reply, stage 3: ticket routed
-      later(()=>{document.getElementById('pz-more').innerHTML=`<div class="panel reveal"><div class="kicker">Proponowana odpowiedź</div><div class="reply-box" id="kmicicReply">${d.draft}</div></div><div id="pz-route"></div>`;if(typeof edit!=='undefined')edit.disabled=false;},1400);
-      later(()=>{document.getElementById('pz-route').innerHTML=`<div class="panel reveal"><div class="route"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      later(()=>{document.getElementById('pz-more').innerHTML=`<div class="panel result reveal"><div class="kicker"><span class="step">03</span>Proponowana odpowiedź</div><div class="reply-box" id="kmicicReply">${d.draft}</div></div><div id="pz-route"></div>`;if(typeof edit!=='undefined')edit.disabled=false;},1400);
+      later(()=>{document.getElementById('pz-route').innerHTML=`<div class="panel result reveal"><div class="kicker"><span class="step">04</span>Kierowanie sprawy</div><div class="route"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="${p.color}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           Utworzono zgłoszenie <b class="num" style="color:var(--ink)">${d.ticket}</b> · ${d.team}</div></div>`;markCompleted(obj);send.disabled=false;},2300);
       mFoot.innerHTML='';
       const note=spanMuted('Human-in-the-loop: do zatwierdzenia');
@@ -1650,8 +1691,8 @@ function renderKmicic(d,p,obj){
 /* ---- GERWAZY ---- */
 function renderGerwazy(d,p,obj){
   mBody.innerHTML=contextLine(obj.context)+
-    `<div class="panel" style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
-      <div><div class="kicker">Dokument</div><div style="font-weight:600;color:var(--ink)">${d.doc}</div></div>
+    `<div class="panel demo" style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center">
+      <div><div class="kicker"><span class="step">01</span>Dokument</div><div style="font-weight:600;color:var(--ink)">${d.doc}</div></div>
       <div style="text-align:right"><div class="kicker">Wymagania</div><div style="font-weight:600;color:var(--ink);font-size:13px">${d.reg}</div></div></div>
     <div id="gw-out"></div>`+featuresBlock(p);
   const go=mkBtn('btn-primary','Uruchom analizę zgodności',ICON_PLAY);go.style.background=p.color;
@@ -1660,7 +1701,7 @@ function renderGerwazy(d,p,obj){
     // checklist: OK items and gaps interleaved, each lights up as the scan passes it
     const items=[];const oks=d.ok||[];
     for(let i=0;i<Math.max(oks.length,d.gaps.length);i++){if(oks[i])items.push({t:oks[i][0],r:oks[i][1],ok:true});if(d.gaps[i])items.push({t:d.gaps[i][0],r:d.gaps[i][1],ok:false});}
-    out.innerHTML=`<div class="panel"><div class="spinner">Skanowanie dokumentu względem listy kontrolnej…</div>
+    out.innerHTML=`<div class="panel result"><div class="kicker"><span class="step">02</span>Analiza względem listy kontrolnej</div><div class="spinner">Skanowanie dokumentu względem listy kontrolnej…</div>
       <div class="scan-bar"><i id="gw-scan" style="background:${p.color}"></i></div>
       <div id="gw-step" style="font-size:12px;color:var(--ink-mute);margin:8px 0 10px">Interpretacja wymagań…</div>
       <div id="gw-list">${items.map((it,i)=>`<div class="check" id="gw-c${i}"><span class="dot"></span><span>${it.t}</span><span class="ref">${it.r}</span></div>`).join('')}</div></div>`;
@@ -1677,7 +1718,7 @@ function renderGerwazy(d,p,obj){
 function showGerwazyOut(d,p,obj){
   const out=document.getElementById('gw-out');
   const sc=d.score, off=339.292*(1-sc/100);
-  out.innerHTML=`<div class="panel"><div class="scorewrap">
+  out.innerHTML=`<div class="panel result"><div class="kicker"><span class="step">03</span>Raport zgodności</div><div class="scorewrap">
       <svg class="ring" viewBox="0 0 120 120"><circle cx="60" cy="60" r="54" fill="none" stroke="#EDF1F6" stroke-width="11"/>
         <circle cx="60" cy="60" r="54" fill="none" stroke="${p.color}" stroke-width="11" stroke-linecap="round"
           stroke-dasharray="339.292" stroke-dashoffset="339.292" transform="rotate(-90 60 60)" id="gw-ring"/>
@@ -1685,12 +1726,12 @@ function showGerwazyOut(d,p,obj){
         <text x="60" y="76" text-anchor="middle" font-size="11" fill="#9B95A3">zgodność</text></svg>
       <div style="flex:1"><div style="font-weight:600;color:var(--ink);margin-bottom:4px">Wykryto ${d.gaps.length} luki wymagające działania</div>
         <div style="font-size:12px">Każda ocena powiązana z konkretnym wymaganiem.</div></div></div>
-    <div class="panel"><div class="kicker">Lista kontrolna</div>${(d.ok||[]).map(o=>`<div class="check ok"><span class="dot"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>${o[0]}</span><span class="ref">${o[1]}</span></div>`).join('')}</div></div>
-    <div class="panel"><div class="kicker">Lista luk</div>
+    <div class="panel result"><div class="kicker">Lista kontrolna</div>${(d.ok||[]).map(o=>`<div class="check ok"><span class="dot"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span>${o[0]}</span><span class="ref">${o[1]}</span></div>`).join('')}</div></div>
+    <div class="panel result"><div class="kicker">Lista luk</div>
       ${d.gaps.map(g=>`<div class="gap-item"><span class="ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></span>
         <span><div>${g[0]}</div><div class="ref">${g[1]}</div></span></div>`).join('')}</div>
-    <div class="panel"><div class="kicker">Rekomendowane działania naprawcze</div>
-      <ul class="clean">${d.recs.map(r=>`<li><span class="mk"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span><span>${r}</span></li>`).join('')}</ul></div>`;
+    <div class="panel result"><div class="kicker">Rekomendowane działania naprawcze</div>
+      <ul class="clean key">${d.recs.map(r=>`<li><span class="mk"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span><span>${r}</span></li>`).join('')}</ul></div>`;
   markCompleted(obj);
   requestAnimationFrame(()=>{const r=document.getElementById('gw-ring');if(r){r.style.transition='stroke-dashoffset 1s cubic-bezier(.2,.7,.2,1)';r.style.strokeDashoffset=off;}});
   const num=document.getElementById('gw-num'),t0=performance.now();
@@ -1707,14 +1748,14 @@ function renderZagloba(d,p,obj){
   let selected=modes[0]||null;
   mBody.innerHTML=contextLine(obj.context);
 
-  const scenario=document.createElement('div');scenario.className='panel';
-  const scenarioKicker=document.createElement('div');scenarioKicker.className='kicker';scenarioKicker.textContent='Mini-demo · wyszukiwanie wiedzy';
+  const scenario=document.createElement('div');scenario.className='panel demo';
+  const scenarioKicker=document.createElement('div');scenarioKicker.className='kicker';scenarioKicker.innerHTML='<span class="step">01</span>Baza wiedzy organizacji';
   const scenarioTitle=document.createElement('div');scenarioTitle.style.cssText='font-weight:600;color:var(--ink);margin-bottom:5px';scenarioTitle.textContent=d.scenario||'Wiedza organizacji';
   const scenarioNotice=document.createElement('div');scenarioNotice.style.cssText='font-size:11px;line-height:1.45;color:var(--ink-soft)';scenarioNotice.textContent=d.notice||'';
   scenario.append(scenarioKicker,scenarioTitle,scenarioNotice);
 
-  const questionPanel=document.createElement('div');questionPanel.className='panel';
-  const questionKicker=document.createElement('div');questionKicker.className='kicker';questionKicker.textContent='Wybierz wariant zapytania';
+  const questionPanel=document.createElement('div');questionPanel.className='panel demo';
+  const questionKicker=document.createElement('div');questionKicker.className='kicker';questionKicker.innerHTML='<span class="step">02</span>Pytanie użytkownika';
   const question=document.createElement('div');question.className='reply-box';question.setAttribute('aria-live','polite');
   const variantGroup=document.createElement('div');variantGroup.setAttribute('role','radiogroup');variantGroup.setAttribute('aria-label','Wariant zapytania');variantGroup.style.cssText='display:grid;gap:7px;margin-top:10px';
   questionPanel.append(questionKicker,question,variantGroup);
@@ -1762,16 +1803,16 @@ function renderZaglobaResult(mode,p,obj,out){
   if(!mode||!out)return;
   out.dataset.mode=mode.id;out.dataset.state='result';
   out.replaceChildren();
-  const result=document.createElement('div');result.className='panel reveal';
+  const result=document.createElement('div');result.className='panel result reveal';
   const head=document.createElement('div');head.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px';
-  const kicker=document.createElement('div');kicker.className='kicker';kicker.style.marginBottom='0';kicker.textContent='Wynik wyszukiwania';
+  const kicker=document.createElement('div');kicker.className='kicker';kicker.style.marginBottom='0';kicker.innerHTML='<span class="step">03</span>Odpowiedź';
   const status=document.createElement('span');status.className='badge '+(mode.restricted?'badge-warn':mode.abstain?'badge-neutral':'badge-success');status.textContent=mode.restricted?'Dostęp ograniczony':mode.abstain?'Brak pokrycia':'Odpowiedź ze źródeł';head.append(kicker,status);
   const question=document.createElement('div');question.style.cssText='font-size:12px;color:var(--ink-mute);margin-bottom:8px';question.textContent=mode.question;
   const answer=document.createElement('div');answer.className='reply-box';answer.textContent=mode.answer;
   result.append(head,question,answer);out.appendChild(result);
 
   if(!mode.restricted&&!mode.abstain&&Array.isArray(mode.sources)&&mode.sources.length){
-    const sourcesPanel=document.createElement('div');sourcesPanel.className='panel';
+    const sourcesPanel=document.createElement('div');sourcesPanel.className='panel result';
     const sourcesKicker=document.createElement('div');sourcesKicker.className='kicker';sourcesKicker.textContent='Dokumenty wspierające odpowiedź';sourcesPanel.appendChild(sourcesKicker);
     mode.sources.forEach((doc,index)=>{
       const sourceWrap=document.createElement('div');sourceWrap.style.cssText='border-bottom:1px dashed var(--line);padding:7px 0';
@@ -1782,7 +1823,7 @@ function renderZaglobaResult(mode,p,obj,out){
     });
     out.appendChild(sourcesPanel);
   }else{
-    const guard=document.createElement('div');guard.className='panel';
+    const guard=document.createElement('div');guard.className='panel result';
     const guardKicker=document.createElement('div');guardKicker.className='kicker';guardKicker.textContent=mode.restricted?'Ochrona dostępu':'Zasada odpowiedzi';
     const guardText=document.createElement('div');guardText.style.cssText='font-size:12px;color:var(--ink-soft)';guardText.textContent=mode.restricted?'Brak fragmentów dokumentu: Zagłoba nie ujawnia treści źródła bez uprawnień.':'Brak cytowań: Zagłoba nie dopowiada informacji, których nie ma w dostępnych źródłach.';guard.append(guardKicker,guardText);out.appendChild(guard);
   }

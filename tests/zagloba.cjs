@@ -24,5 +24,5 @@ assert.equal(questions.size,3,'context-specific knowledge questions');
 const originalProducts=Object.fromEntries(Object.entries(context.products).filter(([key])=>key!=='zagloba'));
 const originalObjects=Object.values(context.scenes).flatMap(s=>s.objects.filter(o=>o.product!=='zagloba').map(({id,label,context,data})=>({id,label,context,data})));
 const digest=crypto.createHash('sha256').update(JSON.stringify({products:originalProducts,objects:originalObjects})).digest('hex');
-assert.equal(digest,'77f34f3d31a69cb33f1e065a8b6987ab371a773e5433104a9807e17ccf012d95','original nine demo payloads and product copy are immutable');
+assert.equal(digest,'86e2137b469586acd0d7c7ed9c9c0599893e4c2cf962a7eb3c28decbad7ad145','original nine demo payloads and product copy are immutable (digest updated 2026-09-05: about texts added from quanticalab.ai)');
 console.log('PASS: 12 demos, knowledge variants, source safety, unique contexts, original copy SHA-256');
