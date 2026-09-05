@@ -790,6 +790,23 @@ async function runBrandingSuite() {
   }
 }
 
+async function runAircraftSuite() {
+  const {page} = await newPage();
+  try {
+    await chooseScene(page, 'airport');
+    const model = await page.evaluate(() => App.world().aircraft);
+    assert.ok(model, 'airport exposes aircraft geometry contract');
+    for (const part of ['fuselage', 'cockpit', 'wing-left', 'wing-right', 'winglet-left', 'winglet-right', 'engine-left', 'engine-right', 'tail', 'gear-nose', 'gear-left', 'gear-right']) {
+      assert.ok(model.parts.includes(part), `aircraft has ${part}`);
+    }
+    assert.ok(model.meshes <= 65, 'aircraft draw-call budget');
+    assert.ok(model.finite, 'all aircraft vertices are finite');
+    assert.ok(model.bounds.maxZ < 0, 'aircraft stays outside the walkable terminal');
+    assert.ok(model.bounds.minY >= -.01, 'landing gear stays above apron');
+    if (process.env.AIRCRAFT_SCREENSHOT) await page.screenshot({path: process.env.AIRCRAFT_SCREENSHOT});
+  } finally { await page.close().catch(() => {}); }
+}
+
 const TESTS = [
   ['Quantica branding loads official responsive assets and fits the header', runBrandingSuite],
   ['navigation opens all 12 objects from vertical and side approaches', runNavigationSuite],
@@ -808,6 +825,7 @@ const TESTS = [
 ];
 
 if (WEBGL_MODE) {
+  TESTS.push(['aircraft geometry has complete jet silhouette and stays outside terminal', runAircraftSuite]);
   TESTS.push(['WebGL idle and paused frame counts stay stable', runWebglFrameStabilitySuite]);
   TESTS.push(['WebGL camera invalidation and movement produce frames', runWebglCameraMovementSuite]);
   TESTS.push(['WebGL scene rebuild geometry and textures do not accumulate', runWebglSceneRebuildSuite]);

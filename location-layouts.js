@@ -14,7 +14,7 @@ window.LocationLayouts=(()=>{
       props:[{kind:'board',x:880,y:66,w:190,t:'ODLOTY'},{kind:'barrier',x:255,y:305,w:145}],
       zones:[{x:255,y:100,t:'ODPRAWA'},{x:540,y:90,t:'BRAMKA A1'}],
       stations:{kmicic:{x:250,y:195,w:195,h:64},papkin:{x:300,y:490,w:230,h:110},gerwazy:{x:885,y:480,w:180,h:86},zagloba:{x:550,y:200,w:85,h:65}},
-      cameraBounds:{x0:-.25,x1:11.05,z0:-3.35,z1:6.85,height:1.9}
+      cameraBounds:{x0:-.25,x1:11.05,z0:-4.15,z1:6.85,height:1.9}
     },
     bank:{
       identity:'financial-lobby',landmarks:['vault','atm','teller-counter'],

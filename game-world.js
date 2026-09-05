@@ -182,23 +182,52 @@ window.GameWorld=(()=>{
   }
   function plaque(text,x,y,z,w,h,bg='ink',fg='paper'){const panel=textPanel(text,w,h,bg,fg);panel.position.set(x,y,z);return panel;}
   function aircraft(){
-    const g=group(4.35,-1.8);g.rotation.y=-.12;
-    sphere(0,.65,0,.36,'paper',g,5.5,.95,.9);
-    sphere(-1.58,.72,.035,.25,'glass',g,1.4,.62,1.03);
-    box(.05,0,.8,4.4,.055,'paper',.52,g,.035);
+    const g=group(4.35,-2.1);g.name='aircraft';g.rotation.y=-.12;
+    const named=(obj,name)=>{obj.name=name;return obj;};
+    const profile=(points,color,name)=>{
+      const geometry=new THREE.LatheGeometry(points.map(([x,r])=>new THREE.Vector2(r,x)),16);
+      geometry.rotateZ(-Math.PI/2);
+      return named(mesh(geometry,color,g),name);
+    };
+    const panel=(points,depth,color,name,horizontal=false)=>{
+      const shape=new THREE.Shape();points.forEach(([x,y],i)=>i?shape.lineTo(x,y):shape.moveTo(x,y));shape.closePath();
+      const geometry=new THREE.ExtrudeGeometry(shape,{depth,bevelEnabled:false,steps:1});
+      geometry.translate(0,0,-depth/2);if(horizontal)geometry.rotateX(Math.PI/2);
+      return named(mesh(geometry,color,g),name);
+    };
+    const body=profile([[-2.15,0],[-2.09,.08],[-1.91,.21],[-1.58,.3],[-1.2,.32],[.85,.32],[1.36,.25],[1.83,.11],[2.08,0]],'paper','fuselage');body.position.y=.72;
+    const cockpit=sphere(-1.72,.865,0,.22,'aircraftNavy',g,1.25,.48,1.04);named(cockpit,'cockpit');
+    panel([[1.03,.83],[1.43,1.72],[1.78,1.72],[1.93,.8]],.065,'aircraftNavy','tail');
+    panel([[1.37,1.14],[1.59,1.63],[1.72,1.63],[1.5,1.14]],.069,'aircraftPink','tail-stripe');
     for(const side of [-1,1]){
-      const wing=box(.25,side*1.3,1.45,.68,.045,'paper',.53,g,.035);wing.rotation.y=side*.28;
-      const engine=cylinder(-.24,side*1.13,.15,.67,'metal',0,g);engine.rotation.z=Math.PI/2;engine.position.y=.34;
-      const intake=cylinder(-.59,side*1.13,.113,.025,'ink',0,g);intake.rotation.z=Math.PI/2;intake.position.y=.34;
-      for(let i=0;i<9;i++)sphere(-.95+i*.24,.77,side*.302,.033,'ink',g,.65,1,.32);
+      const label=side<0?'left':'right';
+      const wing=panel([[-.65,side*.24],[.56,side*1.65],[.95,side*1.65],[.64,side*.25]],.045,'paper','wing-'+label,true);wing.position.y=.62;
+      const winglet=panel([[.55,.62],[.78,1.02],[.97,1.02],[.95,.62]],.035,'aircraftPink','winglet-'+label);winglet.position.z=side*1.65;
+      const stabilizer=panel([[1.23,side*.1],[1.78,side*.81],[2.01,side*.81],[1.91,side*.08]],.035,'paper','stabilizer-'+label,true);stabilizer.position.y=.88;
+      box(-.1,side*.96,.22,.055,.23,'metal',.4,g);
+      const engine=profile([[-.65,.135],[-.61,.19],[-.43,.2],[.02,.175],[.14,.115]],'paper','engine-'+label);engine.position.set(0,.38,side*.96);
+      const intake=cylinder(-.638,side*.96,.13,.015,'aircraftNavy',0,g);intake.rotation.z=Math.PI/2;intake.position.y=.38;
+      sphere(-.651,.38,side*.96,.052,'metal',g,.7,1,1);
+      const exhaust=cylinder(.145,side*.96,.09,.035,'ink',0,g);exhaust.rotation.z=Math.PI/2;exhaust.position.y=.38;
+      for(let i=0;i<9;i++)sphere(-1.15+i*.22,.81,side*.306,.035,'aircraftNavy',g,.8,1,.3);
+      box(-.12,side*.319,2.55,.01,.035,'aircraftPink',.695,g);
+      const gear=named(group(.43,side*.39,g),'gear-'+label);
+      cylinder(0,0,.024,.31,'metal',.1,gear);
+      for(const z of [-.065,.065]){const wheel=cylinder(0,z,.1,.065,'ink',0,gear);wheel.rotation.x=Math.PI/2;wheel.position.y=.1;}
     }
-    box(1.37,0,.6,1.48,.05,'paper',.62,g,.025);
-    const tail=box(1.42,0,.53,.055,.74,'aviation',.62,g,.015);tail.rotation.z=-.15;
-    for(const x of [-1.1,.65])for(const z of [-.12,.12])sphere(x,.12,z,.085,'ink',g,1,1,.6);
+    const noseGear=named(group(-1.42,0,g),'gear-nose');
+    cylinder(0,0,.024,.37,'metal',.09,noseGear);
+    const noseWheel=cylinder(0,0,.09,.1,'ink',0,noseGear);noseWheel.rotation.x=Math.PI/2;noseWheel.position.y=.09;
     // The apron lies outside the playable terminal, so aircraft geometry never blocks walking.
-    box(5.4,-1.6,10.8,3.2,.04,'apron',-.14);
+    box(5.4,-2,10.8,4,.04,'apron',-.14);
     for(let x=0;x<10;x+=.75)box(x+.25,-2.95,.34,.035,.007,'lane',-.11);
     box(5.4,-.31,10.8,.04,.007,'lane',-.11);
+  }
+  function aircraftSnapshot(){
+    const model=world?.getObjectByName('aircraft');if(!model)return null;
+    const bounds=new THREE.Box3().setFromObject(model),parts=[];let meshes=0,finite=true;
+    model.traverse(obj=>{if(obj.name)parts.push(obj.name);if(obj.isMesh){meshes++;const positions=obj.geometry.attributes.position.array;for(const value of positions)if(!Number.isFinite(value))finite=false;}});
+    return {parts,meshes,finite,bounds:{minY:bounds.min.y,maxZ:bounds.max.z}};
   }
   function facade(id){
     if(id==='airport'){
@@ -389,6 +418,7 @@ window.GameWorld=(()=>{
       let importTimer;
       try{THREE=await Promise.race([import(THREE_URL),new Promise((_,reject)=>{importTimer=setTimeout(()=>reject(new Error('3D library loading timed out')),10000);})]);}finally{clearTimeout(importTimer);}
       const computed=getComputedStyle(document.documentElement);for(const key of ['paper','cream','ink','wood','metal','upholstery','pot','soil','leaf','leafLight','screen','screenLine','keyboard','wall','glass','foundation','edge','tile','tileLine','carpet','carpetLine','airportFloor','bankFloor','officeFloor','rug','rugInner','threshold','lamp','background','light','sky','bounce','shadow','papkin','kmicic','gerwazy'])colors[key]=computed.getPropertyValue('--world-'+key).trim();
+      colors.aircraftNavy=computed.getPropertyValue('--chrome').trim();colors.aircraftPink=computed.getPropertyValue('--brand').trim();
       for(const key of ['aviation','apron','lane','bankStone','brass','civicStone','civicRed','civicSeat','cork','zagloba','woodGrain'])colors[key]=computed.getPropertyValue('--world-'+key).trim();
       renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.75));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.16;
       renderer.domElement.className='world-canvas';renderer.domElement.setAttribute('aria-label','Świat 3D. Kliknij podłogę, aby przejść, lub produkt, aby podejść.');renderer.domElement.setAttribute('role','img');stage.prepend(renderer.domElement);
@@ -462,5 +492,5 @@ window.GameWorld=(()=>{
     renderInvalidated=false;
   }
   function screenMovement(x,y){const a=state.angle;return {x:x*Math.cos(a)+y*Math.sin(a),y:-x*Math.sin(a)+y*Math.cos(a)};}
-  return {init,render,cameraAction,screenMovement,get ready(){return state.ready;},snapshot:()=>({renderer:stage?.dataset.renderer||'uninitialized',sceneId:state.sceneId,frames:state.frames,meshes:renderMetrics.drawCalls,drawCalls:renderMetrics.drawCalls,geometries:renderMetrics.geometries,textures:renderMetrics.textures,renders:renderMetrics.renders,skippedFrames:renderMetrics.skippedFrames,lastRendered:renderMetrics.lastRendered,zoom:state.zoom,angle:state.angle}),project:(x,y,h=0)=>{if(!camera)return null;const p=new THREE.Vector3(x/100,h,y/100).project(camera);return {x:(p.x+1)/2*width,y:(1-p.y)/2*height};}};
+  return {init,render,cameraAction,screenMovement,get ready(){return state.ready;},snapshot:()=>({aircraft:aircraftSnapshot(),renderer:stage?.dataset.renderer||'uninitialized',sceneId:state.sceneId,frames:state.frames,meshes:renderMetrics.drawCalls,drawCalls:renderMetrics.drawCalls,geometries:renderMetrics.geometries,textures:renderMetrics.textures,renders:renderMetrics.renders,skippedFrames:renderMetrics.skippedFrames,lastRendered:renderMetrics.lastRendered,zoom:state.zoom,angle:state.angle}),project:(x,y,h=0)=>{if(!camera)return null;const p=new THREE.Vector3(x/100,h,y/100).project(camera);return {x:(p.x+1)/2*width,y:(1-p.y)/2*height};}};
 })();
