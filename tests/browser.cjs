@@ -840,11 +840,14 @@ async function main() {
   }
   await startServer();
   profileDir = fs.mkdtempSync(path.join(os.tmpdir(), 'oferta-browser-'));
-  const executablePath = process.env.CHROME_PATH || CHROME_DEFAULT;
+  // Playwright's bundled Chromium is the default (predictable on CI). A system Chrome is used only when
+  // CHROME_PATH names one explicitly; the historical default path is kept as a documented example.
+  const executablePath = process.env.CHROME_PATH;
+  if (executablePath && !fs.existsSync(executablePath)) throw new Error(`CHROME_PATH nie istnieje: ${executablePath} (np. ${CHROME_DEFAULT})`);
   const launchOptions = {
     headless: !HEADED,
-    executablePath: fs.existsSync(executablePath) ? executablePath : undefined,
-    timeout: 15000,
+    executablePath: executablePath || undefined,
+    timeout: 45000,
     args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-background-networking']
   };
   if (WEBGL_MODE) launchOptions.args.push('--use-gl=swiftshader', '--enable-unsafe-swiftshader');
