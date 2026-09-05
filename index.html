@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0A1F2C">
+<link rel="icon" type="image/svg+xml" href="assets/brand/favicon.svg">
 <title>Explore the Floor – interaktywne demo (Papkin · Kmicic · Gerwazy · Zagłoba)</title>
 <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -12,7 +14,7 @@
   --font-mono:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
   --brand:#d20757;
   --brand-deep:#8A004C;
-  --brand-tint:#FBE7EF;
+  --brand-tint:#FFE6F1;
   --bg-main:#FFFFFF;
   --bg-section:#F8F6F9;
   --bg-floor:#FDFCFD;
@@ -35,8 +37,7 @@
   --papkin:#7030A0;
   --kmicic:#d20757;
   --gerwazy:#4F46E5;
-  --chrome:#081a2a;
-  --chrome-2:#0d263a;
+  --chrome:#0A1F2C;
   --chrome-line:rgba(146,196,216,.24);
   --chrome-muted:#9bb3c3;
   --chrome-ink:#f3f8fb;
@@ -44,9 +45,9 @@
   --surface-raised:#ffffff;
   --surface-dim:#eaf0f5;
   --stage-shadow:rgba(2,18,32,.34);
-  --accent:#e54878;
-  --accent-deep:#b92d5b;
-  --accent-tint:#fdeaf0;
+  --accent:var(--brand);
+  --accent-deep:var(--brand-deep);
+  --accent-tint:var(--brand-tint);
   --teal:#56e2d1;
   --stage-base:#dfeaf0;
   --stage-border:rgba(184,219,232,.26);
@@ -75,8 +76,8 @@
   --card-shadow:rgba(25,62,77,.13);
   --picker-border:rgba(180,205,216,.78);
   --card-thumb:#cadbe3;
-  --brand-ring:rgba(229,72,120,.14);
-  --brand-shadow:rgba(229,72,120,.25);
+  --brand-ring:rgba(210,7,87,.14);
+  --brand-shadow:rgba(210,7,87,.25);
   --light-veil:rgba(255,255,255,.08);
   --light-veil-hover:rgba(255,255,255,.15);
   --light-border:rgba(255,255,255,.42);
@@ -106,8 +107,10 @@ body{font-family:var(--font-ui);font-size:15px;line-height:1.6;-webkit-font-smoo
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:nowrap;}
 .brand{display:flex;align-items:center;min-width:0;}
 .brand > div{display:flex;align-items:baseline;gap:10px;min-width:0;}
-.logo{display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.logo svg{width:16px;height:16px;}
+.brand-logo{display:flex;align-items:center;flex-shrink:0;border-radius:var(--radius-sm);}
+.brand-logo:focus-visible{outline:2px solid var(--chrome-ink);outline-offset:4px;}
+.brand-logo picture{display:flex;}
+.brand-logo img{display:block;width:104px;height:44px;object-fit:contain;}
 .brand h1{font-weight:700;white-space:nowrap;}
 .brand .label{font-family:var(--font-mono);font-weight:500;text-transform:uppercase;letter-spacing:.12em;white-space:nowrap;}
 .hud-right{display:flex;align-items:center;flex-wrap:nowrap;}
@@ -255,9 +258,8 @@ header{flex-wrap:wrap;min-height:0;}
 ::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:10px;}
 body{background:var(--chrome);color:var(--ink-soft);}
 .app{background:var(--chrome);}
-header{min-height:58px;padding:9px 16px;background:linear-gradient(110deg,var(--chrome),var(--chrome-2));border-bottom:1px solid var(--chrome-line);box-shadow:0 4px 16px var(--stage-shadow);z-index:5;}
+header{min-height:64px;padding:9px 16px;background:var(--chrome);border-bottom:1px solid var(--chrome-line);box-shadow:0 4px 16px var(--stage-shadow);z-index:5;}
 .brand{gap:11px;}
-.logo{width:32px;height:32px;border-radius:10px;background:var(--accent);box-shadow:0 0 0 4px var(--brand-ring),0 7px 18px var(--brand-shadow);}
 .brand h1{font-size:1rem;color:var(--chrome-ink);letter-spacing:-.025em;}
 .brand .label{color:var(--chrome-muted);font-size:9px;}
 .hud-right{gap:10px;}
@@ -426,6 +428,7 @@ header{padding:8px 10px;}
 #stage .world-marker[data-near=true] b,#stage .world-marker:hover b,#stage .world-marker:focus-visible b{display:block;}
 @media(max-width:768px){
 header{flex-wrap:nowrap;min-height:54px;}
+.brand-logo img{width:26px;height:36px;}
 .brand h1{font-size:11px;max-width:70px;white-space:normal;line-height:1.2;}
 .hud-right .loc{display:flex;max-width:130px;padding:4px 7px;font-size:10px;}
 .hud-right .loc #locName{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -445,11 +448,14 @@ header{flex-wrap:nowrap;min-height:54px;}
 </head>
 <body>
 <div class="app">
-  <header>
+  <header data-brand="quantica-lab">
     <div class="brand">
-      <div class="logo" aria-hidden="true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M12 2.5 20.2 7.25v9.5L12 21.5 3.8 16.75v-9.5L12 2.5zm0 3.6-5.1 2.95v5.9L12 17.9l5.1-2.95v-5.9L12 6.1z"/><path d="m14.4 15.2 4.2 4.2-2 2-4.2-4.2z"/></svg>
-      </div>
+      <a class="brand-logo" href="https://quanticalab.ai" target="_blank" rel="noopener noreferrer">
+        <picture>
+          <source media="(max-width: 768px)" srcset="assets/brand/quantica-q-mark-white.png">
+          <img src="assets/brand/quantica-logo-white.png" alt="Quantica Lab" width="104" height="44">
+        </picture>
+      </a>
       <div>
         <h1>Explore the Floor</h1>
         <div class="label">Quantica Lab · Papkin · Kmicic · Gerwazy · Zagłoba</div>

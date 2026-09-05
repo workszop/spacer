@@ -763,7 +763,35 @@ async function runWebglSceneRebuildSuite() {
   }
 }
 
+async function runBrandingSuite() {
+  for (const width of [1280, 390, 320]) {
+    const {page} = await newPage({viewport: {width, height: 844}});
+    try {
+      await chooseScene(page, 'airport');
+      assert.equal(await page.locator('header[data-brand="quantica-lab"]').count(), 1);
+      const logo = page.locator('.brand-logo img');
+      await logo.evaluate(img => img.decode());
+      const source = await logo.evaluate(img => img.currentSrc);
+      assert.ok(source.endsWith(width <= 768 ? '/quantica-q-mark-white.png' : '/quantica-logo-white.png'));
+      assert.equal(await logo.getAttribute('alt'), 'Quantica Lab');
+      assert.equal(await page.locator('.brand-logo').getAttribute('href'), 'https://quanticalab.ai');
+      assert.equal(await page.locator('header').evaluate(el => getComputedStyle(el).backgroundColor), 'rgb(10, 31, 44)');
+      const favicon = await page.locator('link[rel="icon"]').getAttribute('href');
+      assert.ok((await page.request.get(new URL(favicon, page.url()).href)).ok());
+      for (const selector of ['.brand-logo', '.brand h1', '#btnSwitch', '#btnHelp']) {
+        const box = await page.locator(selector).boundingBox();
+        assert.ok(box && box.x >= 0 && box.x + box.width <= width, `${width}: ${selector} fits`);
+      }
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+      if (process.env.BRAND_SCREENSHOTS) await page.screenshot({path: path.join(process.env.BRAND_SCREENSHOTS, `quantica-${width}.png`)});
+    } finally {
+      await page.close().catch(() => {});
+    }
+  }
+}
+
 const TESTS = [
+  ['Quantica branding loads official responsive assets and fits the header', runBrandingSuite],
   ['navigation opens all 12 objects from vertical and side approaches', runNavigationSuite],
   ['completion close plus help does not race into done dialog', runCompletionRaceSuite],
   ['all demos complete with result state', runDemoCompletionSuite],

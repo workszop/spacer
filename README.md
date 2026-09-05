@@ -20,7 +20,9 @@ No build step. [The world renderer](/home/andrzey/git-claude/oferta/game-world.j
 
 ## Publishing
 
-Pushes to `master` deploy through the [Pages workflow](/home/andrzey/git-claude/oferta/.github/workflows/pages.yml). Only the HTML entry point and its two sibling JavaScript files are published; local specs, tests, and documentation are not included in the website artifact.
+Pushes to `master` deploy through the [Pages workflow](/home/andrzey/git-claude/oferta/.github/workflows/pages.yml). Only the HTML entry point, its two sibling JavaScript files and brand assets are published; local specs, tests, and documentation are not included in the website artifact.
+
+Official Quantica Lab white wordmark and Q mark in `assets/brand/` come from the local Quantica `qweb` brand kit, unchanged. The favicon embeds the same Q artwork on Quantica navy. Desktop uses the full wordmark; mobile uses the Q mark. Scene artwork and product copy remain independent of the app's brand tokens.
 
 ## Controls
 
