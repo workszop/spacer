@@ -139,7 +139,7 @@ to{transform:none;opacity:1;}
 .product-page-link{display:inline-block;margin-top:4px;padding:4px 0;color:var(--accent-deep);font-size:inherit;font-weight:600;text-underline-offset:3px;}
 .product-page-link:focus-visible{outline:2px solid var(--accent-deep);outline-offset:3px;border-radius:3px;}
 .m-close{background:transparent;border:none;cursor:pointer;padding:5px;border-radius:6px;flex-shrink:0;}
-.m-body{overflow-y:auto;}
+.m-body{overflow-y:auto;position:relative;}
 .m-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
 .context{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:500;background:var(--bg-section);border:1px solid var(--line);border-radius:var(--radius-md);padding:10px 13px;margin-bottom:14px;}
 .context svg{flex-shrink:0;opacity:.7;}
@@ -1450,8 +1450,19 @@ function renderCount(){
   stage.dataset.demoState=SC.objects.map(o=>`${o.id}:${demoState[o.id]||'idle'}`).join('|');
   renderProductDock();
 }
-function setDemoState(obj,state){if(!obj||!SC)return;demoState[obj.id]=state;renderCount();}
-function markCompleted(obj){if(!obj||!SC)return;completed[obj.id]=true;demoState[obj.id]='result';renderCount();}
+function setDemoState(obj,state){if(!obj||!SC)return;demoState[obj.id]=state;renderCount();if(state==='running')scrollToDemo();}
+// when a demo starts, bring its beginning (scene context + step 01) to the top of the panel; the description scrolls out above
+function scrollToDemo(){
+  const start=mBody.querySelector('.context')||mBody.querySelector('.panel.demo');if(!start)return;
+  // while the demo is still short (spinner only) a temporary spacer guarantees enough scroll range; it goes away with the results
+  let spacer=document.getElementById('demoSpacer');
+  if(!spacer){spacer=document.createElement('div');spacer.id='demoSpacer';spacer.setAttribute('aria-hidden','true');mBody.appendChild(spacer);}
+  spacer.style.height=mBody.clientHeight+'px';
+  const top=start.offsetTop-8;   // .m-body is position:relative, so offsetTop is measured inside the scroll container
+  mBody.scrollTo({top:Math.max(0,top),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+}
+function removeDemoSpacer(){document.getElementById('demoSpacer')?.remove();}
+function markCompleted(obj){if(!obj||!SC)return;completed[obj.id]=true;demoState[obj.id]='result';renderCount();removeDemoSpacer();}
 function snapshot(){
   const objects=SC?SC.objects.map(o=>({id:o.id,product:o.product,visited:!!visited[o.id],completed:!!completed[o.id],demoState:demoState[o.id]||'idle'})):[];
   return {sceneId,sceneName:SC?.name||null,objects,visitedAll:SC?objects.filter(o=>o.visited).map(o=>o.id):[],completedAll:SC?objects.filter(o=>o.completed).map(o=>o.id):[],nearObjectId:nearObj?.id||null,dialog:overlay?.classList.contains('show')?'product':pickerOv?.classList.contains('show')?'picker':helpOv?.classList.contains('show')?'help':doneOv?.classList.contains('show')?'done':null};
