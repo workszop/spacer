@@ -578,11 +578,11 @@ header{flex-wrap:nowrap;min-height:54px;}
   </div>
 </div>
 
-<!-- Ending card (all four discovered in this location) -->
+<!-- Ending card (all five discovered in this location) -->
 <div class="overlay" id="doneOv">
   <div class="done" role="dialog" aria-modal="true" aria-labelledby="doneTitle" tabindex="-1">
-    <div class="eyebrow">Poznano 4/4</div>
-    <h2 id="doneTitle">Cztery produkty. Jedna lokalizacja. Wszystkie w akcji.</h2>
+    <div class="eyebrow">Poznano 5/5</div>
+    <h2 id="doneTitle">Pięć produktów. Jedna lokalizacja. Wszystkie w akcji.</h2>
     <p id="doneLead">Ten sam zestaw sprawdza się w innych realiach. Zobacz, jak pracuje w kolejnej lokalizacji.</p>
     <div class="trio">
       <span><i style="background:var(--papkin)"></i>Papkin</span><span><i style="background:var(--kmicic)"></i>Kmicic</span><span><i style="background:var(--gerwazy)"></i>Gerwazy</span><span><i style="background:var(--zagloba)"></i>Zagłoba</span><span><i style="background:var(--klara)"></i>Klara</span>
@@ -832,7 +832,7 @@ const SCENES={
         context:'Kluczowy klient z branży spożywczej wymaga od dostawców potwierdzenia zgodności z NIS2.',
         data:{reg:'NIS2 (wymagania klienta wobec łańcucha dostaw)',doc:'Polityka bezpieczeństwa informacji i ciągłości działania',score:72,
           ok:[['Kopie zapasowe i plan odtwarzania systemu ERP','NIS2 art. 21 ust. 2 lit. c'],['Szkolenia z cyberhigieny dla pracowników biurowych','NIS2 art. 21 ust. 2 lit. g']],
-          gaps:[['Brak procedury zgłaszania incydentów w ciągu 24 godzin','NIS2 art. 23 ust. 4 lit. a'],
+          gaps:[['Brak procedury zgłaszania incydentów klientowi w ciągu 24 godzin, wymaganej w umowie','NIS2 art. 23 ust. 4 lit. a'],
             ['Brak oceny bezpieczeństwa dostawców IT i serwisu maszyn','NIS2 art. 21 ust. 2 lit. d'],
             ['Brak uwierzytelniania wieloskładnikowego do poczty i ERP','NIS2 art. 21 ust. 2 lit. j']],
           recs:['Wdrożyć procedurę zgłaszania incydentów ze ścieżką 24 h / 72 h','Przeprowadzić ocenę bezpieczeństwa kluczowych dostawców','Włączyć MFA dla poczty, ERP i dostępu zdalnego']}},
@@ -840,7 +840,7 @@ const SCENES={
         context:'Handlowcy i pracownicy operacyjni szukają informacji o produktach i procesach w jednej bazie wiedzy.',
         data:{scenario:'Katalog produktów i procedury wewnętrzne firmy',notice:'Treści źródeł są przykładowe i służą wyłącznie demonstracji wyszukiwania wiedzy. To nie jest wiążąca specyfikacja ani instrukcja.',
           modes:[
-            {id:'source',label:'Cechy produktu',question:'Czy karton 5-warstwowy K5-40 nadaje się do mrożonek i jaki ma dopuszczalny nacisk?',answer:'Tak, K5-40 w wersji z powłoką przeciwwilgociową jest przeznaczony do mrożonek do -25°C, a jego dopuszczalny nacisk pionowy to 6,5 kN. Zagłoba pokazuje kartę produktu i katalog, z których pochodzi odpowiedź.',sources:[
+            {id:'source',label:'Cechy produktu',question:'Czy karton 5-warstwowy K5-40 nadaje się do mrożonek i jaka jest jego wytrzymałość?',answer:'Tak, K5-40 w wersji z powłoką przeciwwilgociową jest przeznaczony do mrożonek do -25°C, a jego odporność na zgniatanie (BCT) to 6,5 kN. Zagłoba pokazuje kartę produktu i katalog, z których pochodzi odpowiedź.',sources:[
               {title:'Karta produktu K5-40 (przykład)',excerpt:'Karton klapowy 5-warstwowy, fala BC. Wersja FR z powłoką przeciwwilgociową do przechowywania w temperaturze do -25°C.'},
               {title:'Katalog opakowań 2026 – parametry wytrzymałości (przykład)',excerpt:'K5-40: BCT 6,5 kN, maksymalnie 5 warstw na palecie przy składowaniu do 30 dni.'}]},
             {id:'process',label:'Proces wewnętrzny',question:'Jak przekazać zamówienie ze sprzedaży do produkcji?',answer:'Po akceptacji oferty zarejestruj zamówienie w ERP ze statusem „do planowania”, dołącz specyfikację klienta i powiadom planistę produkcji. Zagłoba wskazuje procedurę i instrukcję, na których opiera odpowiedź.',sources:[

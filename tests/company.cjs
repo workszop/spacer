@@ -26,3 +26,14 @@ const zg=company.objects.find(o=>o.product==='zagloba').data.modes;
 assert.deepEqual(Array.from(zg,m=>m.id),['source','process','restricted','none'],'Zagłoba covers product features and internal processes');
 assert.ok(context.desc.company,'picker description');
 console.log('PASS: company floor has 5 department cases shaped like the other floors');
+// ─── review fixes ───
+const productCount=Object.keys(context.products).length;
+const doneStart=html.indexOf('id="doneOv"'),doneCard=html.slice(doneStart,html.indexOf('class="acts"',doneStart));
+assert.match(doneCard,new RegExp(`Poznano ${productCount}/${productCount}`),'done card count matches the number of products');
+assert.ok(!/Cztery produkty/.test(doneCard),'done card copy names the current product count');
+const zgProduct=zg.find(m=>m.id==='source'),zgExcerpts=zgProduct.sources.map(s=>s.excerpt).join(' ');
+for(const figure of zgProduct.answer.match(/\d+(?:,\d+)?\s?(?:kN|°C)/g)||[])assert.ok(zgExcerpts.includes(figure.replace(/^-/,'')),`Zagłoba figure "${figure}" is stated in a source excerpt`);
+assert.ok(!/nacisk/.test(zgProduct.answer),'BCT is crush resistance, not a permissible load');
+const art23=gw.gaps.find(g=>/art\. 23/.test(g[1]));
+assert.match(art23[0],/klient/,'art. 23 duty is framed as a requirement passed down by the client');
+console.log('PASS: review fixes – done card count, grounded Zagłoba figures, NIS2 art. 23 framing');
