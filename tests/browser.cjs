@@ -382,7 +382,9 @@ async function newPage({viewport = DEFAULT_VIEWPORT, clock = false} = {}) {
 async function runNavigationSuite() {
   const {page} = await newPage();
   try {
-    for (const sceneId of ['airport', 'bank', 'office', 'company']) {
+    const sceneIds = await page.evaluate(() => Object.keys(SCENES));
+    assert.ok(sceneIds.length >= 4, `wszystkie lokalizacje w nawigacji: ${sceneIds}`);
+    for (const sceneId of sceneIds) {
       await chooseScene(page, sceneId);
       const scene = await localSceneData(page);
       assert.equal(scene.objects.length, 5, `${sceneId}: pięć obiektów`);
@@ -429,11 +431,15 @@ async function runDemoCompletionSuite() {
       {scene: 'airport', objectId: 'a-zagloba', start: 'Uruchom wyszukiwanie'},
       {scene: 'bank', objectId: 'b-klara', start: 'Wyślij do Klary'},
       {scene: 'company', objectId: 'c-kmicic', start: 'Przetwórz wiadomość'},
+      {scene: 'company', objectId: 'c-papkin', start: 'Uruchom transkrypcję'},
+      {scene: 'company', objectId: 'c-gerwazy', start: 'Uruchom analizę zgodności'},
+      {scene: 'company', objectId: 'c-zagloba', start: 'Uruchom wyszukiwanie', mode: 'process'},
       {scene: 'company', objectId: 'c-klara', start: 'Wyślij do Klary'}
     ];
     for (const demo of demos) {
       await chooseScene(page, demo.scene);
       await openObject(page, demo.objectId);
+      if (demo.mode) await page.locator(`#mBody button[data-mode="${demo.mode}"]`).click();
       const start = page.locator('#mFoot .btn').filter({hasText: demo.start});
       await start.waitFor({state: 'visible', timeout: 2500});
       await start.click();
@@ -446,6 +452,11 @@ async function runDemoCompletionSuite() {
         const object = App.snapshot().objects.find(candidate => candidate.id === objectId);
         return object?.completed === true && object?.demoState === 'result';
       }, 3500, {objectId: demo.objectId});
+      if (demo.mode) {
+        const probe = await page.evaluate(() => ({ok: App.probe().ok, failures: App.probe().failures, mode: document.querySelector('#zg-out')?.dataset.mode}));
+        assert.equal(probe.mode, demo.mode, `${demo.objectId}: wynik dla trybu ${demo.mode}`);
+        assert.ok(probe.ok, `${demo.objectId}/${demo.mode}: kontrakt stanu wiedzy (${probe.failures})`);
+      }
       await closeProduct(page);
     }
   } finally {
@@ -481,10 +492,9 @@ async function runCancelOnSwitchSuite() {
     await openObject(page, 'a-gerwazy');
     await page.locator('#mFoot .btn').filter({hasText: 'Uruchom analizę zgodności'}).click();
     await waitFor(page, 'Gerwazy running przed zmianą lokalizacji', () => App.snapshot().objects.find(object => object.id === 'a-gerwazy')?.demoState === 'running', 1500);
-    await page.locator('#mClose').click();
-    await page.locator('#btnSwitch').click();
-    await page.locator('#cards .card[data-scene="bank"]').click();
-    await waitFor(page, 'bank po zmianie lokalizacji', () => App.snapshot().sceneId === 'bank', 3000);
+    // Switch with the panel still open and the demo running: loadScene itself must cancel it.
+    await page.evaluate(() => App.loadScene('bank'));
+    await waitFor(page, 'bank po zmianie lokalizacji', () => App.snapshot().sceneId === 'bank' && App.snapshot().dialog === null, 3000);
     await advance(page, DEMO_SETTLE_MS, clockInstalled);
     await chooseScene(page, 'airport');
     const oldScene = await page.evaluate(() => {
@@ -497,10 +507,8 @@ async function runCancelOnSwitchSuite() {
     await openObject(page, 'c-papkin');
     await page.locator('#mFoot .btn').filter({hasText: 'Uruchom transkrypcję'}).click();
     await waitFor(page, 'Papkin (firma) running przed zmianą lokalizacji', () => App.snapshot().objects.find(object => object.id === 'c-papkin')?.demoState === 'running', 1500);
-    await page.locator('#mClose').click();
-    await page.locator('#btnSwitch').click();
-    await page.locator('#cards .card[data-scene="airport"]').click();
-    await waitFor(page, 'lotnisko po wyjściu z firmy', () => App.snapshot().sceneId === 'airport', 3000);
+    await page.evaluate(() => App.loadScene('airport'));
+    await waitFor(page, 'lotnisko po wyjściu z firmy', () => App.snapshot().sceneId === 'airport' && App.snapshot().dialog === null, 3000);
     assert.ok(await page.evaluate(() => App.snapshot().objects.every(object => object.demoState !== 'running')), 'brak osieroconych demo po zmianie lokalizacji');
     await advance(page, DEMO_SETTLE_MS, clockInstalled);
     await chooseScene(page, 'company');
@@ -661,6 +669,12 @@ async function runWebglSuite() {
     const world = await page.evaluate(() => App.world?.());
     assert.equal(world?.renderer, 'webgl', `App.world raportuje WebGL: ${JSON.stringify(world)}`);
     assert.ok(world?.frames > 0, `WebGL renderuje klatki: ${JSON.stringify(world)}`);
+    await chooseScene(page, 'company');
+    const zones = await waitFor(page, 'etykiety stref w WebGL', () => {
+      const snapshot = App.world?.();
+      return snapshot?.sceneId === 'company' ? {drawn: snapshot.zoneLabels, expected: App.getWorldState().SC.zones.length} : false;
+    }, 2500);
+    assert.equal(zones.drawn, zones.expected, `WebGL rysuje wszystkie etykiety stref (${zones.drawn}/${zones.expected})`);
   } finally {
     await page.close().catch(() => {});
   }

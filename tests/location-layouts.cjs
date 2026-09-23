@@ -1,9 +1,11 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
 const context={window:{}};vm.createContext(context);
 vm.runInContext(fs.readFileSync(path.join(__dirname,'../location-layouts.js'),'utf8'),context);
-const scenes=Object.fromEntries(['airport','bank','office','company'].map(id=>[id,{objects:['papkin','kmicic','gerwazy','zagloba','klara'].map(product=>({product,data:{immutable:'source'},context:'original'}))}]));
+const ids=context.window.LocationLayouts.identities;
+assert.ok(ids.length>=4,'every floor has a layout');
+const scenes=Object.fromEntries(ids.map(id=>[id,{objects:['papkin','kmicic','gerwazy','zagloba','klara'].map(product=>({product,data:{immutable:'source'},context:'original'}))}]));
 context.window.LocationLayouts.apply(scenes);
-assert.equal(new Set(Object.values(scenes).map(sc=>sc.identity)).size,4);
+assert.equal(new Set(Object.values(scenes).map(sc=>sc.identity)).size,ids.length);
 for(const [id,scene] of Object.entries(scenes)){
   assert.ok(scene.landmarks.length>=2,id+' recognizable landmarks');
   assert.ok(scene.blocks.length+scene.props.length<=7,id+' decorative clutter budget');

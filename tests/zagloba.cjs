@@ -21,7 +21,7 @@ for(const [id,scene] of Object.entries(context.scenes)){
   assert.ok(object.data.notice.includes('przykładowe'),'illustrative-fixture disclosure');
   questions.add(source.question);
 }
-assert.equal(questions.size,4,'context-specific knowledge questions');
+assert.equal(questions.size,Object.keys(context.scenes).length,'context-specific knowledge questions');
 const originalProducts=Object.fromEntries(Object.entries(context.products).filter(([key])=>!['zagloba','klara'].includes(key)));
 const originalObjects=Object.entries(context.scenes).filter(([id])=>['airport','bank','office'].includes(id)).map(([,s])=>s).flatMap(s=>s.objects.filter(o=>!['zagloba','klara'].includes(o.product)).map(({id,label,context,data})=>({id,label,context,data})));
 const digest=crypto.createHash('sha256').update(JSON.stringify({products:originalProducts,objects:originalObjects})).digest('hex');

@@ -29,8 +29,7 @@ console.log('PASS: company floor has 5 department cases shaped like the other fl
 // ─── review fixes ───
 const productCount=Object.keys(context.products).length;
 const doneStart=html.indexOf('id="doneOv"'),doneCard=html.slice(doneStart,html.indexOf('class="acts"',doneStart));
-assert.match(doneCard,new RegExp(`Poznano ${productCount}/${productCount}`),'done card count matches the number of products');
-assert.ok(!/Cztery produkty/.test(doneCard),'done card copy names the current product count');
+assert.match(doneCard,/data-count="products" data-form="ratio"/,'done card count is filled from PRODUCTS');
 const zgProduct=zg.find(m=>m.id==='source'),zgExcerpts=zgProduct.sources.map(s=>s.excerpt).join(' ');
 for(const figure of zgProduct.answer.match(/\d+(?:,\d+)?\s?(?:kN|°C)/g)||[])assert.ok(zgExcerpts.includes(figure.replace(/^-/,'')),`Zagłoba figure "${figure}" is stated in a source excerpt`);
 assert.ok(!/nacisk/.test(zgProduct.answer),'BCT is crush resistance, not a permissible load');
@@ -51,3 +50,34 @@ assert.match(rack3d,/rackBeam/,'3D racks have coloured load beams');
 const rack2d=html.slice(html.indexOf("b.kind==='racks'"),html.indexOf("b.kind==='plant'"));
 assert.match(rack2d,/C\.rackBeam/,'canvas racks have the same load beams');
 console.log('PASS: distinct zone labels, IT/HR zone, pallet racking in 3D and canvas');
+// ─── counts follow the data (review 2026-09-23) ───
+const helpersStart=html.indexOf('const NUM_WORDS=');
+vm.runInContext(html.slice(helpersStart,html.indexOf('function fillCounts(',helpersStart))+';this.countPhrase=countPhrase;',context);
+const {countPhrase}=context,sceneCount=Object.keys(context.scenes).length;
+assert.equal(countPhrase(5,'gen','produkt'),'pięciu produktów');assert.equal(countPhrase(5,'nom','produkt'),'pięć produktów');
+assert.equal(countPhrase(4,'nom','produkt'),'cztery produkty');assert.equal(countPhrase(4,'gen'),'czterech');assert.equal(countPhrase(6,'ratio'),'6/6');
+// the static fallback text inside every count span already matches the data, so there is no flash of a stale number
+for(const m of html.matchAll(/<span data-count="(products|scenes)" data-form="([a-z]+)"(?: data-noun="([a-z]+)")?(?: data-cap="true")?>([^<]*)<\/span>/g)){
+  const n=m[1]==='scenes'?sceneCount:productCount;
+  assert.equal(m[4].toLowerCase(),countPhrase(n,m[2],m[3]),`count span "${m[4]}" matches ${n} ${m[1]}`);
+}
+const copy=html.slice(html.indexOf('id="pickerOv"'),html.indexOf('<script'));
+for(const word of ['pięciu','Pięć','czterech','cztery','5/5','4/4'])assert.ok(!new RegExp('>[^<]*'+word).test(copy.replace(/<span data-count[^>]*>[^<]*<\/span>/g,'')),`"${word}" is not hard-coded outside a count span`);
+const pickerStart=html.indexOf('function buildPicker('),picker=html.slice(pickerStart,pickerStart+400);
+assert.ok(!/\['airport'/.test(picker)&&/Object\.entries\(SCENES\)/.test(picker),'picker lists every scene in SCENES');
+console.log('PASS: product/location counts and the picker follow PRODUCTS and SCENES');
+// ─── 3D and canvas consistency (review 2026-09-23) ───
+const sign=world.match(/plaque\('FALKARTON[^']*',[\d.]+,[\d.]+,([\d.]+)/);
+assert.ok(Number(sign[1])>=.22,'company sign sits in front of the window glass (front face z=.20)');
+assert.match(rack3d,/'wood',level\)/,'3D pallet decks rest directly on the beam tops');
+assert.ok(company.blocks.some(b=>b.kind==='pallet')&&!company.props.some(p=>p.kind==='pallet'),'warehouse pallet is a collidable block');
+for(const [id,sc] of Object.entries(context.scenes)){
+  assert.ok(sc.counterColor,id+': layout names its counter colour');
+  assert.ok(world.includes('--world-'+sc.counterColor+':')&&world.includes("'"+sc.counterColor+"'"),id+': counter colour is a loaded world token');
+}
+assert.ok(!/currentScene\.identity==='financial-lobby'\?'wood'/.test(world),'counter colour comes from layout data');
+assert.match(world,/for\(const zone of sc\.zones/,'WebGL paints zone labels on the floor');
+const palette=html.slice(html.indexOf('const C={'),html.indexOf('};',html.indexOf('const C={')));
+for(const token of ['rackUpright','rackBeam'])assert.match(palette,new RegExp(token+":cssToken\\('--world-"+token+"'\\)"),`canvas ${token} reads the shared token`);
+assert.ok(!/--world-rack/.test(world.slice(world.indexOf('function installStyles'))),'rack tokens are defined once, in index.html');
+console.log('PASS: sign depth, pallet decks, pallet collision, counter colour data, WebGL zone labels, shared rack tokens');

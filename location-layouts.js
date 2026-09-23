@@ -5,7 +5,7 @@ window.LocationLayouts=(()=>{
   }
   const layouts={
     airport:{
-      identity:'terminal',landmarks:['aircraft','departures','boarding-gate'],
+      identity:'terminal',counterColor:'aviation',landmarks:['aircraft','departures','boarding-gate'],
       spawn:{x:110,y:590},
       floors:[{x:18,y:18,w:1044,h:310,c:'terminalTile',pat:'tiles',pc:'terminalJoint'},{x:18,y:338,w:662,h:304,c:'terminalCarpet',pat:'carpet',pc:'terminalWeave'},{x:700,y:338,w:362,h:304,c:'terminalTile',pat:'tiles',pc:'terminalJoint'}],
       walls:[{x:685,y:338,w:10,h:90},{x:685,y:548,w:10,h:94},{x:695,y:333,w:367,h:10}],
@@ -17,7 +17,7 @@ window.LocationLayouts=(()=>{
       cameraBounds:{x0:-.25,x1:11.05,z0:-4.15,z1:6.85,height:1.9}
     },
     bank:{
-      identity:'financial-lobby',landmarks:['vault','atm','teller-counter'],
+      identity:'financial-lobby',counterColor:'wood',landmarks:['vault','atm','teller-counter'],
       spawn:{x:510,y:600},
       floors:[{x:18,y:18,w:672,h:624,c:'bankStone',pat:'tiles',pc:'bankJoint'},{x:710,y:18,w:352,h:624,c:'bankCarpet',pat:'carpet',pc:'bankWeave'}],
       walls:[{x:695,y:18,w:12,h:228},{x:695,y:366,w:12,h:276}],
@@ -29,7 +29,7 @@ window.LocationLayouts=(()=>{
       cameraBounds:{x0:-.25,x1:11.05,z0:-.5,z1:6.85,height:2.05}
     },
     office:{
-      identity:'civic-hall',landmarks:['civic-facade','polish-flag','noticeboard','council-chamber'],
+      identity:'civic-hall',counterColor:'civicStone',landmarks:['civic-facade','polish-flag','noticeboard','council-chamber'],
       spawn:{x:285,y:605},
       floors:[{x:18,y:18,w:387,h:624,c:'civicStone',pat:'tiles',pc:'civicJoint'},{x:425,y:18,w:637,h:305,c:'civicWood',pat:'planks',pc:'civicGrain'},{x:425,y:343,w:637,h:299,c:'civicCarpet',pat:'carpet',pc:'civicWeave'}],
       walls:[{x:407,y:18,w:12,h:230},{x:407,y:368,w:12,h:274},{x:419,y:325,w:280,h:12},{x:819,y:325,w:243,h:12}],
@@ -41,13 +41,13 @@ window.LocationLayouts=(()=>{
       cameraBounds:{x0:-.25,x1:11.05,z0:-.45,z1:6.85,height:2.1}
     },
     company:{
-      identity:'sme-office',landmarks:['open-space','sales-board','warehouse'],
+      identity:'sme-office',counterColor:'companyDesk',landmarks:['open-space','sales-board','warehouse'],
       spawn:{x:120,y:600},
       floors:[{x:18,y:18,w:522,h:624,c:'companyTile',pat:'tiles',pc:'companyJoint'},{x:560,y:18,w:502,h:290,c:'companyCarpet',pat:'carpet',pc:'companyWeave'},{x:560,y:328,w:502,h:314,c:'companyConcrete',pat:'tiles',pc:'companyJoint'}],
       walls:[{x:545,y:18,w:12,h:170},{x:545,y:308,w:12,h:334},{x:557,y:313,w:170,h:10},{x:847,y:313,w:215,h:10}],
       doors:[{x:551,y:248,dir:'y',w:120},{x:787,y:318,dir:'x',w:120}],
-      blocks:[{kind:'salesboard',x:270,y:40,w:200,h:16},{kind:'racks',x:1010,y:480,w:60,h:250},{kind:'plant',x:500,y:590,w:30,h:30}],
-      props:[{kind:'pallet',x:900,y:600,w:70,h:50},{kind:'bench',x:90,y:470,w:80,h:32}],
+      blocks:[{kind:'salesboard',x:270,y:40,w:200,h:16},{kind:'racks',x:1010,y:480,w:60,h:250},{kind:'pallet',x:900,y:600,w:70,h:50},{kind:'plant',x:500,y:590,w:30,h:30}],
+      props:[{kind:'bench',x:90,y:470,w:80,h:32}],
       zones:[{x:250,y:120,t:'STREFA HANDLOWA'},{x:800,y:60,t:'ZARZĄD'},{x:390,y:588,t:'IT I KADRY'},{x:800,y:380,t:'OPERACJE I MAGAZYN'}],
       stations:{kmicic:{x:220,y:230,w:195,h:64},papkin:{x:800,y:170,w:230,h:110},gerwazy:{x:230,y:520,w:180,h:86},zagloba:{x:700,y:470,w:85,h:65},klara:{x:420,y:410,w:90,h:60}},
       cameraBounds:{x0:-.25,x1:11.05,z0:-.45,z1:6.85,height:2.05}
@@ -56,7 +56,7 @@ window.LocationLayouts=(()=>{
   function apply(scenes){
     for(const [id,layout] of Object.entries(layouts)){
       const scene=scenes[id];if(!scene)continue;
-      for(const key of ['identity','landmarks','spawn','floors','walls','doors','blocks','props','zones','cameraBounds'])scene[key]=JSON.parse(JSON.stringify(layout[key]));
+      for(const key of ['identity','counterColor','landmarks','spawn','floors','walls','doors','blocks','props','zones','cameraBounds'])scene[key]=JSON.parse(JSON.stringify(layout[key]));
       if(typeof getComputedStyle==='function'){const css=getComputedStyle(document.documentElement);for(const floor of scene.floors)for(const key of ['c','pc'])floor[key]=css.getPropertyValue('--location-'+floor[key]).trim();}
       for(const object of scene.objects)if(layout.stations[object.product])Object.assign(object,layout.stations[object.product]);
     }
