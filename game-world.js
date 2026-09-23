@@ -302,7 +302,12 @@ window.GameWorld=(()=>{
       for(let i=0;i<4;i++)box(x-w/2+.35+i*.45,z+.03,.16,.01,.12+i*.1,'kmicic',1.0);plaque('SPRZEDAŻ – CEL Q3',x,1.55,z+.03,1.6,.2);return;
     }
     if(p.kind==='racks'){
-      for(let i=0;i<3;i++){const rz=z-d/2+.42+i*.83;shelf(x,rz,Math.min(w,.7));box(x,rz,Math.min(w,.7)-.12,.3,.22,'cream',.62,world,.02);}
+      // Pallet racking along the warehouse wall: blue uprights, orange load beams, a pallet with cartons in every bay and level.
+      const bays=3,bay=d/bays,z0=z-d/2;
+      for(let i=0;i<bays;i++){const bz=z0+bay*(i+.5);
+        for(const level of [0,.62,1.24]){box(x,bz,w-.1,bay-.14,.08,'wood',level+(level?.07:0));box(x,bz,w-.16,bay-.26,.36,'cream',level+(level?.15:.08),world,.02);}}
+      for(const level of [.55,1.17])for(const side of [-1,1])box(x+side*(w/2-.03),z,.04,d,.07,'rackBeam',level);
+      for(let i=0;i<=bays;i++)for(const side of [-1,1])box(x+side*(w/2-.03),z0+i*bay,.05,.05,1.85,'rackUpright');
       return;
     }
     if(p.kind==='pallet'){box(x,z,w,d,.12,'wood');box(x,z,w-.1,d-.1,.45,'cream',.12,world,.02);return;}
@@ -415,7 +420,7 @@ window.GameWorld=(()=>{
   }
   function installStyles(){
     const style=document.createElement('style');style.textContent=`
-    :root{--world-aviation:#355c75;--world-apron:#a9bac3;--world-lane:#f0d37d;--world-bankStone:#e9dfcf;--world-brass:#b79a62;--world-civicStone:#e3d5bc;--world-civicRed:#b93040;--world-civicSeat:#4c655b;--world-cork:#c5a47b;--world-zagloba:#197d78;--world-klara:#c2410c;--world-woodGrain:#8e6f4c;}
+    :root{--world-aviation:#355c75;--world-apron:#a9bac3;--world-lane:#f0d37d;--world-bankStone:#e9dfcf;--world-brass:#b79a62;--world-civicStone:#e3d5bc;--world-civicRed:#b93040;--world-civicSeat:#4c655b;--world-cork:#c5a47b;--world-zagloba:#197d78;--world-klara:#c2410c;--world-rackUpright:#2f5d8a;--world-rackBeam:#e07b24;--world-woodGrain:#8e6f4c;}
     :root{--world-paper:#f6f8fa;--world-cream:#d9dfe1;--world-ink:#203342;--world-wood:#b89267;--world-metal:#667c88;--world-upholstery:#456d79;--world-pot:#cbb9a0;--world-soil:#51463b;--world-leaf:#467765;--world-leafLight:#759880;--world-screen:#b2e7e3;--world-screenLine:#368f99;--world-keyboard:#94a6ad;--world-wall:#d3e0e3;--world-glass:#94c7d2;--world-foundation:#344f61;--world-edge:#d5e1e7;--world-tile:#e5ebec;--world-tileLine:#ccd7da;--world-carpet:#bdcbd1;--world-carpetLine:#b4c3ca;--world-airportFloor:#f4f9fc;--world-bankFloor:#efe6dc;--world-officeFloor:#f3eee2;--world-rug:#8596a1;--world-rugInner:#99aab4;--world-threshold:#91a4ae;--world-lamp:#ffeac3;--world-background:#cad7df;--world-light:#fff0da;--world-sky:#e4f1ff;--world-bounce:#869099;--world-shadow:#526b7a;--world-papkin:#795a9c;--world-kmicic:#d20757;--world-gerwazy:#556ac4;--world-marker-shadow:0 5px 16px rgb(28 48 65 / .18);}
     .stage .world-canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;outline:none}
     .world-labels{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}
@@ -440,7 +445,7 @@ window.GameWorld=(()=>{
       try{THREE=await Promise.race([import(THREE_URL),new Promise((_,reject)=>{importTimer=setTimeout(()=>reject(new Error('3D library loading timed out')),10000);})]);}finally{clearTimeout(importTimer);}
       const computed=getComputedStyle(document.documentElement);for(const key of ['paper','cream','ink','wood','metal','upholstery','pot','soil','leaf','leafLight','screen','screenLine','keyboard','wall','glass','foundation','edge','tile','tileLine','carpet','carpetLine','airportFloor','bankFloor','officeFloor','rug','rugInner','threshold','lamp','background','light','sky','bounce','shadow','papkin','kmicic','gerwazy'])colors[key]=computed.getPropertyValue('--world-'+key).trim();
       colors.aircraftNavy=computed.getPropertyValue('--chrome').trim();colors.aircraftPink=computed.getPropertyValue('--brand').trim();
-      for(const key of ['aviation','apron','lane','bankStone','brass','civicStone','civicRed','civicSeat','cork','zagloba','klara','woodGrain'])colors[key]=computed.getPropertyValue('--world-'+key).trim();
+      for(const key of ['aviation','apron','lane','bankStone','brass','civicStone','civicRed','civicSeat','cork','zagloba','klara','rackUpright','rackBeam','woodGrain'])colors[key]=computed.getPropertyValue('--world-'+key).trim();
       renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.75));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.16;
       renderer.domElement.className='world-canvas';renderer.domElement.setAttribute('aria-label','Świat 3D. Kliknij podłogę, aby przejść, lub produkt, aby podejść.');renderer.domElement.setAttribute('role','img');stage.prepend(renderer.domElement);
       labels=document.createElement('div');labels.className='world-labels';stage.insertBefore(labels,renderer.domElement.nextSibling);

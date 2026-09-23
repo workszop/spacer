@@ -37,3 +37,17 @@ assert.ok(!/nacisk/.test(zgProduct.answer),'BCT is crush resistance, not a permi
 const art23=gw.gaps.find(g=>/art\. 23/.test(g[1]));
 assert.match(art23[0],/klient/,'art. 23 duty is framed as a requirement passed down by the client');
 console.log('PASS: review fixes – done card count, grounded Zagłoba figures, NIS2 art. 23 framing');
+// ─── zones and warehouse racks ───
+const stationLabels=company.objects.map(o=>o.label.toLowerCase());
+for(const zone of company.zones)assert.ok(!stationLabels.includes(zone.t.toLowerCase()),`zone "${zone.t}" does not repeat a station label`);
+for(const product of ['gerwazy','klara']){
+  const o=company.objects.find(x=>x.product===product);
+  assert.ok(company.zones.some(z=>Math.hypot(z.x-o.x,z.y-o.y)<=220),`${product} stands in a labelled zone of its own department`);
+}
+const world=fs.readFileSync(path.join(root,'game-world.js'),'utf8');
+const rack3d=world.slice(world.indexOf("p.kind==='racks'"),world.indexOf("p.kind==='pallet'"));
+assert.ok(!/shelf\(/.test(rack3d),'3D racks are pallet racking, not office bookshelves');
+assert.match(rack3d,/rackBeam/,'3D racks have coloured load beams');
+const rack2d=html.slice(html.indexOf("b.kind==='racks'"),html.indexOf("b.kind==='plant'"));
+assert.match(rack2d,/C\.rackBeam/,'canvas racks have the same load beams');
+console.log('PASS: distinct zone labels, IT/HR zone, pallet racking in 3D and canvas');
