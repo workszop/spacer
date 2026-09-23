@@ -7,8 +7,8 @@ for(const scene of Object.values(context.scenes))for(const object of scene.objec
   assert.equal(context.pages[object.product],`https://quanticalab.ai/${object.product}_website.html`);
   count++;
 }
-assert.equal(count,12);
+assert.equal(count,15);
 assert.match(html,/<a[^>]+id="mProductLink"[^>]+target="_blank"[^>]+rel="noopener noreferrer"/);
 assert.match(html,/productLink.href=PRODUCT_PAGES\[obj.product\]/);
 assert.match(html,/productLink.dataset.product=obj.product/);
-console.log('PASS: all 12 examples map to official product pages with a persistent safe external link');
+console.log('PASS: all 15 examples map to official product pages with a persistent safe external link');

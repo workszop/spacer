@@ -36,6 +36,6 @@ for(const [id,sc] of Object.entries(data.scenes)){
     assert.ok(routes.length,`${id}/${obj.product} must be reachable from previous station`);
     from=routes[0].at(-1);
   }
-  assert.equal(sc.objects.length,4,`${id} has four products`);
+  assert.equal(sc.objects.length,5,`${id} has five products`);
   console.log(`PASS: all ${sc.objects.length} ${id} stations reachable without obstacle clipping`);
 }

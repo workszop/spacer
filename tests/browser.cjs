@@ -385,7 +385,7 @@ async function runNavigationSuite() {
     for (const sceneId of ['airport', 'bank', 'office']) {
       await chooseScene(page, sceneId);
       const scene = await localSceneData(page);
-      assert.equal(scene.objects.length, 4, `${sceneId}: cztery obiekty`);
+      assert.equal(scene.objects.length, 5, `${sceneId}: pięć obiektów`);
       for (const object of scene.objects) {
         const candidates = approachCandidates(object).filter(candidate => freeSpot(scene, candidate.x, candidate.y));
         assert.ok(candidates.length >= 3, `${sceneId}/${object.id}: co najmniej trzy wolne podejścia`);
@@ -426,7 +426,8 @@ async function runDemoCompletionSuite() {
       {scene: 'airport', objectId: 'a-papkin', start: 'Uruchom transkrypcję'},
       {scene: 'bank', objectId: 'b-kmicic', start: 'Przetwórz wiadomość'},
       {scene: 'office', objectId: 'o-gerwazy', start: 'Uruchom analizę zgodności'},
-      {scene: 'airport', objectId: 'a-zagloba', start: 'Uruchom wyszukiwanie'}
+      {scene: 'airport', objectId: 'a-zagloba', start: 'Uruchom wyszukiwanie'},
+      {scene: 'bank', objectId: 'b-klara', start: 'Wyślij do Klary'}
     ];
     for (const demo of demos) {
       await chooseScene(page, demo.scene);
@@ -809,7 +810,7 @@ async function runAircraftSuite() {
 
 const TESTS = [
   ['Quantica branding loads official responsive assets and fits the header', runBrandingSuite],
-  ['navigation opens all 12 objects from vertical and side approaches', runNavigationSuite],
+  ['navigation opens all 15 objects from vertical and side approaches', runNavigationSuite],
   ['completion close plus help does not race into done dialog', runCompletionRaceSuite],
   ['all demos complete with result state', runDemoCompletionSuite],
   ['closing a running demo cancels its timers', runCancelOnCloseSuite],

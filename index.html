@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0A1F2C">
 <link rel="icon" type="image/svg+xml" href="assets/brand/favicon.svg">
-<title>Explore the Floor – interaktywne demo (Papkin · Kmicic · Gerwazy · Zagłoba)</title>
+<title>Explore the Floor – interaktywne demo (Papkin · Kmicic · Gerwazy · Zagłoba · Klara)</title>
 <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -92,12 +92,15 @@
   --white:#ffffff;
   --danger:#d87a9a;
   --hud-radius:14px;
-  --dock-width:650px;
+  --dock-width:800px;
   --dock-bottom:14px;
   --dock-type:12px;
   --dock-caption:10px;
   --zagloba:#197d78;
   --zagloba-tint:#e8f5f2;
+  --klara:#c2410c;
+  --klara-tint:#fdf0e8;
+  --klara-mark:#fde2cf;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;}
@@ -399,6 +402,23 @@ header{padding:8px 10px;}
 .about p{font-size:13px;line-height:1.55;color:var(--ink);margin:0 0 8px;}
 .about-src{font-family:var(--font-mono);font-size:10.5px;color:var(--ink-mute);text-decoration:none;}
 .about-src:hover{color:var(--p);}
+/* ─── Klara: chat bubbles, detected data, model routes ─── */
+.kl-chat{display:flex;flex-direction:column;gap:8px;}
+.kl-bubble{max-width:88%;font-size:13px;line-height:1.55;padding:10px 12px;border-radius:14px;}
+.kl-bubble.user{align-self:flex-end;background:var(--klara-tint);color:var(--ink);border:1.5px solid var(--p-soft);border-bottom-right-radius:4px;}
+.kl-bubble.bot{align-self:flex-start;background:var(--surface-raised);color:var(--ink);border:1.5px solid var(--line);border-bottom-left-radius:4px;}
+.kl-who{display:block;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:3px;}
+.kl-pii{background:var(--klara-mark);color:var(--ink);border-radius:4px;padding:0 3px;transition:background var(--transition),color var(--transition);}
+.kl-pii[data-masked="true"]{background:var(--p);color:var(--white);}
+.kl-routes{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.kl-route{border:1.5px dashed var(--line-2);border-radius:var(--radius-md);padding:10px;font-size:12px;color:var(--ink-mute);transition:var(--transition);}
+.kl-route b{display:block;font-size:13px;color:var(--ink-soft);margin-bottom:2px;}
+.kl-route[data-state="on"]{border:2px solid var(--p);background:var(--surface-raised);color:var(--ink);box-shadow:0 0 0 3px var(--p-ring);}
+.kl-route[data-state="on"] b{color:var(--p);}
+.kl-route[data-state="faded"]{opacity:.45;}
+.kl-route[data-state="blocked"]{opacity:.6;border-style:solid;}
+.kl-route .kl-note{display:block;margin-top:6px;font-weight:600;}
+@media(max-width:768px){.kl-routes{grid-template-columns:1fr;}.kl-bubble{max-width:100%;}}
 .kicker .step{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:18px;padding:0 6px;margin-right:8px;border-radius:5px;background:var(--p);color:#fff;font-weight:700;letter-spacing:.04em;}
 .panel.demo,.panel.result{border:2px solid var(--p-soft);box-shadow:0 0 0 3px var(--p-ring);background:var(--surface-raised);}
 .panel.demo .kicker,.panel.result .kicker{color:var(--p);font-weight:700;}
@@ -444,7 +464,7 @@ ul.clean.key li .mk{color:var(--p);}
 #stage .tool-label{display:none;}
 #stage>#btnNext{top:62px!important;right:14px!important;font-size:11px;width:auto;padding:6px 10px;}
 #stage .product-dock{left:50%;right:auto;bottom:var(--dock-bottom);transform:translateX(-50%);width:min(var(--dock-width),calc(100% - 32px));padding:6px;border-radius:12px;box-shadow:var(--shadow-md);}
-#stage .product-list{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;}
+#stage .product-list{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;}
 #stage .product-card{grid-template-columns:24px minmax(0,1fr) 7px;padding:9px 8px;gap:7px;border-color:transparent;background:transparent;box-shadow:none;min-width:0;}
 #stage .product-card:hover,#stage .product-card:focus-visible{background:var(--surface-dim);border-color:var(--line);}
 #stage .product-name{font-size:var(--dock-type);white-space:nowrap;}
@@ -491,7 +511,7 @@ header{flex-wrap:nowrap;min-height:54px;}
       </a>
       <div>
         <h1>Explore the Floor</h1>
-        <div class="label">Quantica Lab · Papkin · Kmicic · Gerwazy · Zagłoba</div>
+        <div class="label">Quantica Lab · Papkin · Kmicic · Gerwazy · Zagłoba · Klara</div>
       </div>
     </div>
     <div class="hud-right">
@@ -564,7 +584,7 @@ header{flex-wrap:nowrap;min-height:54px;}
     <h2 id="doneTitle">Cztery produkty. Jedna lokalizacja. Wszystkie w akcji.</h2>
     <p id="doneLead">Ten sam zestaw sprawdza się w innych realiach. Zobacz, jak pracuje w kolejnej lokalizacji.</p>
     <div class="trio">
-      <span><i style="background:var(--papkin)"></i>Papkin</span><span><i style="background:var(--kmicic)"></i>Kmicic</span><span><i style="background:var(--gerwazy)"></i>Gerwazy</span><span><i style="background:var(--zagloba)"></i>Zagłoba</span>
+      <span><i style="background:var(--papkin)"></i>Papkin</span><span><i style="background:var(--kmicic)"></i>Kmicic</span><span><i style="background:var(--gerwazy)"></i>Gerwazy</span><span><i style="background:var(--zagloba)"></i>Zagłoba</span><span><i style="background:var(--klara)"></i>Klara</span>
     </div>
     <div class="acts">
       <button class="btn btn-brand" id="doneSwitch">Zmień lokalizację</button>
@@ -594,10 +614,11 @@ header{flex-wrap:nowrap;min-height:54px;}
       <div class="help-row"><span class="sw" style="background:var(--kmicic)"></span><b style="color:var(--ink)">Kmicic</b>&nbsp;– zarządca korespondencji (lada / komputer)</div>
       <div class="help-row"><span class="sw" style="background:var(--gerwazy)"></span><b style="color:var(--ink)">Gerwazy</b>&nbsp;– strażnik zgodności (biuro z segregatorami)</div>
       <div class="help-row"><span class="sw" style="background:var(--zagloba)"></span><b style="color:var(--ink)">Zagłoba</b>&nbsp;– asystent wiedzy organizacji (repozytoria i procedury)</div>
+      <div class="help-row"><span class="sw" style="background:var(--klara)"></span><b style="color:var(--ink)">Klara</b>&nbsp;– bezpieczny czat AI (stanowisko z terminalem i lokalnym serwerem)</div>
     </div>
     <div class="help-sec">
       <div class="t">Wskazówka</div>
-      <div class="help-row" style="color:var(--ink-soft)">Stanowiska oznaczone literami K, P, G i Z są interaktywne. Najedź na znacznik lub podejdź do niego, aby zobaczyć nazwę. Ten sam produkt zobaczysz w trzech różnych realiach – to pokazuje, że działa wszędzie.</div>
+      <div class="help-row" style="color:var(--ink-soft)">Stanowiska oznaczone literami K, P, G, Z i Kl są interaktywne. Najedź na znacznik lub podejdź do niego, aby zobaczyć nazwę. Ten sam produkt zobaczysz w trzech różnych realiach – to pokazuje, że działa wszędzie.</div>
     </div>
   </div>
 </div>
@@ -619,18 +640,22 @@ const PRODUCTS={
     features:['Mapuje dokumenty na konkretne wymagania','Wskazuje luki z odniesieniem do przepisu','Proponuje działania naprawcze + wskaźnik zgodności']},
   zagloba:{name:'Zagłoba',tagline:'Inteligentny asystent wiedzy',color:'#197d78',about:'Zagłoba to system RAG zapewniający szybki i bezpieczny dostęp do wiedzy organizacji: przeszukuje zdefiniowane źródła, odpowiada ze wskazaniem dokumentów źródłowych i zachowuje istniejące uprawnienia dostępu. Integruje się z repozytoriami organizacji (m.in. SharePoint, OneDrive, Amazon S3), może działać w pełni lokalnie, a gdy brakuje informacji w bazie, nie tworzy odpowiedzi spekulatywnych.',demo:'knowledge',sourceUrl:'https://quanticalab.ai/zagloba_website.html',
     icon:'<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 5.5v15A2.5 2.5 0 0 1 6.5 18H20"/><path d="M8 7h8M8 10h8M8 13h5"/>',
-    features:['Odpowiada na pytania na podstawie źródeł organizacji','Respektuje istniejące uprawnienia dostępu','Integruje istniejące repozytoria; może działać lokalnie']}
+    features:['Odpowiada na pytania na podstawie źródeł organizacji','Respektuje istniejące uprawnienia dostępu','Integruje istniejące repozytoria; może działać lokalnie']},
+  klara:{name:'Klara',short:'Kl',tagline:'Bezpieczny (i inteligentny) chat AI',color:'#c2410c',about:'Klara to bezpieczny chat AI, który zapewnia pracownikom wygodny dostęp do modeli językowych, a organizacji pozwala zachować kontrolę nad przepływem danych, wykorzystywanymi modelami i kosztami korzystania z AI. Automatycznie chroni dane organizacji, dobiera model odpowiedni do rodzaju i złożoności zadania oraz ogranicza koszty, wykorzystując modele zewnętrzne tylko wtedy, gdy ich możliwości są rzeczywiście potrzebne.',demo:'router',sourceUrl:'https://quanticalab.ai/klara_website.html',
+    icon:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><rect x="9" y="9" width="6" height="5" rx="1"/><path d="M10.5 9V7.5a1.5 1.5 0 0 1 3 0V9"/>',
+    features:['Dane osobowe i poufne zostają w infrastrukturze organizacji','Dobiera model do rodzaju i złożoności zadania','Modele zewnętrzne tylko wtedy, gdy są naprawdę potrzebne']}
 };
 
 const PRODUCT_PAGES={
   papkin:'https://quanticalab.ai/papkin_website.html',
   kmicic:'https://quanticalab.ai/kmicic_website.html',
   gerwazy:'https://quanticalab.ai/gerwazy_website.html',
-  zagloba:PRODUCTS.zagloba.sourceUrl
+  zagloba:PRODUCTS.zagloba.sourceUrl,
+  klara:PRODUCTS.klara.sourceUrl
 };
 
 /* ============================================================
-   SCENES – trzy osobne floory; każdy ma 4 obiekty-triggery,
+   SCENES – trzy osobne floory; każdy ma 5 obiektów-triggerów,
    ściany działowe, dekoracje i dane kontekstowe (spec §4/§5/§9)
    Świat logiczny: 1080 × 660
    ============================================================ */
@@ -675,6 +700,14 @@ const SCENES={
               {title:'Checklista obsługi pasażera – komunikat (przykład)',excerpt:'Komunikat powinien zawierać numer rejsu, poprzednią i nową bramkę oraz prośbę o potwierdzenie odbioru przez zespół obsługi.'}]},
             {id:'restricted',label:'Dokument z ograniczonym dostępem',question:'Pokaż pełną treść zastrzeżonego planu ochrony terminala.',answer:'Nie mogę ujawnić treści tego dokumentu. Źródło jest oznaczone jako dostępne wyłącznie dla uprawnionych osób. Skontaktuj się z właścicielem repozytorium, aby uzyskać dostęp.',sources:[],restricted:true},
             {id:'none',label:'Brak pokrycia w źródłach',question:'Jaka jest procedura dla zamknięcia lotniska przez erupcję wulkanu?',answer:'Nie znalazłem wystarczających informacji w dostępnych źródłach. Nie tworzę odpowiedzi ani cytowań na podstawie domysłów.',sources:[],abstain:true}
+          ]}},
+      {id:'a-klara',product:'klara',type:'chat',label:'Terminal pracownika – czat AI',
+        context:'Dyżurny korzysta z czatu AI przy codziennej pracy – także z danymi pasażerów.',
+        data:{notice:'Polecenia, dane i odpowiedzi są przykładowe (fikcyjne osoby i numery) i służą wyłącznie demonstracji kierowania zapytań.',
+          modes:[
+            {id:'sensitive',label:'Dane osobowe i poufne',prompt:'Podsumuj notatkę o incydencie z udziałem pasażera Jana Kowalskiego, PESEL 85010112345, rezerwacja XK7P2Q.',sensitive:[{text:'Jana Kowalskiego',kind:'imię i nazwisko'},{text:'85010112345',kind:'PESEL'},{text:'XK7P2Q',kind:'numer rezerwacji'}],complexity:'zadanie standardowe',target:'local',badge:'dane pozostają w infrastrukturze organizacji',meta:'model zewnętrzny zablokowany dla tego polecenia',answer:'Podsumowanie: pasażer [OSOBA] zgłosił opóźnione przekazanie bagażu przy bramce G7; sprawę przyjęto, a bagaż dostarczono tego samego dnia. Dane pasażera nie opuściły infrastruktury lotniska.'},
+            {id:'routine',label:'Zadanie rutynowe',prompt:'Popraw styl komunikatu dla pasażerów o opóźnieniu rejsu LO281.',sensitive:[],complexity:'zadanie proste i rutynowe',target:'local',badge:'efektywne wykorzystanie własnej infrastruktury',meta:'koszt: bez opłat za API · jakość: wystarczająca dla zadań rutynowych',answer:'Szanowni Państwo, rejs LO281 jest opóźniony o około 40 minut z powodu warunków pogodowych. Przepraszamy za utrudnienia i prosimy o śledzenie komunikatów przy bramce.'},
+            {id:'complex',label:'Zadanie złożone',prompt:'Przygotuj pogłębioną analizę publicznych danych o punktualności europejskich lotnisk i zaproponuj wskaźniki do naszego raportu.',sensitive:[],complexity:'zadanie wymaga najbardziej zaawansowanego modelu',target:'external',badge:'odpowiednia jakość odpowiedzi dla złożonego zadania',meta:'na zewnątrz trafia wyłącznie treść zadania – bez danych chronionych',answer:'Analiza wskazuje trzy obszary: punktualność odlotów w godzinach szczytu, czas obsługi naziemnej oraz wpływ pogody. Proponowane wskaźniki: odsetek odlotów w 15 min, średni czas turnaround i liczba opóźnień wtórnych.'}
           ]}}
     ]},
 
@@ -715,6 +748,14 @@ const SCENES={
               {title:'Instrukcja obsługi opłat rachunkowych (przykład)',excerpt:'Przed przygotowaniem odpowiedzi sprawdź spełnienie warunku zwolnienia oraz zapisz wynik w historii sprawy.'}]},
             {id:'restricted',label:'Dokument z ograniczonym dostępem',question:'Pokaż pełną treść poufnej polityki kredytowej dla segmentu premium.',answer:'Nie mogę ujawnić treści tego dokumentu. Źródło jest oznaczone jako dostępne wyłącznie dla uprawnionych osób. Skontaktuj się z właścicielem repozytorium, aby uzyskać dostęp.',sources:[],restricted:true},
             {id:'none',label:'Brak pokrycia w źródłach',question:'Jaki będzie jutrzejszy kurs waluty?',answer:'Nie znalazłem wystarczających informacji w dostępnych źródłach. Nie tworzę odpowiedzi ani cytowań na podstawie domysłów.',sources:[],abstain:true}
+          ]}},
+      {id:'b-klara',product:'klara',type:'chat',label:'Stanowisko doradcy – czat AI',
+        context:'Doradca używa czatu AI do korespondencji i analiz – część spraw dotyczy danych klientów.',
+        data:{notice:'Polecenia, dane i odpowiedzi są przykładowe (fikcyjne osoby i numery) i służą wyłącznie demonstracji kierowania zapytań.',
+          modes:[
+            {id:'sensitive',label:'Dane osobowe i poufne',prompt:'Przygotuj odpowiedź na reklamację klientki Anny Nowak, rachunek PL61 1090 1014 0000 0712 1981 2874.',sensitive:[{text:'Anny Nowak',kind:'imię i nazwisko'},{text:'PL61 1090 1014 0000 0712 1981 2874',kind:'numer rachunku'}],complexity:'zadanie standardowe',target:'local',badge:'dane pozostają w infrastrukturze organizacji',meta:'model zewnętrzny zablokowany dla tego polecenia',answer:'Projekt odpowiedzi: Szanowna Pani, dziękujemy za zgłoszenie. Po weryfikacji rachunku [RACHUNEK] opłata zostanie zwrócona w ciągu 3 dni roboczych. Tajemnica bankowa zachowana – dane przetworzone lokalnie.'},
+            {id:'routine',label:'Zadanie rutynowe',prompt:'Skróć i uporządkuj notatkę z porannego spotkania zespołu oddziału.',sensitive:[],complexity:'zadanie proste i rutynowe',target:'local',badge:'efektywne wykorzystanie własnej infrastruktury',meta:'koszt: bez opłat za API · jakość: wystarczająca dla zadań rutynowych',answer:'Notatka: 1) nowy harmonogram dyżurów od poniedziałku, 2) szkolenie z obsługi reklamacji w czwartek, 3) aktualizacja materiałów dla klientów do końca miesiąca.'},
+            {id:'complex',label:'Zadanie złożone',prompt:'Przeanalizuj publiczne komunikaty nadzoru finansowego z ostatniego roku i przygotuj zestawienie zmian istotnych dla oddziałów.',sensitive:[],complexity:'zadanie wymaga najbardziej zaawansowanego modelu',target:'external',badge:'odpowiednia jakość odpowiedzi dla złożonego zadania',meta:'na zewnątrz trafia wyłącznie treść zadania – bez danych chronionych',answer:'Zestawienie obejmuje trzy grupy zmian: obsługa reklamacji i terminy odpowiedzi, wymagania informacyjne wobec klientów oraz odporność operacyjna. Przy każdej grupie wskazano działania dla oddziałów.'}
           ]}}
     ]},
 
@@ -755,6 +796,14 @@ const SCENES={
               {title:'Instrukcja rejestru spraw urzędu (przykład)',excerpt:'Status sprawy aktualizuj po każdym przekazaniu, a w rejestrze zachowaj datę i komórkę odpowiedzialną za kolejny krok.'}]},
             {id:'restricted',label:'Dokument z ograniczonym dostępem',question:'Pokaż pełną treść akt osobowych pracownika urzędu.',answer:'Nie mogę ujawnić treści tego dokumentu. Źródło jest oznaczone jako dostępne wyłącznie dla uprawnionych osób. Skontaktuj się z właścicielem repozytorium, aby uzyskać dostęp.',sources:[],restricted:true},
             {id:'none',label:'Brak pokrycia w źródłach',question:'Jaki termin wynika z lokalnej uchwały, której nie ma w repozytorium?',answer:'Nie znalazłem wystarczających informacji w dostępnych źródłach. Nie tworzę odpowiedzi ani cytowań na podstawie domysłów.',sources:[],abstain:true}
+          ]}},
+      {id:'o-klara',product:'klara',type:'chat',label:'Stanowisko urzędnika – czat AI',
+        context:'Urzędnik korzysta z czatu AI przy pismach – część z nich zawiera dane mieszkańców.',
+        data:{notice:'Polecenia, dane i odpowiedzi są przykładowe (fikcyjne osoby i numery) i służą wyłącznie demonstracji kierowania zapytań.',
+          modes:[
+            {id:'sensitive',label:'Dane osobowe i poufne',prompt:'Streść wniosek o dodatek mieszkaniowy: Maria Wiśniewska, ul. Lipowa 14/3, dochód 2 850 zł na osobę.',sensitive:[{text:'Maria Wiśniewska',kind:'imię i nazwisko'},{text:'ul. Lipowa 14/3',kind:'adres'},{text:'2 850 zł na osobę',kind:'dane o dochodach'}],complexity:'zadanie standardowe',target:'local',badge:'dane pozostają w infrastrukturze organizacji',meta:'model zewnętrzny zablokowany dla tego polecenia',answer:'Streszczenie: wnioskodawczyni [OSOBA] ubiega się o dodatek mieszkaniowy; wniosek zawiera wymagane załączniki, a deklarowany dochód mieści się w progu. Dane mieszkanki pozostały w urzędzie.'},
+            {id:'routine',label:'Zadanie rutynowe',prompt:'Przeredaguj ogłoszenie o godzinach pracy urzędu w okresie świątecznym.',sensitive:[],complexity:'zadanie proste i rutynowe',target:'local',badge:'efektywne wykorzystanie własnej infrastruktury',meta:'koszt: bez opłat za API · jakość: wystarczająca dla zadań rutynowych',answer:'Informujemy, że 24 grudnia urząd będzie czynny w godzinach 8:00–12:00, a 31 grudnia do 13:00. Sprawy pilne można zgłaszać przez elektroniczną skrzynkę podawczą.'},
+            {id:'complex',label:'Zadanie złożone',prompt:'Porównaj publicznie dostępne strategie rozwoju trzech sąsiednich gmin i wskaż wspólne priorytety.',sensitive:[],complexity:'zadanie wymaga najbardziej zaawansowanego modelu',target:'external',badge:'odpowiednia jakość odpowiedzi dla złożonego zadania',meta:'na zewnątrz trafia wyłącznie treść zadania – bez danych chronionych',answer:'Wspólne priorytety to: modernizacja dróg lokalnych, rozwój transportu publicznego między gminami oraz cyfryzacja usług dla mieszkańców. Różnice dotyczą głównie inwestycji w turystykę i tereny przemysłowe.'}
           ]}}
     ]}
 };
@@ -1115,6 +1164,10 @@ function drawObjectBody(o){
     vbox(o.x+26,o.y-5,24,18,2,C.paper,16);vbox(o.x+26,o.y-5,18,2,2,p.color,18);
     vbox(o.x+26,o.y+1,18,2,1.5,C.metal,18);vbox(o.x+26,o.y+7,18,2,1.5,C.metal,18);
     vbox(o.x+39,o.y-5,3,18,4,p.color,16);
+  }else if(o.type==='chat'){
+    // Chat terminal on a small desk next to the organisation's own model server (accent tower = local model).
+    vbox(o.x-10,o.y+5,o.w-24,o.h-10,16,C.desk);monitor(o.x-18,o.y-7,16,26);
+    vbox(o.x+30,o.y,20,o.h-18,34,p.color);for(let i=0;i<3;i++)vbox(o.x+30,o.y+(o.h-18)/2,14,1,2,C.paper,8+i*9);
   }
   // signpost: thin pole + accent plate above the object; the product chip sits on top of the plate
   const sp=signPos(o);
@@ -1124,7 +1177,7 @@ function drawObjectBody(o){
 }
 const SIGN_W=60,SIGN_D=18,SIGN_H=70;
 function signPos(o){return o.type==='table'?[o.x+o.w/2+14,o.y]:[o.type==='shield'?o.x-23:o.x+o.w/4,o.y-o.h/2-8];}
-// flat product icon inside the dashed outline: envelope (Kmicic), list (Papkin), shield (Gerwazy)
+// flat product icon inside the dashed outline: envelope (Kmicic), list (Papkin), shield (Gerwazy), book (Zagłoba), speech bubble (Klara)
 function floorDecal(o,cx,cy,col){
   ctx.save();ctx.strokeStyle=col;ctx.fillStyle=col;ctx.globalAlpha=.32;ctx.lineWidth=2;ctx.lineJoin='round';ctx.lineCap='round';
   const seg=(x0,y0,x1,y1)=>{const a=P(x0,y0,0.6),b=P(x1,y1,0.6);line(a[0],a[1],b[0],b[1]);};
@@ -1132,6 +1185,7 @@ function floorDecal(o,cx,cy,col){
   if(o.type==='mail'){strokePoly([[cx-13,cy-9],[cx+13,cy-9],[cx+13,cy+9],[cx-13,cy+9]]);seg(cx-13,cy-9,cx,cy+1);seg(cx+13,cy-9,cx,cy+1);}
   else if(o.type==='table'){for(let i=-1;i<=1;i++){seg(cx-6,cy+i*8,cx+13,cy+i*8);ctx.beginPath();const s=P(cx-12,cy+i*8,0.6);ctx.ellipse(s[0],s[1],2,2*SP,0,0,Math.PI*2);ctx.fill();}}
   else if(o.type==='shield'){strokePoly([[cx-12,cy-10],[cx,cy-13],[cx+12,cy-10],[cx+11,cy+2],[cx,cy+12],[cx-11,cy+2]]);seg(cx-5,cy,cx-1,cy+4);seg(cx-1,cy+4,cx+6,cy-4);}
+  else if(o.type==='chat'){strokePoly([[cx-13,cy-10],[cx+13,cy-10],[cx+13,cy+5],[cx-3,cy+5],[cx-9,cy+11],[cx-8,cy+5],[cx-13,cy+5]]);seg(cx-7,cy-4,cx+7,cy-4);seg(cx-7,cy,cx+3,cy);}
   else if(o.type==='knowledge'){strokePoly([[cx-12,cy-9],[cx-1,cy-11],[cx+12,cy-8],[cx+12,cy+10],[cx,cy+8],[cx-12,cy+10]]);seg(cx,cy-10,cx,cy+9);seg(cx-8,cy-4,cx-3,cy-5);seg(cx+4,cy-5,cx+9,cy-4);}
   else{strokePoly([[cx-12,cy-10],[cx,cy-13],[cx+12,cy-10],[cx+11,cy+2],[cx,cy+12],[cx-11,cy+2]]);}
   ctx.restore();
@@ -1602,8 +1656,9 @@ function openModal(obj){
   if(p.demo==='mailflow')renderKmicic(d,p,obj);
   if(p.demo==='compliance')renderGerwazy(d,p,obj);
   if(p.demo==='knowledge')renderZagloba(d,p,obj);
+  if(p.demo==='router')renderKlara(d,p,obj);
   demoState[obj.id]='idle';
-  const notice=document.createElement('p');notice.className='demo-notice';notice.textContent='Symulacja na danych przykładowych. Wysyłanie i eksport są symulowane.'+(obj.product==='gerwazy'?' Wynik ilustracyjny, nie ocena prawna.':'');
+  const notice=document.createElement('p');notice.className='demo-notice';notice.textContent='Symulacja na danych przykładowych. Wysyłanie i eksport są symulowane.'+(obj.product==='gerwazy'?' Wynik ilustracyjny, nie ocena prawna.':'')+(obj.product==='klara'?' Symulacja nie wywołuje rzeczywistych modeli.':'');
   // product description first (source: product page on quanticalab.ai), then the disclaimer, then the scene context and the demo
   const about=document.createElement('div');about.className='panel about';
   const aboutKicker=document.createElement('div');aboutKicker.className='kicker';aboutKicker.textContent='O produkcie';
@@ -1842,6 +1897,116 @@ function renderZaglobaResult(mode,p,obj,out){
   out.scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
 }
 
+/* ---- KLARA ---- */
+const KLARA_ROUTES={
+  local:{title:'Model lokalny',where:'infrastruktura organizacji'},
+  external:{title:'Model zewnętrzny',where:'Quantica APIQ (modele hostowane przez Quantica) lub frontier API (OpenAI, Anthropic, Gemini)'}
+};
+function klaraPrompt(mode){
+  // Prompt text with each detected fragment wrapped in a .kl-pii mark (built via DOM, never innerHTML).
+  const frag=document.createDocumentFragment();let rest=mode.prompt;
+  for(const item of mode.sensitive||[]){
+    const at=rest.indexOf(item.text);if(at<0)continue;
+    frag.appendChild(document.createTextNode(rest.slice(0,at)));
+    const mark=document.createElement('mark');mark.className='kl-pii';mark.dataset.kind=item.kind;mark.dataset.masked='false';mark.textContent=item.text;mark.title=item.kind;frag.appendChild(mark);
+    rest=rest.slice(at+item.text.length);
+  }
+  frag.appendChild(document.createTextNode(rest));return frag;
+}
+function klaraBubble(who,cls){
+  const bubble=document.createElement('div');bubble.className='kl-bubble '+cls;
+  const label=document.createElement('span');label.className='kl-who';label.textContent=who;bubble.appendChild(label);return bubble;
+}
+function klaraPanel(step,title,cls){
+  const panel=document.createElement('div');panel.className='panel '+cls;
+  const kicker=document.createElement('div');kicker.className='kicker';kicker.innerHTML=`<span class="step">${step}</span>`;kicker.appendChild(document.createTextNode(title));
+  panel.appendChild(kicker);return panel;
+}
+function renderKlara(d,p,obj){
+  const modes=Array.isArray(d.modes)?d.modes:[],variantButtons=[];
+  let selected=modes[0]||null,userBubble=null;
+  mBody.innerHTML=contextLine(obj.context);
+
+  const chatPanel=klaraPanel('01','Czat pracownika','demo');
+  const chat=document.createElement('div');chat.className='kl-chat';chat.setAttribute('aria-live','polite');
+  const variantGroup=document.createElement('div');variantGroup.setAttribute('role','radiogroup');variantGroup.setAttribute('aria-label','Rodzaj polecenia');variantGroup.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:7px;margin-top:10px';
+  const notice=document.createElement('div');notice.style.cssText='font-size:11px;line-height:1.45;color:var(--ink-soft);margin-top:8px';notice.textContent=d.notice||'';
+  chatPanel.append(chat,variantGroup,notice);
+
+  const out=document.createElement('div');out.id='kl-out';out.setAttribute('aria-live','polite');
+  mBody.append(chatPanel,out);
+  const featureBlock=document.createElement('div');featureBlock.innerHTML=featuresBlock(p);mBody.append(featureBlock.firstElementChild);
+
+  const go=mkBtn('btn-primary','Wyślij do Klary',ICON_PLAY);go.style.background=p.color;go.disabled=!selected;
+  const pill=spanLocal();pill.lastChild.textContent='Decyzja w infrastrukturze organizacji';
+  mFoot.innerHTML='';mFoot.append(pill,go);
+
+  const updateSelection=()=>variantButtons.forEach((button,index)=>{
+    const active=modes[index]===selected;button.dataset.selected=String(active);button.setAttribute('aria-checked',String(active));
+    button.style.borderColor=active?p.color:'';button.style.background=active?'var(--klara-tint)':'';button.style.color=active?'var(--tool-ink-strong)':'';
+  });
+  const selectMode=mode=>{
+    selected=mode;chat.replaceChildren();out.replaceChildren();out.dataset.mode=mode?.id||'';out.dataset.state='idle';out.dataset.target='';go.disabled=!selected;updateSelection();
+    if(mode){userBubble=klaraBubble('Pracownik','user');userBubble.appendChild(klaraPrompt(mode));chat.appendChild(userBubble);}
+    if(obj)setDemoState(obj,'idle');
+  };
+  modes.forEach(mode=>{
+    const button=document.createElement('button');button.type='button';button.className='btn btn-secondary';button.style.cssText='width:100%;justify-content:flex-start;text-align:left;padding:8px 10px;font-size:12px';button.textContent=mode.label;button.setAttribute('role','radio');button.setAttribute('aria-checked','false');
+    button.dataset.mode=mode.id;button.addEventListener('click',()=>selectMode(mode));variantButtons.push(button);variantGroup.appendChild(button);
+  });
+  variantGroup.addEventListener('keydown',event=>{
+    const index=variantButtons.indexOf(event.target);if(index<0||event.target.disabled)return;
+    const direction=['ArrowRight','ArrowDown'].includes(event.key)?1:['ArrowLeft','ArrowUp'].includes(event.key)?-1:0;
+    if(!direction)return;event.preventDefault();const next=(index+direction+modes.length)%modes.length;selectMode(modes[next]);variantButtons[next].focus();
+  });
+  selectMode(selected);
+
+  go.onclick=()=>{
+    const mode=selected;if(!mode)return;
+    go.disabled=true;variantButtons.forEach(button=>{button.disabled=true;});setDemoState(obj,'running');out.replaceChildren();out.dataset.state='running';out.dataset.target='';
+    const sensitive=mode.sensitive||[],kinds=[...new Set(sensitive.map(item=>item.kind))];
+
+    // 02: security, complexity and model decision light up one after another
+    const analysis=klaraPanel('02','Analiza zapytania','result');
+    const checks=[
+      {text:sensitive.length?'bezpieczeństwo danych: wykryto '+kinds.join(', '):'bezpieczeństwo danych: brak danych chronionych',flag:sensitive.length>0},
+      {text:'stopień złożoności: '+mode.complexity,flag:false},
+      {text:'decyzja o wyborze modelu: '+KLARA_ROUTES[mode.target].title.toLowerCase(),flag:false}
+    ].map(check=>{const row=document.createElement('div');row.className='check';const dot=document.createElement('span');dot.className='dot';const label=document.createElement('span');label.textContent=check.text;row.append(dot,label);analysis.appendChild(row);return {row,dot,flag:check.flag};});
+    out.appendChild(analysis);
+    checks.forEach((check,index)=>later(()=>{
+      check.row.classList.add(check.flag?'gap':'ok');
+      check.dot.innerHTML=check.flag?'<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>':'<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>';
+      if(index===0&&userBubble)userBubble.querySelectorAll('.kl-pii').forEach(mark=>{mark.dataset.masked='true';});
+    },450+index*600));
+
+    // 03: routing – the chosen model lights up, the other fades or is blocked for protected data
+    later(()=>{
+      const routing=klaraPanel('03','Wybór modelu','result reveal');
+      const routes=document.createElement('div');routes.className='kl-routes';
+      for(const key of ['local','external']){
+        const card=document.createElement('div');card.className='kl-route';card.dataset.route=key;
+        card.dataset.state=key===mode.target?'on':(key==='external'&&sensitive.length?'blocked':'faded');
+        const title=document.createElement('b');title.textContent=KLARA_ROUTES[key].title;const where=document.createElement('span');where.textContent=KLARA_ROUTES[key].where;card.append(title,where);
+        if(card.dataset.state!=='faded'){const note=document.createElement('span');note.className='kl-note';note.textContent=card.dataset.state==='on'?mode.badge:'zablokowany – dane nie opuszczają organizacji';card.appendChild(note);}
+        routes.appendChild(card);
+      }
+      const meta=document.createElement('div');meta.style.cssText='font-size:12px;color:var(--ink-mute);margin-top:8px';meta.textContent=mode.meta;
+      routing.append(routes,meta);out.appendChild(routing);out.dataset.target=mode.target;
+      routing.scrollIntoView({block:'nearest'});
+    },2300);
+
+    // 04: Klara answers in the same chat, labelled with the model that handled it
+    later(()=>{
+      const answerPanel=klaraPanel('04','Odpowiedź Klary','result reveal');
+      const bubble=klaraBubble('Klara · '+KLARA_ROUTES[mode.target].title.toLowerCase(),'bot');bubble.appendChild(document.createTextNode(mode.answer));
+      answerPanel.appendChild(bubble);out.appendChild(answerPanel);out.dataset.state='result';
+      markCompleted(obj);go.disabled=false;variantButtons.forEach(button=>{button.disabled=false;});
+      out.scrollIntoView({block:'nearest',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+    },3300);
+  };
+}
+
 /* ---- ui helpers ---- */
 const ICON_CHECK='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>', ICON_PLAY='<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M6 4.5v15l13-7.5z"/></svg>';
 function mkBtn(cls,label,icon){const b=document.createElement('button');b.className='btn '+cls;
@@ -1877,6 +2042,12 @@ function probe(){
   if(activeObject?.product==='zagloba'){
     const output=document.getElementById('zg-out');
     if(!output||!activeObject.data.modes.some(mode=>mode.id===output.dataset.mode)||output.dataset.state!==demoState[activeObject.id])failures.push('knowledge-state-contract');
+  }
+  if(activeObject?.product==='klara'){
+    const output=document.getElementById('kl-out'),mode=activeObject.data.modes.find(m=>m.id===output?.dataset.mode);
+    if(!output||!mode||output.dataset.state!==demoState[activeObject.id])failures.push('router-state-contract');
+    // protected data must never be shown as routed to an external model
+    else if(output.dataset.target&&(output.dataset.target!==mode.target||(mode.sensitive.length&&output.dataset.target!=='local')))failures.push('router-privacy-contract');
   }
   if(stage.dataset.completed!==snapshot.completedAll.join(','))failures.push('completion-dom-contract');
   if(dialogs.filter(dialog=>dialog.classList.contains('show')).length>1)failures.push('multiple-dialogs');
