@@ -666,9 +666,9 @@ async function runWebglSuite() {
   try {
     const renderer = await page.evaluate(() => document.querySelector('#stage')?.dataset.renderer);
     assert.equal(renderer, 'webgl', 'tryb --webgl wymaga gotowego renderera WebGL');
-    const world = await page.evaluate(() => App.world?.());
+    // The first frame lands on the next animation frame after the renderer reports ready.
+    const world = await waitFor(page, 'pierwsza klatka WebGL', () => App.world?.()?.frames > 0 ? App.world() : false, 2000);
     assert.equal(world?.renderer, 'webgl', `App.world raportuje WebGL: ${JSON.stringify(world)}`);
-    assert.ok(world?.frames > 0, `WebGL renderuje klatki: ${JSON.stringify(world)}`);
     await chooseScene(page, 'company');
     const zones = await waitFor(page, 'etykiety stref w WebGL', () => {
       const snapshot = App.world?.();
@@ -841,6 +841,80 @@ async function runAircraftSuite() {
   } finally { await page.close().catch(() => {}); }
 }
 
+async function runPickerCardsSuite() {
+  const {page} = await newPage();
+  try {
+    await waitFor(page, 'picker widoczny', () => document.querySelector('#pickerOv')?.classList.contains('show'), 2500);
+    const cards = await waitFor(page, 'obrazy pięter załadowane', () => {
+      const list = [...document.querySelectorAll('#cards .card')].map(card => ({
+        scene: card.dataset.scene,
+        image: card.querySelector('.thumb img')?.naturalWidth || 0,
+        dots: card.querySelectorAll('.dots i').length,
+        objects: SCENES[card.dataset.scene].objects.length,
+        sector: card.querySelector('.sector')?.textContent.trim(),
+        key: card.querySelector('.key')?.textContent
+      }));
+      return list.length && list.every(card => card.image > 0) ? list : false;
+    }, 4000);
+    assert.deepEqual(cards.map(card => card.scene), await page.evaluate(() => Object.keys(SCENES)), 'karta dla każdej lokalizacji, w kolejności SCENES');
+    cards.forEach((card, index) => {
+      assert.equal(card.dots, card.objects, `${card.scene}: kropka postępu dla każdego stanowiska`);
+      assert.ok(card.sector, `${card.scene}: etykieta sektora`);
+      assert.equal(card.key, String(index + 1), `${card.scene}: podpowiedź klawisza`);
+    });
+    await page.keyboard.press('2');
+    await waitFor(page, 'klawisz 2 otwiera drugą lokalizację', id => App.snapshot().sceneId === id && App.snapshot().dialog === null, 2500, cards[1].scene);
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
+async function runWebglExteriorSuite() {
+  const {page} = await newPage();
+  try {
+    const expected = {
+      airport: ['aircraft'],
+      bank: ['logo-wall', 'ticket-display', 'cash-van', 'street-atm'],
+      office: ['town-clock', 'coat-of-arms', 'town-square', 'flag-row', 'bus-stop'],
+      company: ['loading-dock', 'truck', 'forklift']
+    };
+    for (const [sceneId, names] of Object.entries(expected)) {
+      await chooseScene(page, sceneId);
+      const world = await waitFor(page, `${sceneId}: świat zbudowany`, id => App.world()?.sceneId === id ? App.world() : false, 2500, sceneId);
+      const built = sceneId === 'airport' ? (world.aircraft ? ['aircraft'] : []) : world.landmarks;
+      for (const name of names) assert.ok(built.includes(name), `${sceneId}: zbudowano ${name} (${built})`);
+      const contract = await page.evaluate(() => document.querySelector('#stage').dataset.landmarks.split(','));
+      for (const name of names.filter(name => name !== 'aircraft')) assert.ok(contract.includes(name), `${sceneId}: ${name} w data-landmarks`);
+      if (sceneId === 'airport') assert.equal(world.ambient, 0, 'lotnisko bez animacji tła, więc pozostaje bezczynne');
+    }
+
+    // Ambient life renders while idle, stops while a dialog pauses the world and under reduced motion.
+    await chooseScene(page, 'company');
+    const before = await page.evaluate(() => App.world().frames);
+    await delay(400);
+    assert.ok(await page.evaluate(() => App.world().frames) > before, 'wózek widłowy animuje się bez udziału gracza');
+    await page.locator('#btnHelp').click();
+    await waitFor(page, 'help pauzuje świat', () => document.querySelector('#helpOv')?.classList.contains('show'), 1500);
+    await delay(150);
+    const paused = await page.evaluate(() => App.world().frames);
+    await delay(400);
+    assert.equal(await page.evaluate(() => App.world().frames), paused, 'pauza zatrzymuje animacje tła');
+    await page.locator('#helpClose').click();
+    await page.emulateMedia({reducedMotion: 'reduce'});
+    await delay(200);
+    const reduced = await page.evaluate(() => App.world().frames);
+    await delay(400);
+    assert.equal(await page.evaluate(() => App.world().frames), reduced, 'prefers-reduced-motion wyłącza animacje tła');
+    await page.emulateMedia({reducedMotion: 'no-preference'});
+
+    await chooseScene(page, 'bank');
+    const ticket = await page.evaluate(() => App.world().ticket);
+    await waitFor(page, 'numerek w banku się zmienia', start => App.world().ticket !== start, 6000, ticket);
+  } finally {
+    await page.close().catch(() => {});
+  }
+}
+
 const TESTS = [
   ['Quantica branding loads official responsive assets and fits the header', runBrandingSuite],
   ['navigation opens all 20 objects from vertical and side approaches', runNavigationSuite],
@@ -850,6 +924,7 @@ const TESTS = [
   ['switching location cancels a running demo', runCancelOnSwitchSuite],
   ['Kmicic editor is read-only after send', runKmicicReadOnlySuite],
   ['picker fits short landscape viewport', runPickerFitSuite],
+  ['picker cards show floor images, progress dots and number keys', runPickerCardsSuite],
   ['help fits short landscape viewport', runHelpFitSuite],
   ['done card fits short landscape viewport', runDoneFitSuite],
   ['focus returns to the dock opener', runFocusSuite],
@@ -864,6 +939,7 @@ if (WEBGL_MODE) {
   TESTS.push(['WebGL camera invalidation and movement produce frames', runWebglCameraMovementSuite]);
   TESTS.push(['WebGL scene rebuild geometry and textures do not accumulate', runWebglSceneRebuildSuite]);
   TESTS.push(['WebGL context loss enters canvas fallback and preserves demo flow', runWebglContextLossSuite]);
+  TESTS.push(['WebGL exteriors are built and ambient life respects pause and reduced motion', runWebglExteriorSuite]);
 }
 
 async function main() {

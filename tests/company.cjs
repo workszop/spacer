@@ -81,3 +81,15 @@ const palette=html.slice(html.indexOf('const C={'),html.indexOf('};',html.indexO
 for(const token of ['rackUpright','rackBeam'])assert.match(palette,new RegExp(token+":cssToken\\('--world-"+token+"'\\)"),`canvas ${token} reads the shared token`);
 assert.ok(!/--world-rack/.test(world.slice(world.indexOf('function installStyles'))),'rack tokens are defined once, in index.html');
 console.log('PASS: sign depth, pallet decks, pallet collision, counter colour data, WebGL zone labels, shared rack tokens');
+// ─── distinct floors (2026-09-23) ───
+for(const [id,sc] of Object.entries(context.scenes)){
+  assert.ok(sc.style&&typeof sc.style==='object',id+': layout carries a per-floor style');
+  for(const key of ['wallColor','trim','band','sky','sun','zoneInk'])if(sc.style[key])assert.ok(world.includes("'"+sc.style[key]+"'")||html.includes('--world-'+sc.style[key]+':'),`${id}: style.${key} "${sc.style[key]}" is a defined token`);
+}
+assert.ok(context.scenes.bank.cameraBounds.x1>12&&context.scenes.company.cameraBounds.x1>13&&context.scenes.office.cameraBounds.x0<-3,'camera frames each exterior');
+const racks=company.blocks.find(b=>b.kind==='racks');assert.ok(racks.y-racks.h/2>=435,'racks leave the dock door (z 3.45–4.35) clear');
+assert.ok(company.props.some(p=>p.kind==='tape'),'hazard tape marks the racking aisle');
+for(const id of Object.keys(context.scenes))assert.ok(fs.existsSync(path.join(root,'assets','floors',id+'.jpg')),id+': picker image rendered (node tools/render-floor-images.cjs)');
+assert.match(html,/SCENE_SECTOR=\{/,'picker cards name each sector');
+for(const id of Object.keys(context.scenes))assert.match(html,new RegExp('--loc-'+id+':'),id+': picker accent token');
+console.log('PASS: per-floor styles, exterior camera bounds, dock clearance, hazard tape, picker images and accents');

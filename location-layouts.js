@@ -1,11 +1,11 @@
 /* ─── Location identity: one plan shared by rendering and collision detection ─── */
 window.LocationLayouts=(()=>{
   if(typeof document!=='undefined'){
-    const style=document.createElement('style');style.textContent=':root{--location-terminalTile:#E5EEF2;--location-terminalJoint:#D2DFE5;--location-terminalCarpet:#D5E4E8;--location-terminalWeave:#C4D6DC;--location-bankStone:#E8E0D3;--location-bankJoint:#D7CABB;--location-bankCarpet:#CBD8D0;--location-bankWeave:#B8C9BE;--location-civicStone:#EEE6D7;--location-civicJoint:#DDD1BA;--location-civicWood:#D5B994;--location-civicGrain:#B99B74;--location-civicCarpet:#E1E5D9;--location-civicWeave:#CDD4C2;--location-companyTile:#E9ECEF;--location-companyJoint:#D6DCE0;--location-companyCarpet:#D3DDE6;--location-companyWeave:#C1CEDA;--location-companyConcrete:#DDDAD4}';document.head.appendChild(style);
+    const style=document.createElement('style');style.textContent=':root{--location-terminalTile:#E5EEF2;--location-terminalJoint:#D2DFE5;--location-terminalCarpet:#D5E4E8;--location-terminalWeave:#C4D6DC;--location-bankStone:#56766A;--location-bankJoint:#46655A;--location-bankCarpet:#DCCDB6;--location-bankWeave:#CDBBA0;--location-civicStone:#F2E6CF;--location-civicJoint:#E0CDAA;--location-civicWood:#CFA473;--location-civicGrain:#AE8456;--location-civicCarpet:#E1E5D9;--location-civicWeave:#CDD4C2;--location-companyTile:#E9ECEF;--location-companyJoint:#D6DCE0;--location-companyCarpet:#D3DDE6;--location-companyWeave:#C1CEDA;--location-companyConcrete:#C8C7C2}';document.head.appendChild(style);
   }
   const layouts={
     airport:{
-      identity:'terminal',counterColor:'aviation',landmarks:['aircraft','departures','boarding-gate'],
+      identity:'terminal',counterColor:'aviation',style:{},landmarks:['aircraft','departures','boarding-gate'],
       spawn:{x:110,y:590},
       floors:[{x:18,y:18,w:1044,h:310,c:'terminalTile',pat:'tiles',pc:'terminalJoint'},{x:18,y:338,w:662,h:304,c:'terminalCarpet',pat:'carpet',pc:'terminalWeave'},{x:700,y:338,w:362,h:304,c:'terminalTile',pat:'tiles',pc:'terminalJoint'}],
       walls:[{x:685,y:338,w:10,h:90},{x:685,y:548,w:10,h:94},{x:695,y:333,w:367,h:10}],
@@ -17,7 +17,8 @@ window.LocationLayouts=(()=>{
       cameraBounds:{x0:-.25,x1:11.05,z0:-4.15,z1:6.85,height:1.9}
     },
     bank:{
-      identity:'financial-lobby',counterColor:'wood',landmarks:['vault','atm','teller-counter'],
+      identity:'financial-lobby',counterColor:'wood',landmarks:['vault','atm','teller-counter','logo-wall','ticket-display','cash-van','street-atm'],
+      style:{wallColor:'bankStone',trim:'brass',band:'brass',sky:'skyWarm',sun:'sunWarm',zoneInk:'zoneOnDark'},
       spawn:{x:510,y:600},
       floors:[{x:18,y:18,w:672,h:624,c:'bankStone',pat:'tiles',pc:'bankJoint'},{x:710,y:18,w:352,h:624,c:'bankCarpet',pat:'carpet',pc:'bankWeave'}],
       walls:[{x:695,y:18,w:12,h:228},{x:695,y:366,w:12,h:276}],
@@ -26,10 +27,11 @@ window.LocationLayouts=(()=>{
       props:[{kind:'atm',x:85,y:210},{kind:'bench',x:210,y:590,w:105,h:34}],
       zones:[{x:235,y:365,t:'OBSŁUGA KLIENTA'}],
       stations:{kmicic:{x:235,y:465,w:210,h:66},papkin:{x:405,y:175,w:225,h:105},gerwazy:{x:890,y:490,w:180,h:86},zagloba:{x:530,y:455,w:85,h:65},klara:{x:920,y:320,w:90,h:60}},
-      cameraBounds:{x0:-.25,x1:11.05,z0:-.5,z1:6.85,height:2.05}
+      cameraBounds:{x0:-.25,x1:13.6,z0:-.5,z1:6.85,height:2.05}
     },
     office:{
-      identity:'civic-hall',counterColor:'civicStone',landmarks:['civic-facade','polish-flag','noticeboard','council-chamber'],
+      identity:'civic-hall',counterColor:'civicStone',landmarks:['civic-facade','polish-flag','noticeboard','council-chamber','town-clock','coat-of-arms','town-square','flag-row','bus-stop'],
+      style:{wallColor:'civicStone',trim:'paper',band:'civicRed'},
       spawn:{x:285,y:605},
       floors:[{x:18,y:18,w:387,h:624,c:'civicStone',pat:'tiles',pc:'civicJoint'},{x:425,y:18,w:637,h:305,c:'civicWood',pat:'planks',pc:'civicGrain'},{x:425,y:343,w:637,h:299,c:'civicCarpet',pat:'carpet',pc:'civicWeave'}],
       walls:[{x:407,y:18,w:12,h:230},{x:407,y:368,w:12,h:274},{x:419,y:325,w:280,h:12},{x:819,y:325,w:243,h:12}],
@@ -38,25 +40,26 @@ window.LocationLayouts=(()=>{
       props:[{kind:'flag',x:1000,y:75},{kind:'bench',x:95,y:480,w:80,h:32}],
       zones:[{x:220,y:220,t:'BIURO OBSŁUGI MIESZKAŃCA'},{x:600,y:70,t:'SALA RADY'}],
       stations:{kmicic:{x:220,y:325,w:185,h:64},papkin:{x:720,y:200,w:245,h:110},gerwazy:{x:845,y:500,w:180,h:86},zagloba:{x:535,y:475,w:85,h:65},klara:{x:670,y:585,w:90,h:60}},
-      cameraBounds:{x0:-.25,x1:11.05,z0:-.45,z1:6.85,height:2.1}
+      cameraBounds:{x0:-3.45,x1:11.05,z0:-.45,z1:6.85,height:2.1}
     },
     company:{
-      identity:'sme-office',counterColor:'companyDesk',landmarks:['open-space','sales-board','warehouse'],
+      identity:'sme-office',counterColor:'companyDesk',landmarks:['open-space','sales-board','warehouse','loading-dock','truck','forklift'],
+      style:{wallColor:'cream',band:'rackBeam',sky:'skyCool',sun:'sunCool'},
       spawn:{x:120,y:600},
       floors:[{x:18,y:18,w:522,h:624,c:'companyTile',pat:'tiles',pc:'companyJoint'},{x:560,y:18,w:502,h:290,c:'companyCarpet',pat:'carpet',pc:'companyWeave'},{x:560,y:328,w:502,h:314,c:'companyConcrete',pat:'tiles',pc:'companyJoint'}],
       walls:[{x:545,y:18,w:12,h:170},{x:545,y:308,w:12,h:334},{x:557,y:313,w:170,h:10},{x:847,y:313,w:215,h:10}],
       doors:[{x:551,y:248,dir:'y',w:120},{x:787,y:318,dir:'x',w:120}],
-      blocks:[{kind:'salesboard',x:270,y:40,w:200,h:16},{kind:'racks',x:1010,y:480,w:60,h:250},{kind:'pallet',x:900,y:600,w:70,h:50},{kind:'plant',x:500,y:590,w:30,h:30}],
-      props:[{kind:'bench',x:90,y:470,w:80,h:32}],
+      blocks:[{kind:'salesboard',x:270,y:40,w:200,h:16},{kind:'racks',x:1010,y:540,w:60,h:170},{kind:'pallet',x:900,y:600,w:70,h:50},{kind:'plant',x:500,y:590,w:30,h:30}],
+      props:[{kind:'bench',x:90,y:470,w:80,h:32},{kind:'tape',x:965,y:540,w:8,h:180}],
       zones:[{x:250,y:120,t:'STREFA HANDLOWA'},{x:800,y:60,t:'ZARZĄD'},{x:390,y:588,t:'IT I KADRY'},{x:800,y:380,t:'OPERACJE I MAGAZYN'}],
       stations:{kmicic:{x:220,y:230,w:195,h:64},papkin:{x:800,y:170,w:230,h:110},gerwazy:{x:230,y:520,w:180,h:86},zagloba:{x:700,y:470,w:85,h:65},klara:{x:420,y:410,w:90,h:60}},
-      cameraBounds:{x0:-.25,x1:11.05,z0:-.45,z1:6.85,height:2.05}
+      cameraBounds:{x0:-.25,x1:14.3,z0:-.45,z1:6.85,height:2.05}
     }
   };
   function apply(scenes){
     for(const [id,layout] of Object.entries(layouts)){
       const scene=scenes[id];if(!scene)continue;
-      for(const key of ['identity','counterColor','landmarks','spawn','floors','walls','doors','blocks','props','zones','cameraBounds'])scene[key]=JSON.parse(JSON.stringify(layout[key]));
+      for(const key of ['identity','counterColor','style','landmarks','spawn','floors','walls','doors','blocks','props','zones','cameraBounds'])scene[key]=JSON.parse(JSON.stringify(layout[key]));
       if(typeof getComputedStyle==='function'){const css=getComputedStyle(document.documentElement);for(const floor of scene.floors)for(const key of ['c','pc'])floor[key]=css.getPropertyValue('--location-'+floor[key]).trim();}
       for(const object of scene.objects)if(layout.stations[object.product])Object.assign(object,layout.stations[object.product]);
     }

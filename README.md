@@ -17,3 +17,17 @@ No build step.
 ```sh
 node tests/run.cjs
 ```
+
+Browser suites (Playwright; add `--webgl` for the 3D renderer):
+
+```sh
+CHROME_PATH=/usr/bin/google-chrome node tests/browser.cjs
+```
+
+## Picker images
+
+The location picker shows renders of each floor from `assets/floors/<scene>.jpg`. Re-render them after changing a floor's layout or 3D models:
+
+```sh
+CHROME_PATH=/usr/bin/google-chrome node tools/render-floor-images.cjs
+```

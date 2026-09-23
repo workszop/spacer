@@ -61,6 +61,12 @@
   --world-rackUpright:#2f5d8a;
   --world-rackBeam:#e07b24;
   --world-zone:#8a8397;
+  --loc-airport:#355c75;
+  --loc-bank:#2f5f4f;
+  --loc-office:#b93040;
+  --loc-company:#b8570f;
+  --world-zoneOnDark:#e6dbbd;
+  --world-hazard:#f2c230;
   --kicker:#557386;
   --tool-ink:#466579;
   --tool-ink-strong:#14374d;
@@ -228,16 +234,6 @@ to{opacity:1;transform:none;}
 .done .cta{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;}
 .done .cta a{color:var(--brand);font-weight:700;text-decoration:none;}
 .done .cta a:hover{color:var(--brand-deep);}
-.picker{background:var(--bg-main);border-radius:var(--radius-lg);width:min(1060px,100%);box-shadow:var(--shadow-lg);animation:pop .2s ease;}
-.picker h2{font-size:1.3rem;color:var(--ink);font-weight:700;letter-spacing:-.02em;margin-bottom:4px;}
-.picker .lead{font-size:13.5px;margin-bottom:20px;}
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
-.card{border:1.5px solid var(--line);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:var(--transition);text-align:left;}
-.card:hover{transform:translateY(-3px);}
-.card .thumb{height:96px;border:1px solid var(--line);border-radius:var(--radius-md);background:var(--bg-floor);margin-bottom:12px;overflow:hidden;}
-.card h3{font-size:1rem;font-weight:700;margin-bottom:3px;}
-.card p{font-size:12px;line-height:1.45;}
-.card .go{margin-top:11px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;}
 .help{background:var(--bg-main);border-radius:var(--radius-lg);width:min(460px,100%);padding:24px;box-shadow:var(--shadow-lg);animation:pop .18s ease;}
 .help h2{font-size:1.15rem;color:var(--ink);font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
 .help h2 button{background:transparent;border:none;color:var(--ink-soft);cursor:pointer;padding:4px;border-radius:6px;}
@@ -245,6 +241,36 @@ to{opacity:1;transform:none;}
 .help-sec{margin-bottom:16px;}
 .help-sec:last-child{margin-bottom:0;}
 .picker,.help,.done{max-height:calc(100dvh - 40px);overflow-y:auto;overscroll-behavior:contain;}
+/* ─── Location picker: full-screen cards with pre-rendered floors (assets/floors) ─── */
+#pickerOv{padding:16px;align-items:stretch;justify-content:stretch;}
+#pickerOv .picker{width:100%;height:100%;max-height:none;display:flex;flex-direction:column;padding:24px 26px;border-radius:var(--radius-lg);animation:pop .2s ease;}
+.picker h2{font-size:1.5rem;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;color:var(--ink);}
+.picker .lead{font-size:13.5px;margin-bottom:18px;max-width:80ch;color:var(--ink-soft);}
+.cards{flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,1fr);grid-auto-rows:1fr;gap:14px;}
+.card{--loc:var(--line-2);display:flex;flex-direction:row;min-height:0;padding:0;overflow:hidden;border:1.5px solid var(--line);border-left:5px solid var(--loc);border-radius:var(--radius-lg);background:var(--surface-raised);color:inherit;font:inherit;text-align:left;cursor:pointer;transition:var(--transition);}
+.card:hover,.card:focus-visible{transform:translateY(-3px);border-color:var(--loc);box-shadow:0 14px 28px var(--card-shadow);outline:none;}
+.card .thumb{flex:1;min-width:0;position:relative;overflow:hidden;background:var(--surface-dim);}
+.card .thumb img,.card .thumb svg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.card .thumb img{transition:transform .35s ease;}
+.card:hover .thumb img{transform:translateY(-4px);}
+.card .key{position:absolute;top:10px;left:10px;min-width:22px;padding:2px 6px;border-radius:5px;background:var(--glass-surface);border:1px solid var(--glass-border);color:var(--ink);font-family:var(--font-mono);font-size:11px;text-align:center;}
+.card .body{flex:0 0 clamp(220px,34%,320px);display:flex;flex-direction:column;justify-content:center;gap:6px;padding:18px 20px;border-left:1px solid var(--line);}
+.card .sector{font-family:var(--font-mono);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--loc);}
+.card h3{font-size:1.25rem;font-weight:700;color:var(--ink);}
+.card p{font-size:13px;line-height:1.5;color:var(--ink-soft);}
+.card .foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;}
+.card .dots{display:flex;gap:5px;}
+.card .dots i{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--dot);}
+.card .dots i[data-state="visited"]{box-shadow:inset 0 0 0 2px var(--surface-raised);background:var(--dot);}
+.card .dots i[data-state="completed"]{background:var(--dot);}
+.card .go{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--loc);}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+.card .dots,.card .go{flex-shrink:0;}
+/* narrow or short screens: stacked cards (image above text) that scroll inside the picker */
+@media(max-width:900px),(max-height:560px){#pickerOv .picker{overflow-y:auto;}.cards{flex:none;grid-auto-rows:auto;}.card{flex-direction:column;border-left-width:1.5px;border-top:5px solid var(--loc);}.card .thumb{flex:none;height:150px;}.card .body{flex:none;border-left:0;border-top:1px solid var(--line);padding:14px 16px;}.card h3{font-size:1.1rem;}.card p{font-size:12.5px;}}
+@media(max-height:560px){.card .thumb{height:110px;}.picker .lead{margin-bottom:10px;}}
+@media(max-width:768px){#pickerOv{padding:8px;}#pickerOv .picker{padding:16px;}.cards{gap:10px;}.picker .lead{margin-bottom:12px;}}
+@media(max-width:560px){.cards{grid-template-columns:1fr;}}
 .done .trio{flex-wrap:wrap;}
 .help-sec .t{font-family:var(--font-mono);font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-soft);margin-bottom:8px;}
 .help-row{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink);padding:4px 0;}
@@ -252,12 +278,9 @@ to{opacity:1;transform:none;}
 .help-row .sw{width:13px;height:13px;border-radius:4px;flex-shrink:0;}
 @media(max-width:1100px){
 .brand .label{display:none;}
-.cards{grid-template-columns:repeat(2,1fr);}
 }
 @media(max-width:760px){
 header{flex-wrap:wrap;min-height:0;}
-.cards{grid-template-columns:1fr;}
-.card .thumb{height:80px;}
 }
 .modal:focus,.picker:focus,.help:focus{outline:none;}
 :focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
@@ -336,19 +359,7 @@ to{transform:none;opacity:1;}
 .reply-editor{display:block;width:100%;resize:vertical;min-height:112px;padding:12px;border:1px solid var(--editor-border);border-radius:9px;background:var(--surface-raised);color:var(--ink);font:inherit;line-height:1.55;box-shadow:0 0 0 3px var(--editor-ring);}
 .reply-editor:focus{outline:2px solid var(--teal);outline-offset:1px;}
 .picker,.help,.done{background:var(--surface-raised);border:1px solid var(--picker-border);box-shadow:0 24px 60px var(--modal-shadow);}
-.picker{padding:26px;}
-.picker h2,.help h2,.done h2{color:var(--ink);}
-.picker .lead{color:var(--ink-soft);}
-.card{background:var(--surface-raised);border-color:var(--line);}
-.card:hover{border-color:var(--danger);box-shadow:0 10px 22px var(--card-shadow);}
-.card h3{color:var(--ink);}
-.card p{color:var(--ink-soft);}
-.card .go{color:var(--accent-deep);}
-.overlay:has(.picker) .card{min-height:208px;}
-.overlay:has(.picker) .card .thumb{background:var(--surface-dim);border-color:var(--card-thumb);}
-.overlay:has(.picker) .card[data-completed="true"]{border-color:var(--state-result-border);}
-.overlay:has(.picker) .card .scene-status{display:flex;justify-content:space-between;align-items:center;margin-top:10px;color:var(--kicker);font-family:var(--font-mono);font-size:10px;}
-.overlay:has(.picker) .card .scene-status strong{color:var(--ok);}
+.help h2,.done h2{color:var(--ink);}
 .dialog-status{display:flex;align-items:center;gap:7px;color:var(--kicker);font-size:11px;}
 .dialog-status .dot{width:7px;height:7px;border-radius:50%;background:var(--ok);}
 @media(max-width:768px){
@@ -377,15 +388,6 @@ header{padding:8px 10px;}
 .m-body{padding:16px 18px;}
 .m-head{padding:16px 18px 13px;}
 .m-foot{padding:11px 18px;}
-.picker{padding:20px;}
-.cards{gap:9px;}
-.overlay:has(.picker) .card{min-height:0;display:grid;grid-template-columns:76px 1fr auto;grid-template-rows:auto auto;gap:0 10px;padding:10px;}
-.overlay:has(.picker) .card .thumb{grid-row:1 / span 2;height:76px;margin:0;}
-.overlay:has(.picker) .card h3{align-self:end;}
-.overlay:has(.picker) .card p{align-self:start;}
-.overlay:has(.picker) .card .go{grid-column:3;grid-row:1 / span 2;align-self:center;font-size:0;}
-.overlay:has(.picker) .card .go svg{width:18px;height:18px;}
-.overlay:has(.picker) .card .scene-status{grid-column:2;margin-top:4px;}
 }
 @media(max-width:420px){
 .brand h1{font-size:.9rem;}
@@ -611,6 +613,7 @@ header{flex-wrap:nowrap;min-height:54px;}
       <div class="help-row"><kbd>E</kbd> / klik w obiekt – uruchom mini-demo</div>
       <div class="help-row"><kbd>N</kbd> – tryb prezentera: skok do kolejnego obiektu</div>
       <div class="help-row"><kbd>Esc</kbd> – zamknij panel</div>
+      <div class="help-row"><kbd>1</kbd>–<kbd data-count="scenes" data-form="num">4</kbd> – wybór lokalizacji w oknie wyboru</div>
     </div>
     <div class="help-sec">
       <div class="t">Produkty</div>
@@ -918,6 +921,7 @@ const cssToken=name=>getComputedStyle(document.documentElement).getPropertyValue
 const NUM_WORDS={nom:['zero','jeden','dwa','trzy','cztery','pięć','sześć','siedem','osiem','dziewięć'],gen:['zera','jednego','dwóch','trzech','czterech','pięciu','sześciu','siedmiu','ośmiu','dziewięciu']};
 function countPhrase(n,form,noun){
   if(form==='ratio')return n+'/'+n;
+  if(form==='num')return String(n);
   const word=NUM_WORDS[form]?.[n]??String(n),few=n%10>=2&&n%10<=4&&(n%100<10||n%100>=20);
   return noun?word+' '+noun+(form==='nom'&&few?'y':'ów'):word;
 }
@@ -1035,7 +1039,7 @@ function vbox(cx,cy,w,d,h,col,z0){
 // flat rectangle on the floor (tints, outlines)
 function fpoly(x0,y0,x1,y1,h){return [P(x0,y0,h),P(x1,y0,h),P(x1,y1,h),P(x0,y1,h)];}
 function ftext(txt,wx,wy,h){const q=P(wx,wy,h);ctx.fillText(txt,q[0],q[1]);}
-const C={rackUpright:cssToken('--world-rackUpright'),rackBeam:cssToken('--world-rackBeam'),wall:'#DDD5E2',wallTop:'#F3EEF5',skirt:'#5E5468',desk:'#F1F0EC',wood:'#E7DCCB',metal:'#8E97A6',dark:'#4B5563',seat:'#6B6577',pot:'#C98B6B',leaf:'#5FA97A',leaf2:'#3F8A5E',screen:'#7FF5E8',stripe:'#4F1F75',paper:'#FFFFFF',chair:'#B9B3C2',
+const C={rackUpright:cssToken('--world-rackUpright'),rackBeam:cssToken('--world-rackBeam'),hazard:cssToken('--world-hazard'),wall:'#DDD5E2',wallTop:'#F3EEF5',skirt:'#5E5468',desk:'#F1F0EC',wood:'#E7DCCB',metal:'#8E97A6',dark:'#4B5563',seat:'#6B6577',pot:'#C98B6B',leaf:'#5FA97A',leaf2:'#3F8A5E',screen:'#7FF5E8',stripe:'#4F1F75',paper:'#FFFFFF',chair:'#B9B3C2',
   shadow:'rgba(43,39,51,.14)',glow:'rgba(127,245,232,.22)',
   cream:'#F4EFE3',cream2:'#E9E1CF',tape:'#d20757',post:'#7A7386',cart:'#8A004C',cartBar:'#B9B3C2',atm:'#4F46E5',atmDark:'#3730A3',
   cooler:'#DDF3F7',coolerBase:'#8E97A6',printer:'#E8E6EA',printerDark:'#5F5A66',board:'#2B2733',boardFrame:'#8E97A6',
@@ -1219,7 +1223,13 @@ function drawProp(p){
   else if(p.kind==='bench'||p.kind==='seats'||p.kind==='plant'||p.kind==='cabinet'||p.kind==='deskPC'||p.kind==='checkin')drawBlock(p);   // furniture kinds may also appear as decoration
   else vbox(p.x,p.y,p.w||16,p.h||16,10,C.metal);                                                                 // unknown kind: visible placeholder instead of nothing
 }
-// flat rug: drawn in the floor pass (before standing things)
+// flat floor props (rug, hazard tape): drawn in the floor pass, before standing things
+const FLAT_PROPS=new Set(['rug','tape']);
+function drawTape(p){
+  const along=p.h>p.w,length=along?p.h:p.w,count=Math.max(1,Math.round(length/10)),x0=p.x-p.w/2,y0=p.y-p.h/2;
+  for(let i=0;i<count;i++){const a=i*length/count,b=(i+1)*length/count;ctx.fillStyle=i%2?C.dark:C.hazard;poly(along?fpoly(x0,y0+a,x0+p.w,y0+b,.5):fpoly(x0+a,y0,x0+b,y0+p.h,.5));}
+}
+// flat rug
 function drawRug(p){
   const w=p.w||140,d=p.h||90,x0=p.x-w/2,y0=p.y-d/2,x1=p.x+w/2,y1=p.y+d/2;
   ctx.fillStyle=p.c||C.rugA;ctx.globalAlpha=.85;ctx.beginPath();fpoly(x0,y0,x1,y1,0.4).forEach((q,i)=>i?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]));ctx.closePath();ctx.fill();
@@ -1400,14 +1410,14 @@ function draw(){
     for(let y=0;y<=H;y+=40){const a=P(0,y,0),b=P(W,y,0);line(a[0],a[1],b[0],b[1]);}}
   for(const f of SC.floors||[])if(f.pat)floorPattern(f);
   const props=SC.props||[],doors=SC.doors||[];
-  for(const p of props)if(p.kind==='rug')drawRug(p);
+  for(const p of props)if(p.kind==='rug')drawRug(p);else if(p.kind==='tape')drawTape(p);
   for(const d of doors)doorThreshold(d);
   // soft shadows under furniture and props, warm pools under lamps
   for(const b of SC.blocks){const fp=footprint(b);shadow(b.x,b.y,fp[0],fp[1]);}
-  for(const p of props)if(p.kind!=='rug'){const fp=footprint(p);shadow(p.x,p.y,fp[0],fp[1]);if(p.kind==='lamp')floorGlow(p.x,p.y);}
+  for(const p of props)if(!FLAT_PROPS.has(p.kind)){const fp=footprint(p);shadow(p.x,p.y,fp[0],fp[1]);if(p.kind==='lamp')floorGlow(p.x,p.y);}
   for(const o of SC.objects){if(o.type==='table'){shadow(o.x,o.y,o.w-48,52);for(const dx of [-60,-20,20,60]){shadow(o.x+dx,o.y-42,14,14);shadow(o.x+dx,o.y+42,14,14);}}else shadow(o.x,o.y,o.w,o.h);}
   // zone labels + object floor decals
-  ctx.save();ctx.textAlign='center';ctx.font='500 11px "Geist Mono"';ctx.fillStyle=ZONE;
+  ctx.save();ctx.textAlign='center';ctx.font='500 11px "Geist Mono"';ctx.fillStyle=SC.style?.zoneInk?cssToken('--world-'+SC.style.zoneInk):ZONE;
   for(const z of SC.zones)ftext(z.t,z.x,z.y,0);ctx.restore();
   for(const o of SC.objects)drawObjectFloor(o,nearObj===o);
   // player halo on the floor
@@ -1427,7 +1437,7 @@ function draw(){
   for(const w of SC.walls)push(w.x+w.w/2,w.y+w.h,()=>wallBox(w.x+w.w/2,w.y+w.h/2,w.w,w.h,WALL_H_MAX,wp));
   for(const d of doors)push(d.x,d.y+(d.dir==='x'?5:d.w/2),()=>drawDoor(d,wp));
   for(const b of SC.blocks)push(b.x,b.y+(b.h||16)/2,()=>drawBlock(b));
-  for(const p of props)if(p.kind!=='rug')push(p.x,p.y+footprint(p)[1]/2,()=>drawProp(p));
+  for(const p of props)if(!FLAT_PROPS.has(p.kind))push(p.x,p.y+footprint(p)[1]/2,()=>drawProp(p));
   for(const o of SC.objects)push(o.x,o.y+o.h/2+(o.type==='table'?36:0),()=>drawObjectBody(o));
   push(player.x,player.y+6,()=>{
     const q=P(player.x,player.y,0);
@@ -1449,6 +1459,7 @@ function draw(){
 addEventListener('keydown',e=>{
   const k=e.key.toLowerCase();
   if(k==='escape'){closeAll();return;}
+  if(pickerOv.classList.contains('show')&&/^[1-9]$/.test(k)){const card=cards.children[Number(k)-1];if(card){e.preventDefault();card.click();}return;}
   if(uiOpen())return;                                   // dialogs own the keyboard
   keys[k]=true;
   if(k==='e'&&nearObj)openModal(nearObj);
@@ -1636,19 +1647,23 @@ const SCENE_DESC={
   office:'Biuro podawcze, sala sesji rady, pokój ds. zgodności i stanowisko wiedzy urzędu.',
   company:'Dział sprzedaży, sala zarządu, IT (NIS2), baza wiedzy o produktach i czat AI dla całej firmy.'
 };
+const SCENE_SECTOR={airport:'Transport',bank:'Finanse',office:'Sektor publiczny',company:'MŚP · produkcja'};
 function buildPicker(){
   cards.innerHTML='';
-  for(const [id,s] of Object.entries(SCENES)){
+  for(const [index,[id,s]] of Object.entries(SCENES).entries()){
     const sceneVisited=progressAll[id]?.visited||{},sceneCompleted=progressAll[id]?.completed||{};
     const objectCount=s.objects.length;
     const visitedCount=s.objects.filter(o=>sceneVisited[o.id]).length,completedCount=s.objects.filter(o=>sceneCompleted[o.id]).length;
-    const c=document.createElement('button');c.className='card';
+    const c=document.createElement('button');c.className='card';c.style.setProperty('--loc',`var(--loc-${id})`);
     c.dataset.scene=id;c.dataset.visited=String(visitedCount>0);c.dataset.completed=String(completedCount===s.objects.length);
-    c.innerHTML=`<div class="thumb">${sceneThumb(id)}</div>
+    const dots=s.objects.map(o=>`<i style="--dot:${PRODUCTS[o.product].color}" data-state="${sceneCompleted[o.id]?'completed':sceneVisited[o.id]?'visited':'idle'}" title="${PRODUCTS[o.product].name}"></i>`).join('');
+    c.innerHTML=`<div class="thumb"><img src="assets/floors/${id}.jpg" alt="" decoding="async"><span class="key" aria-hidden="true">${index+1}</span></div>
+      <div class="body"><span class="sector">${SCENE_SECTOR[id]||''}</span>
       <h3>${s.name.split('–')[0].trim()}</h3>
       <p>${SCENE_DESC[id]}</p>
-      <span class="scene-status"><span>${visitedCount}/${objectCount} poznano</span><strong>${completedCount}/${objectCount} ukończone</strong></span>
-      <span class="go">Wejdź <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>`;
+      <div class="foot"><span class="dots" aria-hidden="true">${dots}</span><span class="sr-only">Poznano ${visitedCount} z ${objectCount}, ukończono ${completedCount} z ${objectCount}.</span>
+      <span class="go">Wejdź <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></div></div>`;
+    c.querySelector('img').addEventListener('error',e=>{e.target.outerHTML=sceneThumb(id);},{once:true});
     c.onclick=()=>{chosen=true;loadScene(id);document.getElementById('btnSwitch').focus();};
     cards.appendChild(c);
   }
