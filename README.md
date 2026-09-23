@@ -1,6 +1,6 @@
 # Explore the Floor
 
-Interactive three-location demo. Live: https://workszop.github.io/spacer/
+Interactive four-location demo. Live: https://workszop.github.io/spacer/
 
 ## Run
 

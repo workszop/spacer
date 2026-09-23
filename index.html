@@ -225,10 +225,10 @@ to{opacity:1;transform:none;}
 .done .cta{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;}
 .done .cta a{color:var(--brand);font-weight:700;text-decoration:none;}
 .done .cta a:hover{color:var(--brand-deep);}
-.picker{background:var(--bg-main);border-radius:var(--radius-lg);width:min(820px,100%);box-shadow:var(--shadow-lg);animation:pop .2s ease;}
+.picker{background:var(--bg-main);border-radius:var(--radius-lg);width:min(1060px,100%);box-shadow:var(--shadow-lg);animation:pop .2s ease;}
 .picker h2{font-size:1.3rem;color:var(--ink);font-weight:700;letter-spacing:-.02em;margin-bottom:4px;}
 .picker .lead{font-size:13.5px;margin-bottom:20px;}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
 .card{border:1.5px solid var(--line);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:var(--transition);text-align:left;}
 .card:hover{transform:translateY(-3px);}
 .card .thumb{height:96px;border:1px solid var(--line);border-radius:var(--radius-md);background:var(--bg-floor);margin-bottom:12px;overflow:hidden;}
@@ -249,6 +249,7 @@ to{opacity:1;transform:none;}
 .help-row .sw{width:13px;height:13px;border-radius:4px;flex-shrink:0;}
 @media(max-width:1100px){
 .brand .label{display:none;}
+.cards{grid-template-columns:repeat(2,1fr);}
 }
 @media(max-width:760px){
 header{flex-wrap:wrap;min-height:0;}
@@ -572,7 +573,7 @@ header{flex-wrap:nowrap;min-height:54px;}
 <div class="overlay" id="pickerOv">
   <div class="picker" role="dialog" aria-modal="true" aria-labelledby="pickerTitle" tabindex="-1">
     <h2 id="pickerTitle">Wybierz lokalizację</h2>
-  <p class="lead">Zwiedzaj plan budynku, podejdź do obiektów i uruchom mini-demo czterech produktów AI Quantica Lab. Bez timera, bez punktów. Czysta eksploracja.</p>
+  <p class="lead">Zwiedzaj plan budynku, podejdź do obiektów i uruchom mini-demo pięciu produktów AI Quantica Lab. Bez timera, bez punktów. Czysta eksploracja.</p>
     <div class="cards" id="cards"></div>
   </div>
 </div>
@@ -618,7 +619,7 @@ header{flex-wrap:nowrap;min-height:54px;}
     </div>
     <div class="help-sec">
       <div class="t">Wskazówka</div>
-      <div class="help-row" style="color:var(--ink-soft)">Stanowiska oznaczone literami K, P, G, Z i Kl są interaktywne. Najedź na znacznik lub podejdź do niego, aby zobaczyć nazwę. Ten sam produkt zobaczysz w trzech różnych realiach – to pokazuje, że działa wszędzie.</div>
+      <div class="help-row" style="color:var(--ink-soft)">Stanowiska oznaczone literami K, P, G, Z i Kl są interaktywne. Najedź na znacznik lub podejdź do niego, aby zobaczyć nazwę. Ten sam produkt zobaczysz w czterech różnych realiach – to pokazuje, że działa wszędzie.</div>
     </div>
   </div>
 </div>
@@ -655,7 +656,7 @@ const PRODUCT_PAGES={
 };
 
 /* ============================================================
-   SCENES – trzy osobne floory; każdy ma 5 obiektów-triggerów,
+   SCENES – cztery osobne floory; każdy ma 5 obiektów-triggerów,
    ściany działowe, dekoracje i dane kontekstowe (spec §4/§5/§9)
    Świat logiczny: 1080 × 660
    ============================================================ */
@@ -1608,11 +1609,11 @@ const SCENE_DESC={
   airport:'Hala odpraw, centrum operacyjne, dział ochrony i stanowisko wiedzy portu lotniczego.',
   bank:'Sala obsługi klienta, sala narad, dział compliance i stanowisko wiedzy oddziału.',
   office:'Biuro podawcze, sala sesji rady, pokój ds. zgodności i stanowisko wiedzy urzędu.',
-  company:'Dział sprzedaży, sala zarządu, IT i bezpieczeństwo (NIS2), baza wiedzy o produktach i procesach oraz czat AI dla wszystkich działów.'
+  company:'Dział sprzedaży, sala zarządu, IT (NIS2), baza wiedzy o produktach i czat AI dla całej firmy.'
 };
 function buildPicker(){
   cards.innerHTML='';
-  for(const id of ['airport','bank','office']){
+  for(const id of ['airport','bank','office','company']){
     const s=SCENES[id];
     const sceneVisited=progressAll[id]?.visited||{},sceneCompleted=progressAll[id]?.completed||{};
     const objectCount=s.objects.length;

@@ -371,7 +371,7 @@ async function newPage({viewport = DEFAULT_VIEWPORT, clock = false} = {}) {
     waitUntil: 'domcontentloaded',
     timeout: 10000
   });
-  await waitFor(page, 'aplikacja i picker', () => Boolean(window.App?.getWorldState && document.querySelectorAll('#cards .card').length === 3), 6000);
+  await waitFor(page, 'aplikacja i picker', () => Boolean(window.App?.getWorldState && document.querySelectorAll('#cards .card').length === 4), 6000);
   await waitFor(page, `renderer ${WEBGL_MODE ? 'WebGL' : 'canvas'}`, () => {
     const renderer = document.querySelector('#stage')?.dataset.renderer;
     return renderer && renderer !== 'loading';
@@ -382,7 +382,7 @@ async function newPage({viewport = DEFAULT_VIEWPORT, clock = false} = {}) {
 async function runNavigationSuite() {
   const {page} = await newPage();
   try {
-    for (const sceneId of ['airport', 'bank', 'office']) {
+    for (const sceneId of ['airport', 'bank', 'office', 'company']) {
       await chooseScene(page, sceneId);
       const scene = await localSceneData(page);
       assert.equal(scene.objects.length, 5, `${sceneId}: pięć obiektów`);
@@ -427,7 +427,9 @@ async function runDemoCompletionSuite() {
       {scene: 'bank', objectId: 'b-kmicic', start: 'Przetwórz wiadomość'},
       {scene: 'office', objectId: 'o-gerwazy', start: 'Uruchom analizę zgodności'},
       {scene: 'airport', objectId: 'a-zagloba', start: 'Uruchom wyszukiwanie'},
-      {scene: 'bank', objectId: 'b-klara', start: 'Wyślij do Klary'}
+      {scene: 'bank', objectId: 'b-klara', start: 'Wyślij do Klary'},
+      {scene: 'company', objectId: 'c-kmicic', start: 'Przetwórz wiadomość'},
+      {scene: 'company', objectId: 'c-klara', start: 'Wyślij do Klary'}
     ];
     for (const demo of demos) {
       await chooseScene(page, demo.scene);
@@ -490,6 +492,23 @@ async function runCancelOnSwitchSuite() {
       return state.completed['a-gerwazy'] === true || state.demoState['a-gerwazy'] === 'result';
     });
     assert.equal(oldScene, false, 'demo anulowane przy zmianie lokalizacji nie kończy się po przełączeniu');
+    // same guarantee leaving the company floor
+    await chooseScene(page, 'company');
+    await openObject(page, 'c-papkin');
+    await page.locator('#mFoot .btn').filter({hasText: 'Uruchom transkrypcję'}).click();
+    await waitFor(page, 'Papkin (firma) running przed zmianą lokalizacji', () => App.snapshot().objects.find(object => object.id === 'c-papkin')?.demoState === 'running', 1500);
+    await page.locator('#mClose').click();
+    await page.locator('#btnSwitch').click();
+    await page.locator('#cards .card[data-scene="airport"]').click();
+    await waitFor(page, 'lotnisko po wyjściu z firmy', () => App.snapshot().sceneId === 'airport', 3000);
+    assert.ok(await page.evaluate(() => App.snapshot().objects.every(object => object.demoState !== 'running')), 'brak osieroconych demo po zmianie lokalizacji');
+    await advance(page, DEMO_SETTLE_MS, clockInstalled);
+    await chooseScene(page, 'company');
+    const companyScene = await page.evaluate(() => {
+      const state = App.getWorldState();
+      return state.completed['c-papkin'] === true || state.demoState['c-papkin'] === 'result';
+    });
+    assert.equal(companyScene, false, 'demo w firmie anulowane przy zmianie lokalizacji');
   } finally {
     await page.close().catch(() => {});
   }
@@ -810,7 +829,7 @@ async function runAircraftSuite() {
 
 const TESTS = [
   ['Quantica branding loads official responsive assets and fits the header', runBrandingSuite],
-  ['navigation opens all 15 objects from vertical and side approaches', runNavigationSuite],
+  ['navigation opens all 20 objects from vertical and side approaches', runNavigationSuite],
   ['completion close plus help does not race into done dialog', runCompletionRaceSuite],
   ['all demos complete with result state', runDemoCompletionSuite],
   ['closing a running demo cancels its timers', runCancelOnCloseSuite],

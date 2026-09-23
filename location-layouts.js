@@ -49,7 +49,7 @@ window.LocationLayouts=(()=>{
       blocks:[{kind:'salesboard',x:270,y:40,w:200,h:16},{kind:'racks',x:1010,y:480,w:60,h:250},{kind:'plant',x:500,y:590,w:30,h:30}],
       props:[{kind:'pallet',x:900,y:600,w:70,h:50},{kind:'bench',x:90,y:470,w:80,h:32}],
       zones:[{x:250,y:120,t:'DZIAŁ SPRZEDAŻY'},{x:800,y:60,t:'SALA ZARZĄDU'},{x:800,y:380,t:'OPERACJE I MAGAZYN'}],
-      stations:{kmicic:{x:220,y:230,w:195,h:64},papkin:{x:800,y:170,w:230,h:110},gerwazy:{x:300,y:470,w:180,h:86},zagloba:{x:700,y:470,w:85,h:65},klara:{x:430,y:340,w:90,h:60}},
+      stations:{kmicic:{x:220,y:230,w:195,h:64},papkin:{x:800,y:170,w:230,h:110},gerwazy:{x:230,y:520,w:180,h:86},zagloba:{x:700,y:470,w:85,h:65},klara:{x:420,y:410,w:90,h:60}},
       cameraBounds:{x0:-.25,x1:11.05,z0:-.45,z1:6.85,height:2.05}
     }
   };

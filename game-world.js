@@ -249,7 +249,7 @@ window.GameWorld=(()=>{
       // Ordinary SME office front: parapet, window band and the company sign.
       wall(5.4,.1,10.8,.16,1.25,'cream');
       for(let x=.8;x<10.6;x+=1.25)box(x,.19,1.0,.02,.62,'glass',.42);
-      plaque('FALKARTON SP. Z O.O.',2.6,1.08,.2,2.2,.25);
+      plaque('FALKARTON SP. Z O.O.',8.1,1.08,.2,2.2,.25);
       return;
     }
     wall(5.4,.1,10.8,.18,1.35,'civicStone');
