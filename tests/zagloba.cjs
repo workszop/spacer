@@ -12,17 +12,18 @@ for(const [id,scene] of Object.entries(context.scenes)){
   const object=scene.objects.find(o=>o.product==='zagloba');
   assert.ok(object,`${id}: knowledge workstation`);
   assert.equal(object.type,'knowledge');
-  assert.deepEqual(Array.from(object.data.modes,m=>m.id),['source','restricted','none']);
-  const [source,restricted,none]=object.data.modes;
-  assert.ok(source.sources.length>=1&&source.sources.every(s=>s.title&&s.excerpt),'answer can be verified in source excerpts');
+  const ids=Array.from(object.data.modes,m=>m.id);
+  assert.equal(ids[0],'source');assert.deepEqual(ids.slice(-2),['restricted','none']);
+  const source=object.data.modes[0],[restricted,none]=object.data.modes.slice(-2);
+  for(const mode of object.data.modes.slice(0,-2))assert.ok(mode.sources.length>=1&&mode.sources.every(s=>s.title&&s.excerpt)&&!mode.restricted&&!mode.abstain,`${id}/${mode.id}: answer can be verified in source excerpts`);
   assert.ok(restricted.restricted&&restricted.sources.length===0,'restricted source is not exposed');
   assert.ok(none.abstain&&none.sources.length===0,'no coverage means no invented citations');
   assert.ok(object.data.notice.includes('przykładowe'),'illustrative-fixture disclosure');
   questions.add(source.question);
 }
-assert.equal(questions.size,3,'context-specific knowledge questions');
+assert.equal(questions.size,4,'context-specific knowledge questions');
 const originalProducts=Object.fromEntries(Object.entries(context.products).filter(([key])=>!['zagloba','klara'].includes(key)));
-const originalObjects=Object.values(context.scenes).flatMap(s=>s.objects.filter(o=>!['zagloba','klara'].includes(o.product)).map(({id,label,context,data})=>({id,label,context,data})));
+const originalObjects=Object.entries(context.scenes).filter(([id])=>['airport','bank','office'].includes(id)).map(([,s])=>s).flatMap(s=>s.objects.filter(o=>!['zagloba','klara'].includes(o.product)).map(({id,label,context,data})=>({id,label,context,data})));
 const digest=crypto.createHash('sha256').update(JSON.stringify({products:originalProducts,objects:originalObjects})).digest('hex');
 assert.equal(digest,'86e2137b469586acd0d7c7ed9c9c0599893e4c2cf962a7eb3c28decbad7ad145','original nine demo payloads and product copy are immutable (digest updated 2026-09-05: about texts added from quanticalab.ai)');
-console.log('PASS: 15 demos, knowledge variants, source safety, unique contexts, original copy SHA-256');
+console.log('PASS: 20 demos, knowledge variants, source safety, unique contexts, original copy SHA-256');

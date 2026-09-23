@@ -31,5 +31,5 @@ for(const [id,scene] of Object.entries(context.scenes)){
   assert.equal(complex.target,'external','complex public-data work may use an external model');
   assert.ok(object.data.notice.includes('przykładowe'),'illustrative-fixture disclosure');
 }
-assert.equal(prompts.size,9,'context-specific prompts per location');
-console.log('PASS: Klara in 3 locations, privacy routing invariant, masked data never echoed, unique prompts');
+assert.equal(prompts.size,12,'context-specific prompts per location');
+console.log('PASS: Klara in 4 locations, privacy routing invariant, masked data never echoed, unique prompts');

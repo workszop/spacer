@@ -245,6 +245,13 @@ window.GameWorld=(()=>{
       plaque('BANK',5.95,.99,.23,1.1,.33,'bankStone','ink');
       return;
     }
+    if(id==='company'){
+      // Ordinary SME office front: parapet, window band and the company sign.
+      wall(5.4,.1,10.8,.16,1.25,'cream');
+      for(let x=.8;x<10.6;x+=1.25)box(x,.19,1.0,.02,.62,'glass',.42);
+      plaque('FALKARTON SP. Z O.O.',2.6,1.08,.2,2.2,.25);
+      return;
+    }
     wall(5.4,.1,10.8,.18,1.35,'civicStone');
     for(const x of [.75,2.05,4.75,6.1,7.45,8.8,10.1]){
       box(x,.205,.67,.026,.7,'glass',.4);box(x,.23,.75,.13,.06,'paper',.35);
@@ -290,6 +297,15 @@ window.GameWorld=(()=>{
     const x=p.x/100,z=p.y/100,w=(p.w||70)/100,d=(p.h||35)/100;
     if(p.kind==='rug'){box(x,z,p.w/100,p.h/100,.006,'rug',.021,world,.04);box(x,z,p.w/100-.08,p.h/100-.08,.004,'rugInner',.028,world,.035);return;}
     if(p.kind==='plant'){plant(x,z,1.1);return;}
+    if(p.kind==='salesboard'){
+      box(x,z,w,.04,.9,'paper',.9);for(const side of [-1,1])box(x+side*(w/2-.04),z,.04,.06,1.8,'metal');
+      for(let i=0;i<4;i++)box(x-w/2+.35+i*.45,z+.03,.16,.01,.12+i*.1,'kmicic',1.0);plaque('SPRZEDAŻ – CEL Q3',x,1.55,z+.03,1.6,.2);return;
+    }
+    if(p.kind==='racks'){
+      for(let i=0;i<3;i++){const rz=z-d/2+.42+i*.83;shelf(x,rz,Math.min(w,.7));box(x,rz,Math.min(w,.7)-.12,.3,.22,'cream',.62,world,.02);}
+      return;
+    }
+    if(p.kind==='pallet'){box(x,z,w,d,.12,'wood');box(x,z,w-.1,d-.1,.45,'cream',.12,world,.02);return;}
     if(p.kind==='gatepost'){box(x,z,w,d,.65,'aviation');return;}
     if(p.kind==='deskPC'||p.kind==='checkin'){desk(x,z,w,d);monitor(x,z-.12);chair(x,z+.47);return;}
     if(p.kind==='cabinet'){cabinet(x,z,w,(p.z||75)/100);return;}

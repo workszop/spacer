@@ -1,7 +1,7 @@
 /* ─── Location identity: one plan shared by rendering and collision detection ─── */
 window.LocationLayouts=(()=>{
   if(typeof document!=='undefined'){
-    const style=document.createElement('style');style.textContent=':root{--location-terminalTile:#E5EEF2;--location-terminalJoint:#D2DFE5;--location-terminalCarpet:#D5E4E8;--location-terminalWeave:#C4D6DC;--location-bankStone:#E8E0D3;--location-bankJoint:#D7CABB;--location-bankCarpet:#CBD8D0;--location-bankWeave:#B8C9BE;--location-civicStone:#EEE6D7;--location-civicJoint:#DDD1BA;--location-civicWood:#D5B994;--location-civicGrain:#B99B74;--location-civicCarpet:#E1E5D9;--location-civicWeave:#CDD4C2}';document.head.appendChild(style);
+    const style=document.createElement('style');style.textContent=':root{--location-terminalTile:#E5EEF2;--location-terminalJoint:#D2DFE5;--location-terminalCarpet:#D5E4E8;--location-terminalWeave:#C4D6DC;--location-bankStone:#E8E0D3;--location-bankJoint:#D7CABB;--location-bankCarpet:#CBD8D0;--location-bankWeave:#B8C9BE;--location-civicStone:#EEE6D7;--location-civicJoint:#DDD1BA;--location-civicWood:#D5B994;--location-civicGrain:#B99B74;--location-civicCarpet:#E1E5D9;--location-civicWeave:#CDD4C2;--location-companyTile:#E9ECEF;--location-companyJoint:#D6DCE0;--location-companyCarpet:#D3DDE6;--location-companyWeave:#C1CEDA;--location-companyConcrete:#DDDAD4}';document.head.appendChild(style);
   }
   const layouts={
     airport:{
@@ -39,6 +39,18 @@ window.LocationLayouts=(()=>{
       zones:[{x:220,y:220,t:'BIURO OBSŁUGI MIESZKAŃCA'},{x:600,y:70,t:'SALA RADY'}],
       stations:{kmicic:{x:220,y:325,w:185,h:64},papkin:{x:720,y:200,w:245,h:110},gerwazy:{x:845,y:500,w:180,h:86},zagloba:{x:535,y:475,w:85,h:65},klara:{x:670,y:585,w:90,h:60}},
       cameraBounds:{x0:-.25,x1:11.05,z0:-.45,z1:6.85,height:2.1}
+    },
+    company:{
+      identity:'sme-office',landmarks:['open-space','sales-board','warehouse'],
+      spawn:{x:120,y:600},
+      floors:[{x:18,y:18,w:522,h:624,c:'companyTile',pat:'tiles',pc:'companyJoint'},{x:560,y:18,w:502,h:290,c:'companyCarpet',pat:'carpet',pc:'companyWeave'},{x:560,y:328,w:502,h:314,c:'companyConcrete',pat:'tiles',pc:'companyJoint'}],
+      walls:[{x:545,y:18,w:12,h:170},{x:545,y:308,w:12,h:334},{x:557,y:313,w:170,h:10},{x:847,y:313,w:215,h:10}],
+      doors:[{x:551,y:248,dir:'y',w:120},{x:787,y:318,dir:'x',w:120}],
+      blocks:[{kind:'salesboard',x:270,y:40,w:200,h:16},{kind:'racks',x:1010,y:480,w:60,h:250},{kind:'plant',x:500,y:590,w:30,h:30}],
+      props:[{kind:'pallet',x:900,y:600,w:70,h:50},{kind:'bench',x:90,y:470,w:80,h:32}],
+      zones:[{x:250,y:120,t:'DZIAŁ SPRZEDAŻY'},{x:800,y:60,t:'SALA ZARZĄDU'},{x:800,y:380,t:'OPERACJE I MAGAZYN'}],
+      stations:{kmicic:{x:220,y:230,w:195,h:64},papkin:{x:800,y:170,w:230,h:110},gerwazy:{x:300,y:470,w:180,h:86},zagloba:{x:700,y:470,w:85,h:65},klara:{x:430,y:340,w:90,h:60}},
+      cameraBounds:{x0:-.25,x1:11.05,z0:-.45,z1:6.85,height:2.05}
     }
   };
   function apply(scenes){
